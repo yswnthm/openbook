@@ -81,13 +81,13 @@
         "@types/react-syntax-highlighter": "^15.5.13",
         "@typescript-eslint/eslint-plugin": "^8.33.1",
         "@typescript-eslint/parser": "^8.33.1",
-        "eslint": "^9.26.0",
+        "eslint": "^9.39.2",
         "eslint-config-next": "^15.3.3",
         "husky": "^9.1.7",
         "knip": "^5.41.1",
         "lint-staged": "^16.1.0",
         "postcss-load-config": "^6.0.1",
-        "prettier": "^3.5.3"
+        "prettier": "^3.7.4"
     },
     "pnpm": {
         "onlyBuiltDependencies": [
