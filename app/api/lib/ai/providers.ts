@@ -36,7 +36,8 @@ export const neuman = customProvider({
     'neuman-gemini-3': openrouter('google/gemini-3-pro-preview'),
     'neuman-gpt-5-mini': openrouter('openai/gpt-5-mini-2025-08-07'),
     'neuman-gpt-5-nano': openrouter('openai/gpt-5-nano-2025-08-07'),
-    'neuman-apriel-15b': huggingface('ServiceNow-AI/Apriel-1.6-15b-Thinker:together')
+    'neuman-apriel-15b': huggingface('ServiceNow-AI/Apriel-1.6-15b-Thinker:together'),
+    'neuman-olmo-32b': huggingface('allenai/Olmo-3.1-32B-Think:publicai')
   },
 });
 
@@ -85,6 +86,7 @@ export const AVAILABLE_MODELS = [
   'neuman-gpt-5-mini',
   'neuman-gpt-5-nano',
   'neuman-apriel-15b',
+  'neuman-olmo-32b',
   'neuman-gpt-oss',
 ] as const;
 

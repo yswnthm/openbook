@@ -89,6 +89,13 @@ const models = [
         color: 'purple',
         isFree: false,
     },
+    {
+        value: 'neuman-olmo-32b',
+        label: 'Olmo 3.1 32B',
+        description: 'AllenAI/Think',
+        color: 'orange',
+        isFree: false,
+    },
 ];
 
 interface AiModelPickerProps {
