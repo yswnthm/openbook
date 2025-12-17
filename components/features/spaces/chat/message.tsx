@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -448,4 +448,87 @@ export const AttachmentsBadge = ({ attachments }: { attachments: any[] }) => {
 
 Message.displayName = 'Message';
 
-export { Message };
+// Helper: shallow compare parts that this component renders through renderPart
+function partsShallowEqual(a: any[] | undefined, b: any[] | undefined): boolean {
+    if (a === b) return true;
+    if (!a || !b) return false;
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+        const pa = a[i] as any;
+        const pb = b[i] as any;
+        if (pa?.type !== pb?.type) return false;
+        // For text parts, compare text content
+        if (pa?.type === 'text' && pa?.text !== pb?.text) return false;
+    }
+    return true;
+}
+
+function getLastAssistantIndex(messages: any[]): number {
+    for (let i = messages.length - 1; i >= 0; i--) {
+        if (messages[i]?.role === 'assistant') return i;
+    }
+    return -1;
+}
+
+const arePropsEqual = (prev: MessageProps, next: MessageProps) => {
+    // Index should be stable; if not, re-render
+    if (prev.index !== next.index) return false;
+
+    // Message identity and content
+    const pm = prev.message as any;
+    const nm = next.message as any;
+    if (pm !== nm) {
+        if (pm?.id !== nm?.id) return false;
+        if (pm?.role !== nm?.role) return false;
+        if (pm?.content !== nm?.content) return false;
+        if (!partsShallowEqual(pm?.parts, nm?.parts)) return false;
+    }
+
+    // Editing state: only re-render if this row becomes/was the one being edited
+    const prevEditingThis = prev.isEditingMessage && prev.editingMessageIndex === prev.index;
+    const nextEditingThis = next.isEditingMessage && next.editingMessageIndex === next.index;
+    if (
+        prev.isEditingMessage !== next.isEditingMessage ||
+        prev.editingMessageIndex !== next.editingMessageIndex
+    ) {
+        if (prevEditingThis || nextEditingThis) return false;
+    }
+
+    // Input changes matter only if editing this row
+    if (prev.input !== next.input && nextEditingThis) return false;
+
+    // Last user message index affects only that row (edit controls visibility)
+    if (prev.lastUserMessageIndex !== next.lastUserMessageIndex) {
+        if (
+            prev.index === prev.lastUserMessageIndex ||
+            next.index === next.lastUserMessageIndex
+        ) {
+            return false;
+        }
+    }
+
+    // Status changes:
+    // - affect edit controls for the last user message row
+    // - affect the last assistant row (loading dots / actions controlled upstream)
+    if (prev.status !== next.status) {
+        const isLastUserRow = next.message.role === 'user' && next.index === next.lastUserMessageIndex;
+        const isEditingRow = nextEditingThis;
+        const lastAssistantIndex = getLastAssistantIndex(next.messages);
+        const isLastAssistantRow = next.message.role === 'assistant' && next.index === lastAssistantIndex;
+        if (isLastUserRow || isEditingRow || isLastAssistantRow) return false;
+    }
+
+    // Suggested questions: only re-render the last assistant row when they change
+    if (prev.suggestedQuestions !== next.suggestedQuestions) {
+        const lastAssistantIndex = getLastAssistantIndex(next.messages);
+        if (next.message.role === 'assistant' && next.index === lastAssistantIndex) return false;
+    }
+
+    // Ignore changes to functions and other props not directly used for rendering this row
+    return true; // props considered equal -> skip re-render
+};
+
+const MemoMessage = memo(Message, arePropsEqual);
+MemoMessage.displayName = 'Message';
+
+export { MemoMessage as Message };
