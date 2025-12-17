@@ -96,6 +96,14 @@ const models = [
         color: 'orange',
         isFree: false,
     },
+    {
+        value: 'neuman-gpt-oss-20b',
+        label: 'GPT OSS 20b',
+        description: 'Groq/Free',
+        color: 'blue',
+        isFree: true,
+        dotColor: 'red',
+    },
 ];
 
 interface AiModelPickerProps {
@@ -184,8 +192,11 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                                         </span>
                                         {(model as any).isFree && (
                                             <span
-                                                className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.4)]"
-                                                title="Free Model"
+                                                className={`w-1.5 h-1.5 rounded-full ${(model as any).dotColor === 'red'
+                                                        ? 'bg-red-500 shadow-[0_0_4px_rgba(239,68,68,0.4)]'
+                                                        : 'bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.4)]'
+                                                    }`}
+                                                title={(model as any).dotColor === 'red' ? "Groq Free Model" : "Free Model"}
                                             />
                                         )}
                                         {model.value === selectedModel && (

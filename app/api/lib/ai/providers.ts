@@ -21,6 +21,12 @@ const huggingface = createOpenAI({
   apiKey: process.env.HF_TOKEN,
 });
 
+// Groq Configuration
+const groq = createOpenAI({
+  baseURL: 'https://api.groq.com/openai/v1',
+  apiKey: process.env.GROQ_API_KEY,
+});
+
 // Custom provider with multiple AI models
 // Custom provider with multiple AI models
 export const neuman = customProvider({
@@ -37,7 +43,8 @@ export const neuman = customProvider({
     'neuman-gpt-5-mini': openrouter('openai/gpt-5-mini-2025-08-07'),
     'neuman-gpt-5-nano': openrouter('openai/gpt-5-nano-2025-08-07'),
     'neuman-apriel-15b': huggingface('ServiceNow-AI/Apriel-1.6-15b-Thinker:together'),
-    'neuman-olmo-32b': huggingface('allenai/Olmo-3.1-32B-Think:publicai')
+    'neuman-olmo-32b': huggingface('allenai/Olmo-3.1-32B-Think:publicai'),
+    'neuman-gpt-oss-20b': groq('openai/gpt-oss-20b'),
   },
 });
 
@@ -88,6 +95,7 @@ export const AVAILABLE_MODELS = [
   'neuman-apriel-15b',
   'neuman-olmo-32b',
   'neuman-gpt-oss',
+  'neuman-gpt-oss-20b',
 ] as const;
 
 export type AvailableModel = (typeof AVAILABLE_MODELS)[number];
