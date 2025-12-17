@@ -49,11 +49,17 @@ export const neuman = customProvider({
     'neuman-gemma-3n': openrouter('google/gemma-3n-e2b-it:free'),
     'neuman-gemma-3-27b': openrouter('google/gemma-3-27b-it:free'),
     'neuman-deepseek-r1': openrouter('deepseek/deepseek-r1-0528:free'),
-    'neuman-gemini-3': google('gemini-2.0-pro-exp-02-05'),
+    'neuman-gemini-3-flash': google('models/gemini-3-flash-preview'),
+    'neuman-gemini-2-5-pro': google('gemini-2.5-pro'),
     'neuman-gpt-5-mini': openai('gpt-5-mini-2025-08-07'),
     'neuman-gpt-5-nano': openai('gpt-5-nano-2025-08-07'),
     'neuman-apriel-15b': huggingface('ServiceNow-AI/Apriel-1.6-15b-Thinker:together'),
-    'neuman-olmo-32b': huggingface('allenai/Olmo-3.1-32B-Think:publicai')
+
+    'neuman-olmo-32b': huggingface('allenai/Olmo-3.1-32B-Think:publicai'),
+    'neuman-groq-compound': groq('groq/compound'),
+    'neuman-kimi-k2': groq('moonshotai/kimi-k2-instruct-0905'),
+    'neuman-qwen-3': groq('qwen/qwen3-32b'),
+    'neuman-llama-4-maverick-17b-128e-instruct': groq('meta-llama/llama-4-maverick-17b-128e-instruct')
   },
 });
 
@@ -98,13 +104,18 @@ export const AVAILABLE_MODELS = [
   'neuman-gemma-3n',
   'neuman-gemma-3-27b',
   'neuman-deepseek-r1',
-  'neuman-gemini-3',
+  'neuman-gemini-3-flash',
+  'neuman-gemini-2-5-pro',
   'neuman-gpt-5-mini',
   'neuman-gpt-5-nano',
   'neuman-apriel-15b',
   'neuman-olmo-32b',
   'neuman-gpt-oss',
   'neuman-gpt-oss-20b',
+  'neuman-groq-compound',
+  'neuman-kimi-k2',
+  'neuman-qwen-3',
+  'neuman-llama-4-maverick-17b-128e-instruct',
 ] as const;
 
 export type AvailableModel = (typeof AVAILABLE_MODELS)[number];
