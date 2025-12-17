@@ -172,7 +172,7 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       '@types/dompurify':
-        specifier: ^3.0.4
+        specifier: ^3.2.0
         version: 3.2.0
       '@types/google.maps':
         specifier: ^3.55.12
