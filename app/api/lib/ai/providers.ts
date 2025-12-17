@@ -19,7 +19,7 @@ const openrouter = createOpenAI({
 // Custom provider with multiple AI models
 export const neuman = customProvider({
   languageModels: {
-    'neuman-default': openrouter('openai/gpt-oss-120b'),
+    'neuman-default': openrouter('openai/gpt-oss-120b:free'),
     'neuman-deepseek-free': openrouter('nex-agi/deepseek-v3.1-nex-n1:free'),
     'neuman-gpt-oss-free': openrouter('openai/gpt-oss-120b:free'),
     'neuman-glm-4': openrouter('z-ai/glm-4.5-air:free'),
@@ -29,8 +29,7 @@ export const neuman = customProvider({
     'neuman-deepseek-r1': openrouter('deepseek/deepseek-r1-0528:free'),
     'neuman-gemini-3': openrouter('google/gemini-3-pro-preview'),
     'neuman-gpt-5-mini': openrouter('openai/gpt-5-mini-2025-08-07'),
-    'neuman-gpt-5-nano': openrouter('openai/gpt-5-nano-2025-08-07'),
-    'neuman-gpt-oss': openrouter('openai/gpt-oss-120b'),
+    'neuman-gpt-5-nano': openrouter('openai/gpt-5-nano-2025-08-07')
   },
 });
 

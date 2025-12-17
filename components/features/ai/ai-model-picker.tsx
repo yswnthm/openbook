@@ -8,68 +8,79 @@ const models = [
     {
         value: 'neuman-default',
         label: 'GPT OSS 120b',
-        description: 'Default (OpenAI OSS)',
+        description: 'Default (OpenAI OSS) free',
         color: 'blue',
+        isFree: true,
     },
     {
         value: 'neuman-deepseek-free',
         label: 'DeepSeek v3.1',
         description: 'Nex-AGI/Free',
         color: 'purple',
+        isFree: true,
     },
     {
         value: 'neuman-gpt-oss-free',
         label: 'GPT OSS 120b',
         description: 'OpenAI/Free',
         color: 'blue',
+        isFree: true,
     },
     {
         value: 'neuman-glm-4',
         label: 'GLM 4.5 Air',
         description: 'Z-AI/Free',
         color: 'orange',
+        isFree: true,
     },
     {
         value: 'neuman-qwen-coder',
         label: 'Qwen 3 Coder',
         description: 'Qwen/Free',
         color: 'green',
+        isFree: true,
     },
     {
         value: 'neuman-gemma-3n',
         label: 'Gemma 3n',
         description: 'Google/Free',
         color: 'gemini',
+        isFree: true,
     },
     {
         value: 'neuman-gemma-3-27b',
         label: 'Gemma 3 27b',
         description: 'Google/Free',
         color: 'gemini',
+        isFree: true,
     },
     {
         value: 'neuman-deepseek-r1',
         label: 'DeepSeek R1',
         description: 'DeepSeek/Free',
         color: 'purple',
+        isFree: true,
     },
     {
         value: 'neuman-gemini-3',
         label: 'Gemini 3 Pro',
         description: 'Google Preview',
         color: 'gemini',
+        isFree: false,
     },
     {
         value: 'neuman-gpt-5-nano',
         label: 'GPT 5 Nano',
         description: 'OpenAI Nano',
         color: 'blue',
+        isFree: false,
     },
     {
         value: 'neuman-gpt-oss',
         label: 'GPT OSS 120b',
         description: 'OpenAI OSS',
         color: 'blue',
+        isFree: false,
     },
 ];
 
@@ -157,6 +168,12 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                                         <span className="text-[11px] font-medium text-neutral-800 dark:text-neutral-100">
                                             {model.label}
                                         </span>
+                                        {(model as any).isFree && (
+                                            <span
+                                                className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.4)]"
+                                                title="Free Model"
+                                            />
+                                        )}
                                         {model.value === selectedModel && (
                                             <span className="text-[8px] bg-emerald-100/60 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 px-1 py-0.5 rounded font-medium">
                                                 ✓
