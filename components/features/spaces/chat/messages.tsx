@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageLoading, TypingIndicator, StreamingProgress } from '@/components/features/spaces/chat/message-loading';
 import { TypingMessage } from '@/components/features/spaces/chat/message-typing';
 import { AIProgressIndicator, WordCountIndicator } from '@/components/features/spaces/loading/progress-indicators';
-import AddToJournalButton from '@/components/features/spaces/add-to-journal-button';
+
 import { LoadingDots } from '@/components/ui/loading-dots';
 
 // Define MessagePart type
@@ -525,28 +525,7 @@ const Messages: React.FC<MessagesProps> = ({
                             />
                         )}
 
-                        {/* Add to journal button for conversation strips */}
-                        {message.role === 'assistant' &&
-                            message.content &&
-                            status === 'ready' &&
-                            (() => {
-                                // Find the corresponding user message (the most recent user message before this assistant message)
-                                const userMessage = messages
-                                    .slice(0, index)
-                                    .reverse()
-                                    .find((m) => m.role === 'user');
-                                if (!userMessage) return null;
-
-                                return (
-                                    <div className="mt-2 flex justify-end">
-                                        <AddToJournalButton
-                                            userMessage={userMessage.content}
-                                            assistantMessage={message.content}
-                                            className="text-xs"
-                                        />
-                                    </div>
-                                );
-                            })()}
+                        {/* Add to journal button removed */}
                     </React.Fragment>
                 ))
             ) : (
