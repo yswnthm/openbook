@@ -12,9 +12,7 @@
         "format:check": "prettier --check .",
         "knip:ci": "knip --fail",
         "analyze": "ANALYZE=true pnpm build",
-        "knip": "knip",
-        "prepare": "husky",
-        "lint-staged": "lint-staged"
+        "knip": "knip"
     },
     "dependencies": {
         "@ai-sdk/anthropic": "^1.2.10",
@@ -83,9 +81,7 @@
         "@typescript-eslint/parser": "^8.33.1",
         "eslint": "^9.26.0",
         "eslint-config-next": "^15.3.3",
-        "husky": "^9.1.7",
         "knip": "^5.41.1",
-        "lint-staged": "^16.1.0",
         "postcss-load-config": "^6.0.1",
         "prettier": "^3.5.3"
     },
