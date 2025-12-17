@@ -9,6 +9,7 @@ const models = [
         value: 'neuman-default',
         label: 'GPT OSS 120b',
         description: 'Default (OpenAI OSS) free',
+        provider: 'OpenRouter',
         color: 'blue',
         isFree: true,
     },
@@ -16,6 +17,7 @@ const models = [
         value: 'neuman-deepseek-free',
         label: 'DeepSeek v3.1',
         description: 'Nex-AGI/Free',
+        provider: 'OpenRouter',
         color: 'purple',
         isFree: true,
     },
@@ -23,6 +25,7 @@ const models = [
         value: 'neuman-gpt-oss-free',
         label: 'GPT OSS 120b',
         description: 'OpenAI/Free',
+        provider: 'OpenRouter',
         color: 'blue',
         isFree: true,
     },
@@ -30,6 +33,7 @@ const models = [
         value: 'neuman-glm-4',
         label: 'GLM 4.5 Air',
         description: 'Z-AI/Free',
+        provider: 'OpenRouter',
         color: 'orange',
         isFree: true,
     },
@@ -37,6 +41,7 @@ const models = [
         value: 'neuman-qwen-coder',
         label: 'Qwen 3 Coder',
         description: 'Qwen/Free',
+        provider: 'OpenRouter',
         color: 'green',
         isFree: true,
     },
@@ -44,6 +49,7 @@ const models = [
         value: 'neuman-gemma-3n',
         label: 'Gemma 3n',
         description: 'Google/Free',
+        provider: 'OpenRouter',
         color: 'gemini',
         isFree: true,
     },
@@ -51,6 +57,7 @@ const models = [
         value: 'neuman-gemma-3-27b',
         label: 'Gemma 3 27b',
         description: 'Google/Free',
+        provider: 'OpenRouter',
         color: 'gemini',
         isFree: true,
     },
@@ -58,6 +65,7 @@ const models = [
         value: 'neuman-deepseek-r1',
         label: 'DeepSeek R1',
         description: 'DeepSeek/Free',
+        provider: 'OpenRouter',
         color: 'purple',
         isFree: true,
     },
@@ -65,6 +73,7 @@ const models = [
         value: 'neuman-gemini-3',
         label: 'Gemini 3 Pro',
         description: 'Google Preview',
+        provider: 'OpenRouter',
         color: 'gemini',
         isFree: false,
     },
@@ -72,6 +81,7 @@ const models = [
         value: 'neuman-gpt-5-nano',
         label: 'GPT 5 Nano',
         description: 'OpenAI Nano',
+        provider: 'OpenRouter',
         color: 'blue',
         isFree: false,
     },
@@ -79,6 +89,7 @@ const models = [
         value: 'neuman-gpt-oss',
         label: 'GPT OSS 120b',
         description: 'OpenAI OSS',
+        provider: 'OpenRouter',
         color: 'blue',
         isFree: false,
     },
@@ -86,6 +97,7 @@ const models = [
         value: 'neuman-apriel-15b',
         label: 'Apriel 1.6 15b',
         description: 'ServiceNow/Thinker',
+        provider: 'Hugging Face',
         color: 'purple',
         isFree: false,
     },
@@ -93,6 +105,7 @@ const models = [
         value: 'neuman-olmo-32b',
         label: 'Olmo 3.1 32B',
         description: 'AllenAI/Think',
+        provider: 'Hugging Face',
         color: 'orange',
         isFree: false,
     },
@@ -100,6 +113,7 @@ const models = [
         value: 'neuman-gpt-oss-20b',
         label: 'GPT OSS 20b',
         description: 'Groq/Free',
+        provider: 'Groq',
         color: 'blue',
         isFree: true,
         dotColor: 'red',
@@ -154,8 +168,11 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
         >
             <div className="p-2">
                 <div className="mb-1.5">
-                    <div className="text-xs font-medium mb-0.5 text-neutral-800 dark:text-neutral-100">
-                        AI Model
+                    <div className="text-xs font-medium mb-0.5 text-neutral-800 dark:text-neutral-100 flex items-center justify-between">
+                        <span>AI Model</span>
+                        <span className="text-[10px] text-neutral-500 font-normal">
+                            Provider: {(currentModel as any).provider}
+                        </span>
                     </div>
                     <div className="text-[9px] text-neutral-600 dark:text-neutral-400">
                         Current: <span className="text-neutral-800 dark:text-neutral-100 font-medium">{currentModel.label}</span>
@@ -186,28 +203,35 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                                 whileTap={{ scale: 0.99 }}
                             >
                                 <div className="flex flex-col">
-                                    <div className="flex items-center gap-1.5 mb-0.5">
-                                        <span className="text-[11px] font-medium text-neutral-800 dark:text-neutral-100">
-                                            {model.label}
-                                        </span>
-                                        {(model as any).isFree && (
-                                            <span
-                                                className={`w-1.5 h-1.5 rounded-full ${(model as any).dotColor === 'red'
+                                    <div className="flex items-center justify-between mb-0.5">
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="text-[11px] font-medium text-neutral-800 dark:text-neutral-100">
+                                                {model.label}
+                                            </span>
+                                            {(model as any).isFree && (
+                                                <span
+                                                    className={`w-1.5 h-1.5 rounded-full ${(model as any).dotColor === 'red'
                                                         ? 'bg-red-500 shadow-[0_0_4px_rgba(239,68,68,0.4)]'
                                                         : 'bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.4)]'
-                                                    }`}
-                                                title={(model as any).dotColor === 'red' ? "Groq Free Model" : "Free Model"}
-                                            />
-                                        )}
+                                                        }`}
+                                                    title={(model as any).dotColor === 'red' ? "Groq Free Model" : "Free Model"}
+                                                />
+                                            )}
+                                        </div>
+                                        <span className="text-[9px] text-neutral-400 dark:text-neutral-500 font-medium">
+                                            {(model as any).provider}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-[9px] text-neutral-600 dark:text-neutral-400">
+                                            {model.description}
+                                        </span>
                                         {model.value === selectedModel && (
                                             <span className="text-[8px] bg-emerald-100/60 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 px-1 py-0.5 rounded font-medium">
                                                 ✓
                                             </span>
                                         )}
                                     </div>
-                                    <span className="text-[9px] text-neutral-600 dark:text-neutral-400">
-                                        {model.description}
-                                    </span>
                                 </div>
                             </motion.div>
                         ))}
