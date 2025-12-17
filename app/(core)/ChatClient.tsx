@@ -594,13 +594,13 @@ const HomeContent = () => {
         return (
             <div
                 className={cn(
-                    'fixed top-0 left-0 right-0 z-40 flex justify-between items-center p-3 sm:p-4',
+                    'fixed top-0 left-0 right-0 z-40 flex justify-between items-center p-3 sm:p-4 pointer-events-none',
                     // No background, no shadow
                     'bg-transparent',
                 )}
             >
-                <div className="flex items-center gap-2 sm:gap-4">{/* Sidebar toggle button removed */}</div>
-                <div className="flex items-center space-x-2 sm:space-x-4">
+                <div className="flex items-center gap-2 sm:gap-4 pointer-events-auto">{/* Sidebar toggle button removed */}</div>
+                <div className="flex items-center space-x-2 sm:space-x-4 pointer-events-auto">
                     {currentStudyMode?.framework && (
                         <StudyModeBadge
                             framework={currentStudyMode.framework as StudyFramework}
