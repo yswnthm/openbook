@@ -82,6 +82,13 @@ const models = [
         color: 'blue',
         isFree: false,
     },
+    {
+        value: 'neuman-apriel-15b',
+        label: 'Apriel 1.6 15b',
+        description: 'ServiceNow/Thinker',
+        color: 'purple',
+        isFree: false,
+    },
 ];
 
 interface AiModelPickerProps {

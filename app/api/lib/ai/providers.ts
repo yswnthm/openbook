@@ -15,6 +15,12 @@ const openrouter = createOpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
 });
 
+// Hugging Face Configuration
+const huggingface = createOpenAI({
+  baseURL: 'https://router.huggingface.co/v1',
+  apiKey: process.env.HF_TOKEN,
+});
+
 // Custom provider with multiple AI models
 // Custom provider with multiple AI models
 export const neuman = customProvider({
@@ -29,7 +35,8 @@ export const neuman = customProvider({
     'neuman-deepseek-r1': openrouter('deepseek/deepseek-r1-0528:free'),
     'neuman-gemini-3': openrouter('google/gemini-3-pro-preview'),
     'neuman-gpt-5-mini': openrouter('openai/gpt-5-mini-2025-08-07'),
-    'neuman-gpt-5-nano': openrouter('openai/gpt-5-nano-2025-08-07')
+    'neuman-gpt-5-nano': openrouter('openai/gpt-5-nano-2025-08-07'),
+    'neuman-apriel-15b': huggingface('ServiceNow-AI/Apriel-1.6-15b-Thinker:together')
   },
 });
 
@@ -77,6 +84,7 @@ export const AVAILABLE_MODELS = [
   'neuman-gemini-3',
   'neuman-gpt-5-mini',
   'neuman-gpt-5-nano',
+  'neuman-apriel-15b',
   'neuman-gpt-oss',
 ] as const;
 
