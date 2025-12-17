@@ -1,4 +1,12 @@
 /** @type {import('next').NextConfig} */
+
+// SAFETY CONSTANT: Remove localStorage from global if it exists on server
+// This fixes issues where libraries (like nuqs) crash because they detect localStorage
+// but it's not a functional Storage object in the Node environment.
+if (typeof global !== 'undefined' && typeof global.localStorage !== 'undefined') {
+  delete global.localStorage;
+}
+
 // Bundle analyzer wraps config when ANALYZE=true
 const nextConfig = {
   images: {

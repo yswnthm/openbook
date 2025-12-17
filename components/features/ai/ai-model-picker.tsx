@@ -6,41 +6,70 @@ import { motion } from 'framer-motion';
 // Define the model options - with Google Gemini 2.5 Flash as the default
 const models = [
     {
-        value: 'neuman-google',
-        label: 'Gemini 2.5 Flash',
-        description: "Google's advanced small reasoning model",
-        color: 'gemini',
-    },
-    {
         value: 'neuman-default',
-        label: 'o4 mini',
-        description: "OpenAI's faster mini reasoning model",
+        label: 'GPT OSS 120b',
+        description: 'Default (OpenAI OSS)',
         color: 'blue',
     },
     {
-        value: 'neuman-gemini',
-        label: 'Gemini 2.5 Pro',
-        description: "Google's advanced reasoning model",
-        color: 'gemini',
+        value: 'neuman-deepseek-free',
+        label: 'DeepSeek v3.1',
+        description: 'Nex-AGI/Free',
+        color: 'purple',
     },
     {
-        value: 'neuman-grok-3',
-        label: 'Grok 4 Fast',
-        description: "xAI's latest fast reasoning model",
+        value: 'neuman-gpt-oss-free',
+        label: 'GPT OSS 120b',
+        description: 'OpenAI/Free',
+        color: 'blue',
+    },
+    {
+        value: 'neuman-glm-4',
+        label: 'GLM 4.5 Air',
+        description: 'Z-AI/Free',
         color: 'orange',
     },
-    { value: 'neuman-4o', label: 'GPT 4o', description: "OpenAI's flagship model", color: 'blue' },
     {
-        value: 'neuman-4.1-nano',
-        label: 'GPT 4.1-nano',
-        description: "OpenAI's nano model",
+        value: 'neuman-qwen-coder',
+        label: 'Qwen 3 Coder',
+        description: 'Qwen/Free',
+        color: 'green',
+    },
+    {
+        value: 'neuman-gemma-3n',
+        label: 'Gemma 3n',
+        description: 'Google/Free',
+        color: 'gemini',
+    },
+    {
+        value: 'neuman-gemma-3-27b',
+        label: 'Gemma 3 27b',
+        description: 'Google/Free',
+        color: 'gemini',
+    },
+    {
+        value: 'neuman-deepseek-r1',
+        label: 'DeepSeek R1',
+        description: 'DeepSeek/Free',
+        color: 'purple',
+    },
+    {
+        value: 'neuman-gemini-3',
+        label: 'Gemini 3 Pro',
+        description: 'Google Preview',
+        color: 'gemini',
+    },
+    {
+        value: 'neuman-gpt-5-nano',
+        label: 'GPT 5 Nano',
+        description: 'OpenAI Nano',
         color: 'blue',
     },
     {
-        value: 'neuman-anthropic',
-        label: 'Claude Sonnet 4.5',
-        description: "Anthropic's latest intelligent model",
-        color: 'purple',
+        value: 'neuman-gpt-oss',
+        label: 'GPT OSS 120b',
+        description: 'OpenAI OSS',
+        color: 'blue',
     },
 ];
 
@@ -71,7 +100,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
     }, [onClose]);
 
     return (
-        <motion.div 
+        <motion.div
             className={`
                 absolute bottom-full left-0 w-80 mb-2 z-[1000]
                 bg-white/80 dark:bg-neutral-900/80 
@@ -85,9 +114,9 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ 
-                duration: 0.2, 
-                ease: [0.4, 0.0, 0.2, 1] 
+            transition={{
+                duration: 0.2,
+                ease: [0.4, 0.0, 0.2, 1]
             }}
         >
             <div className="p-2">
@@ -114,10 +143,9 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                                 className={`
                                     p-1.5 cursor-pointer rounded transition-all duration-150 
                                     border backdrop-blur-sm
-                                    ${
-                                        model.value === selectedModel
-                                            ? 'bg-white/50 dark:bg-neutral-800/50 border-neutral-300/40 dark:border-neutral-600/40 shadow-md'
-                                            : 'bg-white/20 dark:bg-neutral-800/20 border-neutral-200/20 dark:border-neutral-700/20 hover:bg-white/40 dark:hover:bg-neutral-800/40'
+                                    ${model.value === selectedModel
+                                        ? 'bg-white/50 dark:bg-neutral-800/50 border-neutral-300/40 dark:border-neutral-600/40 shadow-md'
+                                        : 'bg-white/20 dark:bg-neutral-800/20 border-neutral-200/20 dark:border-neutral-700/20 hover:bg-white/40 dark:hover:bg-neutral-800/40'
                                     }
                                 `}
                                 onClick={() => onSelect(model.value)}

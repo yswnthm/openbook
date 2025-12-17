@@ -2,39 +2,35 @@
 // Extracted from app/api/chat/route.ts
 
 import { customProvider, wrapLanguageModel, extractReasoningMiddleware } from 'ai';
-import { xai } from '@ai-sdk/xai';
-import { groq } from '@ai-sdk/groq';
-import { google } from '@ai-sdk/google';
-import { openai } from '@ai-sdk/openai';
-import { anthropic } from '@ai-sdk/anthropic';
+import { createOpenAI } from '@ai-sdk/openai';
 
 // Middleware for reasoning extraction
 const middleware = extractReasoningMiddleware({
   tagName: 'think',
 });
 
+// OpenRouter Configuration
+const openrouter = createOpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
+
+// Custom provider with multiple AI models
 // Custom provider with multiple AI models
 export const neuman = customProvider({
   languageModels: {
-    'neuman-default': openai('o4-mini'),
-    'neuman-grok-3': xai('grok-4-fast-reasoning'),
-    'neuman-vision': xai('grok-2-vision-1212'),
-    'neuman-4o': openai('gpt-4o', {
-      structuredOutputs: true,
-    }),
-    'neuman-4.1-nano': openai('gpt-4.1-nano', {}),
-    'neuman-o4-mini': openai('o4-mini'),
-    'neuman-qwq': wrapLanguageModel({
-      model: groq('qwen-qwq-32b'),
-      middleware,
-    }),
-    'neuman-google': google('gemini-2.5-flash', {
-      structuredOutputs: true,
-    }),
-    'neuman-gemini': google('gemini-2.5-pro', {
-      structuredOutputs: true,
-    }),
-    'neuman-anthropic': anthropic('claude-sonnet-4-5-20250929'),
+    'neuman-default': openrouter('openai/gpt-oss-120b'),
+    'neuman-deepseek-free': openrouter('nex-agi/deepseek-v3.1-nex-n1:free'),
+    'neuman-gpt-oss-free': openrouter('openai/gpt-oss-120b:free'),
+    'neuman-glm-4': openrouter('z-ai/glm-4.5-air:free'),
+    'neuman-qwen-coder': openrouter('qwen/qwen3-coder:free'),
+    'neuman-gemma-3n': openrouter('google/gemma-3n-e2b-it:free'),
+    'neuman-gemma-3-27b': openrouter('google/gemma-3-27b-it:free'),
+    'neuman-deepseek-r1': openrouter('deepseek/deepseek-r1-0528:free'),
+    'neuman-gemini-3': openrouter('google/gemini-3-pro-preview'),
+    'neuman-gpt-5-mini': openrouter('openai/gpt-5-mini-2025-08-07'),
+    'neuman-gpt-5-nano': openrouter('openai/gpt-5-nano-2025-08-07'),
+    'neuman-gpt-oss': openrouter('openai/gpt-oss-120b'),
   },
 });
 
@@ -47,32 +43,17 @@ export function getProviderOptions(model: string) {
     google: {},
     openai: {},
     xai: {},
-    anthropic: { thinking: { type: 'enabled', budgetTokens: 12000 } },
+    anthropic: {},
   } as Record<string, Record<string, unknown>>;
 
-  const modelSpecificOptions: Record<string, Record<string, unknown>> = {
-    'neuman-default': { neuman: { reasoningEffort: 'high' } },
-    'neuman-o4-mini': {
-      neuman: { reasoningEffort: 'medium' },
-      openai: { reasoningEffort: 'medium' },
-    },
-    'neuman-google': {
-      neuman: { thinkingConfig: { thinkingBudget: 5000 } },
-      google: { thinkingConfig: { thinkingBudget: 5000 } },
-    },
-  };
-
-  return {
-    ...baseOptions,
-    ...(modelSpecificOptions[model] || {}),
-  };
+  return baseOptions;
 }
 
 /**
  * Get temperature setting based on model
  */
 export function getTemperature(model: string): number | undefined {
-  return model !== 'neuman-o4-mini' ? 0 : undefined;
+  return undefined;
 }
 
 /**
@@ -87,15 +68,17 @@ export function getMaxSteps(): number {
  */
 export const AVAILABLE_MODELS = [
   'neuman-default',
-  'neuman-grok-3',
-  'neuman-vision',
-  'neuman-4o',
-  'neuman-4.1-nano',
-  'neuman-o4-mini',
-  'neuman-qwq',
-  'neuman-google',
-  'neuman-gemini',
-  'neuman-anthropic',
+  'neuman-deepseek-free',
+  'neuman-gpt-oss-free',
+  'neuman-glm-4',
+  'neuman-qwen-coder',
+  'neuman-gemma-3n',
+  'neuman-gemma-3-27b',
+  'neuman-deepseek-r1',
+  'neuman-gemini-3',
+  'neuman-gpt-5-mini',
+  'neuman-gpt-5-nano',
+  'neuman-gpt-oss',
 ] as const;
 
 export type AvailableModel = (typeof AVAILABLE_MODELS)[number];

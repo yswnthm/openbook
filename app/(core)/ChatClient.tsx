@@ -145,7 +145,7 @@ const HomeContent = () => {
     // Study mode context
     const { getStudyModeForSpace, setStudyMode } = useStudyMode();
     // Set Google Gemini 2.5 Flash as the default model
-    const [selectedModel, setSelectedModel] = useLocalStorage(SELECTED_MODEL_KEY, 'neuman-google');
+    const [selectedModel, setSelectedModel] = useLocalStorage(SELECTED_MODEL_KEY, 'neuman-default');
 
     // One-time migration: move previously saved model from the legacy key
     useEffect(() => {
@@ -590,7 +590,7 @@ const HomeContent = () => {
         );
     };
 
-    interface NavbarProps {}
+    interface NavbarProps { }
 
     const Navbar: React.FC<NavbarProps> = () => {
         return (
