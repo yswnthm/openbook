@@ -3,6 +3,7 @@
 
 import { customProvider, wrapLanguageModel, extractReasoningMiddleware } from 'ai';
 import { createOpenAI } from '@ai-sdk/openai';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 
 // Middleware for reasoning extraction
 const middleware = extractReasoningMiddleware({
@@ -27,24 +28,32 @@ const groq = createOpenAI({
   apiKey: process.env.GROQ_API_KEY,
 });
 
+// Native OpenAI Configuration
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Google Configuration
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
+});
+
 // Custom provider with multiple AI models
 // Custom provider with multiple AI models
 export const neuman = customProvider({
   languageModels: {
-    'neuman-default': openrouter('openai/gpt-oss-120b:free'),
+    'neuman-default': groq('openai/gpt-oss-120b'),
     'neuman-deepseek-free': openrouter('nex-agi/deepseek-v3.1-nex-n1:free'),
-    'neuman-gpt-oss-free': openrouter('openai/gpt-oss-120b:free'),
     'neuman-glm-4': openrouter('z-ai/glm-4.5-air:free'),
     'neuman-qwen-coder': openrouter('qwen/qwen3-coder:free'),
     'neuman-gemma-3n': openrouter('google/gemma-3n-e2b-it:free'),
     'neuman-gemma-3-27b': openrouter('google/gemma-3-27b-it:free'),
     'neuman-deepseek-r1': openrouter('deepseek/deepseek-r1-0528:free'),
-    'neuman-gemini-3': openrouter('google/gemini-3-pro-preview'),
-    'neuman-gpt-5-mini': openrouter('openai/gpt-5-mini-2025-08-07'),
-    'neuman-gpt-5-nano': openrouter('openai/gpt-5-nano-2025-08-07'),
+    'neuman-gemini-3': google('gemini-2.0-pro-exp-02-05'),
+    'neuman-gpt-5-mini': openai('gpt-5-mini-2025-08-07'),
+    'neuman-gpt-5-nano': openai('gpt-5-nano-2025-08-07'),
     'neuman-apriel-15b': huggingface('ServiceNow-AI/Apriel-1.6-15b-Thinker:together'),
-    'neuman-olmo-32b': huggingface('allenai/Olmo-3.1-32B-Think:publicai'),
-    'neuman-gpt-oss-20b': groq('openai/gpt-oss-20b'),
+    'neuman-olmo-32b': huggingface('allenai/Olmo-3.1-32B-Think:publicai')
   },
 });
 
