@@ -659,25 +659,7 @@ const HomeContent = () => {
                                 <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-3 text-neutral-800 dark:text-neutral-100 font-syne!">
                                     What do you want to learn about?
                                 </h1>
-                                {currentSpace?.name &&
-                                    currentSpace.name !== 'General' &&
-                                    currentSpace.name.includes('Journal Discussion') && (
-                                        <div>
-                                            {isProcessing ? (
-                                                <div className="flex items-center gap-2 mb-4">
-                                                    <div className="animate-spin h-4 w-4 border-2 border-green-500 rounded-full border-t-transparent"></div>
-                                                    <p className="text-sm text-green-600 dark:text-green-400 font-medium">
-                                                        Analyzing your journal content...
-                                                    </p>
-                                                </div>
-                                            ) : (
-                                                <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-4">
-                                                    Your journal content has been analyzed. Feel free to ask follow-up
-                                                    questions.
-                                                </p>
-                                            )}
-                                        </div>
-                                    )}
+
                             </div>
                         )}
                         {displayMessages.length === 0 && !hasSubmitted && (
