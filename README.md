@@ -43,19 +43,19 @@ OpenBook is a modern web application built with Next.js that offers powerful AI-
 ### Prerequisites
 
 - Node.js 18.x or higher
-- pnpm (recommended package manager)
+- npm (recommended package manager)
 
 ### Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/openbook.git
-   cd openbook
+   git clone https://github.com/yourusername/openbook-model.git
+   cd openbook-model
    ```
 
 2. Install dependencies:
    ```bash
-   pnpm install
+   npm install
    ```
 
 3. Set up environment variables:
@@ -66,7 +66,7 @@ OpenBook is a modern web application built with Next.js that offers powerful AI-
 
 4. Start the development server:
    ```bash
-   pnpm dev
+   npm run dev
    ```
 
 The application will be available at http://localhost:3000.

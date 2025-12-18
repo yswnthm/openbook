@@ -18,16 +18,16 @@ The project is configured with:
 
 ```bash
 # Format all files
-pnpm format
+npm run format
 
 # Check if files are properly formatted (useful for CI)
-pnpm format:check
+npm run format:check
 
 # Run ESLint
-pnpm lint
+npm run lint
 
 # Fix ESLint issues automatically
-pnpm lint:fix
+npm run lint:fix
 ```
 
 ### Editor Setup
@@ -64,8 +64,8 @@ The project uses **Husky** and **lint-staged** to automatically format files bef
 
 If you encounter formatting issues:
 
-1. Run `pnpm format` to fix formatting
-2. Run `pnpm lint:fix` to fix linting issues
+1. Run `npm run format` to fix formatting
+2. Run `npm run lint:fix` to fix linting issues
 3. Commit your changes again
 
 ### Import Organization
@@ -116,13 +116,13 @@ If you're seeing constant formatting changes:
 
 1. Ensure your editor uses the project's Prettier config
 2. Check that you have the latest version of Prettier and plugins
-3. Run `pnpm format` to align with project standards
+3. Run `npm run format` to align with project standards
 
 ### Plugin Issues
 
 If Prettier plugins aren't working:
 
-1. Install dependencies: `pnpm install`
+1. Install dependencies: `npm install`
 2. Restart your editor
 3. Check that your editor's Prettier extension is up to date
 

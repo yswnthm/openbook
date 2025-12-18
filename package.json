@@ -11,7 +11,7 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "knip:ci": "knip --fail",
-        "analyze": "ANALYZE=true pnpm build",
+        "analyze": "ANALYZE=true npm run build",
         "knip": "knip"
     },
     "dependencies": {
@@ -84,11 +84,5 @@
         "knip": "^5.41.1",
         "postcss-load-config": "^6.0.1",
         "prettier": "^3.5.3"
-    },
-    "pnpm": {
-        "onlyBuiltDependencies": [
-            "@vercel/speed-insights",
-            "sharp"
-        ]
     }
 }
