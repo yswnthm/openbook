@@ -284,11 +284,11 @@ export default function Editor({ initialBlocks, onBlocksChange, title, onTitleCh
 
     return (
         <div className="flex flex-col h-full bg-white text-black dark:bg-neutral-900 dark:text-white">
-            <TopBar className="bg-transparent">
-                <div className="flex items-center space-x-2 w-full max-w-2xl mx-auto">
+            <TopBar className="bg-transparent pt-8">
+                <div className="flex items-center space-x-2 w-full max-w-2xl mx-auto px-4 sm:px-0">
                     <input
                         type="text"
-                        className="text-xl sm:text-3xl font-bold bg-transparent border-none outline-none focus:ring-0 w-full opacity-90 focus:opacity-100"
+                        className="text-xl sm:text-3xl font-bold bg-transparent border-none outline-none focus:ring-0 w-full opacity-90 focus:opacity-100 px-8"
                         value={currentTitle}
                         onChange={(e) => handleTitleChange(e.target.value)}
                         placeholder={defaultTitle}
