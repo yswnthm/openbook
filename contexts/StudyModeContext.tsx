@@ -4,7 +4,7 @@ import * as React from 'react';
 import type { ReactNode } from 'react';
 import { StudyFramework, StudyModeSettings } from '@/lib/types';
 
-export interface StudyModeContextType {
+interface StudyModeContextType {
     activeFramework: StudyFramework | null;
     settings: StudyModeSettings['settings'];
     activatedAt: number | null;

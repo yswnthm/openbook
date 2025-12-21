@@ -11,7 +11,7 @@ export interface SearchResult {
     type: 'journal' | 'space';
 }
 
-export interface SearchResults {
+interface SearchResults {
     journals: SearchResult[];
     spaces: SearchResult[];
 }

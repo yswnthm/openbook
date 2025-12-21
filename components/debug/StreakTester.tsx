@@ -8,10 +8,10 @@ export const StreakTester: React.FC = () => {
     const setStreak = (days: number) => {
         // Set the streak count
         localStorage.setItem(STREAK_COUNT_KEY, days.toString());
-        
+
         // Set the last visit to today to maintain the streak
         localStorage.setItem(STREAK_LAST_VISIT_KEY, new Date().toISOString());
-        
+
         // Refresh the page to trigger the useStreak hook to recalculate
         window.location.reload();
     };
@@ -31,7 +31,7 @@ export const StreakTester: React.FC = () => {
             <h3 className="text-sm font-semibold mb-3 text-gray-900 dark:text-gray-100">
                 Streak Tester (Current: {getCurrentStreak()})
             </h3>
-            
+
             <div className="grid grid-cols-2 gap-2 mb-3">
                 {/* Test different ranges */}
                 <Button size="sm" onClick={() => setStreak(1)} variant="outline">
@@ -59,7 +59,7 @@ export const StreakTester: React.FC = () => {
                     Reset
                 </Button>
             </div>
-            
+
             <p className="text-xs text-gray-600 dark:text-gray-400">
                 Click to test different streak states. Page will reload to update the hook.
             </p>
@@ -67,4 +67,3 @@ export const StreakTester: React.FC = () => {
     );
 };
 
-export default StreakTester; 

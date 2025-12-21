@@ -2,7 +2,7 @@
 // Extracted from app/api/chat/route.ts
 
 // Interface for X/Twitter search results
-export interface XResult {
+interface XResult {
   id: string;
   url: string;
   title: string;
@@ -53,12 +53,12 @@ export interface SearchResult {
 }
 
 // Final synthesis type
-export interface FinalSynthesis {
+interface FinalSynthesis {
   key_findings: KeyFinding[];
   remaining_uncertainties: string[];
 }
 
-export interface KeyFinding {
+interface KeyFinding {
   finding: string;
   confidence: number;
   supporting_evidence: string[];
@@ -98,60 +98,60 @@ export interface ExaResult {
 //   required_analyses: RequiredAnalysis[];
 // }
 
-export interface SearchQuery {
+interface SearchQuery {
   query: string;
   rationale: string;
   source: 'web' | 'academic' | 'x' | 'all';
   priority: number;
 }
 
-export interface RequiredAnalysis {
+interface RequiredAnalysis {
   type: string;
   description: string;
   importance: number;
 }
 
 // Analysis result types
-export interface AnalysisResult {
+interface AnalysisResult {
   findings: Finding[];
   implications: string[];
   limitations: string[];
 }
 
-export interface Finding {
+interface Finding {
   insight: string;
   evidence: string[];
   confidence: number;
 }
 
 // Gap analysis types
-export interface GapAnalysis {
+interface GapAnalysis {
   limitations: Limitation[];
   knowledge_gaps: KnowledgeGap[];
   recommended_followup: RecommendedAction[];
 }
 
-export interface Limitation {
+interface Limitation {
   type: string;
   description: string;
   severity: number;
   potential_solutions: string[];
 }
 
-export interface KnowledgeGap {
+interface KnowledgeGap {
   topic: string;
   reason: string;
   additional_queries: string[];
 }
 
-export interface RecommendedAction {
+interface RecommendedAction {
   action: string;
   rationale: string;
   priority: number;
 }
 
 // Progress tracking types
-export interface ProgressUpdate {
+interface ProgressUpdate {
   id: string;
   type: 'web' | 'academic' | 'x' | 'analysis' | 'progress';
   status: 'running' | 'completed';
@@ -166,7 +166,7 @@ export interface ProgressUpdate {
 }
 
 // Tool execution context
-export interface ToolContext {
+interface ToolContext {
   dataStream: any; // DataStream from AI SDK
   model: string;
   depth?: 'basic' | 'advanced';
@@ -179,7 +179,7 @@ export interface AcademicSearchOptions {
 }
 
 // Reason search specific types
-export interface ReasonSearchOptions {
+interface ReasonSearchOptions {
   topic: string;
   depth: 'basic' | 'advanced';
 }

@@ -19,7 +19,7 @@ type ReducedMotionSettings = {
  * Get animation settings based on motion preferences
  * @returns appropriate animation settings respecting user preferences
  */
-export const getAnimationSettings = (disableAnimations: boolean): AnimationConfig | ReducedMotionSettings => {
+const getAnimationSettings = (disableAnimations: boolean): AnimationConfig | ReducedMotionSettings => {
     if (disableAnimations) {
         // Return minimal motion settings
         return {

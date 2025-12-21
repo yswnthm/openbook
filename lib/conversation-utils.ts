@@ -20,7 +20,7 @@ interface ConversationMetadata {
 /**
  * Utility to get the default name regex (case-insensitive)
  */
-export function getDefaultNameRegex(): RegExp {
+function getDefaultNameRegex(): RegExp {
     // Conversation time: hours 1-12, minutes 00-59, AM/PM (case-insensitive)
     return /^(Untitled(?: \d+)?|Conversation (1[0-2]|0?[1-9]):[0-5][0-9]\s?(AM|PM)|Space - \d+)$/i;
 }
@@ -35,7 +35,7 @@ export function isDefaultAutoName(name: string): boolean {
 /**
  * Extract key terms from conversation content
  */
-export function extractKeyTerms(messages: ChatMessage[]): string[] {
+function extractKeyTerms(messages: ChatMessage[]): string[] {
     // Simple implementation that extracts capitalized terms and frequently used words
     const text = messages.map((m) => m.content).join(' ');
     const words = text.split(/\s+/);

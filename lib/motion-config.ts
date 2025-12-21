@@ -73,7 +73,7 @@ export const animationConfig: AnimationConfig = {
 /**
  * Panel expansion/collapse animation variants
  */
-export const panelVariants = {
+const panelVariants = {
     open: {
         height: 'auto',
         opacity: 1,
@@ -101,7 +101,7 @@ export const panelVariants = {
 /**
  * Modal animation variants
  */
-export const modalVariants = {
+const modalVariants = {
     initial: { opacity: 0, scale: 0.95, y: 10 },
     animate: { opacity: 1, scale: 1, y: 0 },
     exit: { opacity: 0, scale: 0.98, y: 10 },

@@ -253,7 +253,7 @@ const Message: React.FC<MessageProps> = ({
 };
 
 // Export the attachments badge component for reuse
-export const AttachmentsBadge = ({ attachments }: { attachments: any[] }) => {
+const AttachmentsBadge = ({ attachments }: { attachments: any[] }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const imageAttachments = attachments.filter((att) => att.contentType?.startsWith('image/'));
@@ -375,8 +375,8 @@ export const AttachmentsBadge = ({ attachments }: { attachments: any[] }) => {
                                             key={idx}
                                             onClick={() => setSelectedIndex(idx)}
                                             className={`relative h-12 w-12 rounded-md overflow-hidden shrink-0 transition-all ${selectedIndex === idx
-                                                    ? 'ring-2 ring-primary ring-offset-2 ring-offset-background'
-                                                    : 'opacity-70 hover:opacity-100'
+                                                ? 'ring-2 ring-primary ring-offset-2 ring-offset-background'
+                                                : 'opacity-70 hover:opacity-100'
                                                 }`}
                                         >
                                             <img

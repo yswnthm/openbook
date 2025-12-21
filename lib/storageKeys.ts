@@ -12,10 +12,10 @@
  * - Validate no duplicate keys exist in the arrays
  */
 
-import { 
-  STREAK_COUNT_KEY, 
-  STREAK_LAST_VISIT_KEY, 
-  STREAK_LAST_CELEBRATED_MILESTONE_KEY 
+import {
+  STREAK_COUNT_KEY,
+  STREAK_LAST_VISIT_KEY,
+  STREAK_LAST_CELEBRATED_MILESTONE_KEY
 } from './streakKeys';
 
 // Main data stores
@@ -40,21 +40,21 @@ export const USER_ID_KEY = 'openbook_user_id';
  * 2. Add it to this array
  * 3. Update the clear storage UI description if needed
  */
-export const OPENBOOK_STORAGE_KEYS: readonly string[] = [
+const OPENBOOK_STORAGE_KEYS: readonly string[] = [
   // Main data stores
   SPACES_DATA_KEY,
   NOTEBOOKS_DATA_KEY,
   STUDY_MODES_KEY,
   USER_DATA_KEY,
   JOURNAL_ENTRIES_KEY,
-  
+
   // UI preferences and settings
   SIDEBAR_STATE_KEY,
   ANIMATIONS_PREFERENCE_KEY,
   SELECTED_MODEL_KEY,
   INSTALL_PROMPT_DISMISSED_KEY,
   USER_ID_KEY,
-  
+
   // Streak data
   STREAK_COUNT_KEY,
   STREAK_LAST_VISIT_KEY,
@@ -64,7 +64,7 @@ export const OPENBOOK_STORAGE_KEYS: readonly string[] = [
 /**
  * Categories of storage keys for documentation and UI purposes
  */
-export const STORAGE_KEY_CATEGORIES = {
+const STORAGE_KEY_CATEGORIES = {
   DATA: {
     keys: [SPACES_DATA_KEY, NOTEBOOKS_DATA_KEY, STUDY_MODES_KEY, USER_DATA_KEY, JOURNAL_ENTRIES_KEY],
     description: 'Core application data (spaces, journals, notebooks, etc.)'
@@ -92,15 +92,15 @@ const OPENBOOK_PREFIX_WHITELIST = [
  * @param clearPreferences - Whether to also clear user preferences (default: true)
  */
 export function clearAllStorageData(clearPreferences: boolean = true): void {
-  const keysToRemove = clearPreferences 
-    ? OPENBOOK_STORAGE_KEYS 
+  const keysToRemove = clearPreferences
+    ? OPENBOOK_STORAGE_KEYS
     : STORAGE_KEY_CATEGORIES.DATA.keys;
-    
+
   // First, remove all explicitly defined keys
   keysToRemove.forEach((key) => {
     localStorage.removeItem(key);
   });
-  
+
   // Fallback: if the caller opted to clear preferences, remove any additional
   // OpenBook-prefixed keys that we might have forgotten to whitelist explicitly.
   if (clearPreferences) {

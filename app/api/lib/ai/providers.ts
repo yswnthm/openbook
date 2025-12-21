@@ -92,37 +92,4 @@ export function getMaxSteps(): number {
   return 5;
 }
 
-/**
- * Available model names
- */
-export const AVAILABLE_MODELS = [
-  'neuman-default',
-  'neuman-deepseek-free',
-  'neuman-gpt-oss-free',
-  'neuman-glm-4',
-  'neuman-qwen-coder',
-  'neuman-gemma-3n',
-  'neuman-gemma-3-27b',
-  'neuman-deepseek-r1',
-  'neuman-gemini-3-flash',
-  'neuman-gemini-2-5-pro',
-  'neuman-gpt-5-mini',
-  'neuman-gpt-5-nano',
-  'neuman-apriel-15b',
-  'neuman-olmo-32b',
-  'neuman-gpt-oss',
-  'neuman-gpt-oss-20b',
-  'neuman-groq-compound',
-  'neuman-kimi-k2',
-  'neuman-qwen-3',
-  'neuman-llama-4-maverick-17b-128e-instruct',
-] as const;
 
-export type AvailableModel = (typeof AVAILABLE_MODELS)[number];
-
-/**
- * Check if a model name is valid
- */
-export function isValidModel(model: string): model is AvailableModel {
-  return AVAILABLE_MODELS.includes(model as AvailableModel);
-}

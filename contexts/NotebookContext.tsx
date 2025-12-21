@@ -5,7 +5,7 @@ import { Notebook } from '@/lib/types';
 import { useUser } from './UserContext';
 import { useLimitModal } from './LimitModalContext';
 
-export interface NotebookContextType {
+interface NotebookContextType {
     notebooks: Notebook[];
     currentNotebookId: string;
     currentNotebook?: Notebook;
@@ -24,7 +24,7 @@ const STORAGE_KEY = NOTEBOOKS_DATA_KEY;
 const NOTEBOOK_LIMIT = 3;
 
 // Helper to generate a unique notebook name
-export function generateUniqueNotebookName(notebooks: Notebook[]): string {
+function generateUniqueNotebookName(notebooks: Notebook[]): string {
     const baseName = 'Notebook';
     const usedNumbers = new Set<number>();
     notebooks.forEach((notebook) => {

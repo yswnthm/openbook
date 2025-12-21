@@ -1,6 +1,6 @@
 import { StudyFramework } from './types';
 
-export const STUDY_FRAMEWORK_PROMPTS = {
+const STUDY_FRAMEWORK_PROMPTS = {
     [StudyFramework.MemoryPalace]: `You are OpenBook, a digital friend and Memory Palace study assistant.
 Today's date is ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit', weekday: 'short' })}.
 

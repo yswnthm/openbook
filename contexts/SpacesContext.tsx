@@ -40,7 +40,7 @@ export type Space = {
     };
 };
 
-export interface SpacesContextType {
+interface SpacesContextType {
     spaces: Space[];
     currentSpaceId: string;
     currentSpace?: Space;

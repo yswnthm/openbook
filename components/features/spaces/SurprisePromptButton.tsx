@@ -30,4 +30,3 @@ export const SurprisePromptButton: React.FC<SurprisePromptButtonProps> = ({ onPr
     );
 };
 
-export default SurprisePromptButton; 

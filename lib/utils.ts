@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export function generateId(prefix: string): string {
+function generateId(prefix: string): string {
     return `${prefix}-${Math.random().toString(36).substring(2, 15)}`;
 }
 
@@ -42,7 +42,7 @@ export function getUserId(): string {
 
 export type SearchGroupId = 'chat' | 'extreme';
 
-export const searchGroups = [
+const searchGroups = [
     {
         id: 'chat' as const,
         name: 'Chat',
@@ -59,4 +59,4 @@ export const searchGroups = [
     },
 ] as const;
 
-export type SearchGroup = (typeof searchGroups)[number];
+type SearchGroup = (typeof searchGroups)[number];

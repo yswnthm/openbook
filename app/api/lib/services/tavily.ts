@@ -4,7 +4,7 @@
 import { tavily } from '@tavily/core';
 import { serverEnv } from '@/lib/env/server';
 
-export interface TavilySearchOptions {
+interface TavilySearchOptions {
   searchDepth?: 'basic' | 'advanced';
   includeAnswer?: boolean;
   maxResults?: number;
@@ -12,7 +12,7 @@ export interface TavilySearchOptions {
   excludeDomains?: string[];
 }
 
-export interface TavilyResult {
+interface TavilyResult {
   title: string;
   url: string;
   content: string;
@@ -20,7 +20,7 @@ export interface TavilyResult {
   publishedDate?: string;
 }
 
-export interface TavilyResponse {
+interface TavilyResponse {
   results: TavilyResult[];
   answer?: string;
   query: string;
