@@ -355,15 +355,10 @@ export default function EditorContent({
                 </AnimatePresence>
 
                 {renderBlockContent(block, commonProps)}
-                {/* Only show command hint for text blocks that are empty and focused, and when no menu is active */}
                 {block.content.trim() === '' && block.isFocused && !activeMenu && block.type === BlockType.Text && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <span className="flex items-center gap-1 text-neutral-400 select-none text-sm font-normal opacity-70">
-                            Type{' '}
-                            <span className="inline-block px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded text-xs font-medium">
-                                /
-                            </span>{' '}
-                            for commands
+                    <div className="absolute inset-0 flex items-center pointer-events-none select-none">
+                        <span className="text-neutral-300 dark:text-neutral-600 font-light text-sm">
+                            Type <span className="font-mono text-neutral-400 dark:text-neutral-500">/</span> for commands
                         </span>
                     </div>
                 )}
