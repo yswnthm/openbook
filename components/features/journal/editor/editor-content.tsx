@@ -165,37 +165,22 @@ export default function EditorContent({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.1 }}
-                className="group relative block-container pl-16"
+                className="group relative block-container"
             >
                 {/* Add a menu indicator at the beginning of each block */}
+                {/* Add a menu indicator at the beginning of each block */}
                 <div
-                    className={`absolute left-[-64px] top-1/2 transform -translate-y-1/2 transition-opacity duration-200 flex items-center gap-2 ${
-                        selectedBlocks.includes(block.id) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                    }`}
-                >
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            toggleSelection(block.id);
-                        }}
-                        className={`h-8 w-8 rounded-md flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-800 ${
-                            selectedBlocks.includes(block.id) ? 'bg-blue-50 dark:bg-blue-900/30' : ''
+                    className={`absolute -left-10 top-1/2 transform -translate-y-1/2 transition-opacity duration-200 flex items-center justify-end ${selectedBlocks.includes(block.id) || activeMenu === block.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                         }`}
-                    >
-                        {selectedBlocks.includes(block.id) ? (
-                            <CheckSquare className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                        ) : (
-                            <Square className="h-5 w-5 text-neutral-400" />
-                        )}
-                    </button>
+                >
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
                             setActiveMenu(activeMenu === block.id ? null : block.id);
                         }}
-                        className="h-8 w-8 rounded-md flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                        className="h-6 w-6 rounded-md flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
                     >
-                        <GripVertical className="h-5 w-5 text-neutral-400" />
+                        <GripVertical className="h-4 w-4" />
                     </button>
                 </div>
 
@@ -209,7 +194,7 @@ export default function EditorContent({
                             exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 0.15, ease: 'easeOut' }}
                             className="absolute z-40"
-                            style={{ top: '24px', left: '-64px' }}
+                            style={{ top: '24px', left: '-10px', zIndex: 50 }}
                         >
                             <div
                                 className="flex bg-white dark:bg-neutral-900 rounded-lg shadow-lg overflow-hidden border border-neutral-200 dark:border-neutral-800"
@@ -456,12 +441,12 @@ export default function EditorContent({
                                 const updatedBlocks = blocks.map((b) =>
                                     b.id === block.id
                                         ? {
-                                              ...b,
-                                              metadata: {
-                                                  ...b.metadata,
-                                                  checked: !isChecked,
-                                              },
-                                          }
+                                            ...b,
+                                            metadata: {
+                                                ...b.metadata,
+                                                checked: !isChecked,
+                                            },
+                                        }
                                         : b,
                                 );
                                 // We need to update the blocks state in the parent component

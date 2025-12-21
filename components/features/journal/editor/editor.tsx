@@ -288,7 +288,7 @@ export default function Editor({ initialBlocks, onBlocksChange, title, onTitleCh
                 <div className="flex items-center space-x-2 w-full max-w-2xl mx-auto px-4 sm:px-0">
                     <input
                         type="text"
-                        className="text-xl sm:text-3xl font-bold bg-transparent border-none outline-none focus:ring-0 w-full opacity-90 focus:opacity-100 px-8"
+                        className="text-xl sm:text-3xl font-bold bg-transparent border-none outline-none focus:ring-0 w-full opacity-90 focus:opacity-100 px-0"
                         value={currentTitle}
                         onChange={(e) => handleTitleChange(e.target.value)}
                         placeholder={defaultTitle}
@@ -296,7 +296,7 @@ export default function Editor({ initialBlocks, onBlocksChange, title, onTitleCh
                 </div>
             </TopBar>
 
-            <div ref={editorRef} className="flex-1 overflow-y-auto py-8 px-8 pt-24" onPaste={handlePaste}>
+            <div ref={editorRef} className="flex-1 overflow-y-auto py-8 px-4 sm:px-0 pt-24" onPaste={handlePaste}>
                 <div className="max-w-2xl mx-auto">
                     {blocks.length === 0 ? (
                         <EmptyState
@@ -307,7 +307,7 @@ export default function Editor({ initialBlocks, onBlocksChange, title, onTitleCh
                             }
                         />
                     ) : (
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }} className="pt-20">
                             <EditorContent
                                 blocks={blocks}
                                 onKeyDown={handleKeyDown}
