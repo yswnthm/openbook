@@ -94,8 +94,8 @@ export const JournalSidebar: React.FC<JournalSidebarProps> = ({ selectedEntryId,
                                 {sortBy === 'updatedAt'
                                     ? 'Last edited'
                                     : sortBy === 'createdAt'
-                                      ? 'Date created'
-                                      : 'Title'}
+                                        ? 'Date created'
+                                        : 'Title'}
                             </span>
                         </div>
                         <ChevronDown className="w-4 h-4 text-neutral-500" />
@@ -170,13 +170,7 @@ export const JournalSidebar: React.FC<JournalSidebarProps> = ({ selectedEntryId,
                                 </span>
                             </div>
 
-                            {/* Timestamp with hover effect */}
-                            <div className="ml-9 px-4 mt-0 pb-0.5 overflow-hidden transition-all duration-300 max-h-0 opacity-0 transform translate-y-[-5px] group-hover:opacity-100 group-hover:max-h-8 group-hover:mt-0.5 group-hover:translate-y-0">
-                                <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
-                                    <Clock className="h-2.5 w-2.5 mr-0.5" />
-                                    <span>{format(new Date(entry.updatedAt), 'MMM d, yyyy')}</span>
-                                </div>
-                            </div>
+
                         </li>
                     ))}
                 </ul>

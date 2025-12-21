@@ -387,12 +387,7 @@ export default function SidebarNotebook({ notebook, currentPageType, currentPage
                                                 )}
                                             </div>
 
-                                            <div className="ml-9 px-4 mt-0 pb-0.5 overflow-hidden transition-all duration-300 max-h-0 opacity-0 transform translate-y-[-5px] group-hover:opacity-100 group-hover:max-h-8 group-hover:mt-0.5 group-hover:translate-y-0">
-                                                <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
-                                                    <Clock className="h-2.5 w-2.5 mr-0.5" />
-                                                    <span>{format(new Date(entry.updatedAt), 'MMM d, yyyy')}</span>
-                                                </div>
-                                            </div>
+
                                         </div>
                                     ))}
                                 </div>
@@ -534,13 +529,7 @@ export default function SidebarNotebook({ notebook, currentPageType, currentPage
                                                 )}
                                             </div>
 
-                                            {/* Timestamp hover (matches journal styling) */}
-                                            <div className="ml-9 px-4 mt-0 pb-0.5 overflow-hidden transition-all duration-300 max-h-0 opacity-0 transform translate-y-[-5px] group-hover:opacity-100 group-hover:max-h-8 group-hover:mt-0.5 group-hover:translate-y-0">
-                                                <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
-                                                    <Clock className="h-2.5 w-2.5 mr-0.5" />
-                                                    <span>{format(new Date(space.updatedAt), 'MMM d, yyyy')}</span>
-                                                </div>
-                                            </div>
+
                                         </div>
                                     ))}
                                 </div>
