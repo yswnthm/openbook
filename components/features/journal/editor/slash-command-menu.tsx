@@ -171,11 +171,11 @@ export default function SlashCommandMenu({ position, onSelect, onClose }: SlashC
     // Filter commands based on search term and shortcut
     const filteredCommands = searchTerm
         ? commands.filter(
-              (command) =>
-                  command.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                  command.shortcut?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                  command.description?.toLowerCase().includes(searchTerm.toLowerCase()),
-          )
+            (command) =>
+                command.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                command.shortcut?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                command.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+        )
         : commands;
 
     // Group commands by category
@@ -268,9 +268,8 @@ export default function SlashCommandMenu({ position, onSelect, onClose }: SlashC
                             key={command.type}
                             role="menuitem"
                             ref={isSelected ? selectedRef : null}
-                            className={`flex items-center px-2 py-1.5 cursor-pointer rounded-md menu-item ${
-                                isSelected ? 'bg-neutral-100 dark:bg-neutral-800' : ''
-                            }`}
+                            className={`flex items-center px-2 py-1.5 cursor-pointer rounded-md menu-item ${isSelected ? 'bg-neutral-100 dark:bg-neutral-800' : ''
+                                }`}
                             onClick={() => onSelect(command.type)}
                             onMouseEnter={() => setSelectedIndex(itemIndex)}
                         >
@@ -279,11 +278,7 @@ export default function SlashCommandMenu({ position, onSelect, onClose }: SlashC
                             </div>
                             <div className="ml-2 flex-1">
                                 <div className="text-sm">{command.label}</div>
-                                {command.description && isSelected && (
-                                    <div className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">
-                                        {command.description}
-                                    </div>
-                                )}
+
                             </div>
                             {command.shortcut && (
                                 <div className="text-xs text-neutral-400 dark:text-neutral-500 px-2 font-mono">
@@ -312,20 +307,14 @@ export default function SlashCommandMenu({ position, onSelect, onClose }: SlashC
             ref={menuRef}
             role="menu"
             tabIndex={-1}
-            className="absolute z-50 bg-white dark:bg-neutral-900 rounded-lg shadow-lg w-72 overflow-hidden border border-neutral-200 dark:border-neutral-800"
+            className="absolute z-50 bg-white dark:bg-neutral-950 rounded-xl shadow-2xl w-60 overflow-hidden outline-none ring-0 border border-neutral-200 dark:border-neutral-800"
             style={{ top: position.top + 5, left: position.left }}
             initial={{ opacity: 0, y: -4, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.97 }}
             transition={{ duration: 0.08, ease: 'easeOut' }}
         >
-            {searchTerm && (
-                <div className="p-2 border-b border-neutral-100 dark:border-neutral-800">
-                    <div className="bg-neutral-50 dark:bg-neutral-800 rounded-md px-2 py-1.5 text-sm">
-                        Searching: <span className="font-medium">{searchTerm}</span>
-                    </div>
-                </div>
-            )}
+
 
             <div className="max-h-64 overflow-y-auto p-1">
                 {Object.keys(groupedCommands).length > 0 ? (
@@ -339,12 +328,7 @@ export default function SlashCommandMenu({ position, onSelect, onClose }: SlashC
                 )}
             </div>
 
-            <div className="p-2 text-xs text-neutral-500 dark:text-neutral-400 flex items-center border-t border-neutral-100 dark:border-neutral-800">
-                <span>Type / on the page</span>
-                <span className="ml-auto px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded text-xs font-medium">
-                    esc
-                </span>
-            </div>
+
         </motion.div>
     );
 }
