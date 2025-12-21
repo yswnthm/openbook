@@ -3,15 +3,15 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev --turbopack",
-        "build": "next build",
-        "start": "next start",
-        "lint": "next lint",
-        "lint:fix": "next lint --fix",
+        "dev": "bun --bun next dev --turbopack",
+        "build": "bun --bun next build",
+        "start": "bun --bun next start",
+        "lint": "bun --bun next lint",
+        "lint:fix": "bun --bun next lint --fix",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "knip:ci": "knip --fail",
-        "analyze": "ANALYZE=true bun run build",
+        "analyze": "ANALYZE=true bun --bun run build",
         "knip": "knip"
     },
     "dependencies": {
