@@ -5,7 +5,7 @@ import { StudyFramework } from '@/lib/types';
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { messages, model = 'neuman-google' } = body;
+        const { messages, model = 'google-default' } = body;
 
         // Get the Feynman Technique system prompt
         const systemPrompt = getStudyFrameworkPrompt(StudyFramework.FeynmanTechnique);

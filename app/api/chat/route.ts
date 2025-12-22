@@ -183,7 +183,7 @@ export async function POST(req: Request) {
                     }
 
                     const { object: repairedArgs } = await generateObject({
-                        model: neuman.languageModel('neuman-default'),
+                        model: neuman.languageModel('google-default'),
                         schema: toolDefinition.parameters,
                         prompt: [
                             `The model tried to call the tool "${toolCall.toolName}"` +

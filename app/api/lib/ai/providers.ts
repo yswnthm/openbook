@@ -42,26 +42,26 @@ const google = createGoogleGenerativeAI({
 // Custom provider with multiple AI models
 export const neuman = customProvider({
   languageModels: {
-    'neuman-default': google('models/gemini-3-flash-preview'),
-    'neuman-gpt-5-1': openai('gpt-5.1'),
-    'neuman-deepseek-free': openrouter('nex-agi/deepseek-v3.1-nex-n1:free'),
-    'neuman-glm-4': openrouter('z-ai/glm-4.5-air:free'),
-    'neuman-qwen-coder': openrouter('qwen/qwen3-coder:free'),
-    'neuman-gemma-3n': openrouter('google/gemma-3n-e2b-it:free'),
-    'neuman-gemma-3-27b': openrouter('google/gemma-3-27b-it:free'),
-    'neuman-deepseek-r1': openrouter('deepseek/deepseek-r1-0528:free'),
-    'neuman-gemini-3-flash': google('models/gemini-3-flash-preview'),
-    'neuman-gemini-2-5-pro': google('models/gemini-2.5-pro'),
-    'neuman-gemini-2-5-flash': google('models/gemini-2.5-flash'),
-    'neuman-gpt-5-mini': openai('gpt-5-mini-2025-08-07'),
-    'neuman-gpt-5-nano': openai('gpt-5-nano-2025-08-07'),
-    'neuman-apriel-15b': huggingface('ServiceNow-AI/Apriel-1.6-15b-Thinker:together'),
+    'google-default': google('models/gemini-3-flash-preview'),
+    'openai-gpt-5-1': openai('gpt-5.1'),
+    'deepseek-free': openrouter('nex-agi/deepseek-v3.1-nex-n1:free'),
+    'z-ai-glm-4': openrouter('z-ai/glm-4.5-air:free'),
+    'alibaba-qwen-coder': openrouter('qwen/qwen3-coder:free'),
+    'google-gemma-3n': openrouter('google/gemma-3n-e2b-it:free'),
+    'google-gemma-3-27b': openrouter('google/gemma-3-27b-it:free'),
+    'deepseek-r1': openrouter('deepseek/deepseek-r1-0528:free'),
+    'google-gemini-3-flash': google('models/gemini-3-flash-preview'),
+    'google-gemini-2-5-pro': google('models/gemini-2.5-pro'),
+    'google-gemini-2-5-flash': google('models/gemini-2.5-flash'),
+    'openai-gpt-5-mini': openai('gpt-5-mini-2025-08-07'),
+    'openai-gpt-5-nano': openai('gpt-5-nano-2025-08-07'),
+    'hf-apriel-15b': huggingface('ServiceNow-AI/Apriel-1.6-15b-Thinker:together'),
 
-    'neuman-olmo-32b': huggingface('allenai/Olmo-3.1-32B-Think:publicai'),
-    'neuman-groq-compound': groq('groq/compound'),
-    'neuman-kimi-k2': groq('moonshotai/kimi-k2-instruct-0905'),
-    'neuman-qwen-3': groq('qwen/qwen3-32b'),
-    'neuman-llama-4-maverick-17b-128e-instruct': groq('meta-llama/llama-4-maverick-17b-128e-instruct')
+    'hf-olmo-32b': huggingface('allenai/Olmo-3.1-32B-Think:publicai'),
+    'groq-compound': groq('groq/compound'),
+    'moonshot-kimi-k2': groq('moonshotai/kimi-k2-instruct-0905'),
+    'groq-qwen-3': groq('qwen/qwen3-32b'),
+    'groq-llama-4-maverick-17b-128e-instruct': groq('meta-llama/llama-4-maverick-17b-128e-instruct')
   },
 });
 

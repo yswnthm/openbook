@@ -154,7 +154,7 @@ const HomeContent = () => {
     const { getStudyModeForSpace, setStudyMode } = useStudyMode();
     const { systemPrompt } = useSettings();
     // Set Google Gemini 2.5 Flash as the default model
-    const [selectedModel, setSelectedModel] = useLocalStorage(SELECTED_MODEL_KEY, 'neuman-default');
+    const [selectedModel, setSelectedModel] = useLocalStorage(SELECTED_MODEL_KEY, 'google-default');
 
     // One-time migration: move previously saved model from the legacy key
     useEffect(() => {
