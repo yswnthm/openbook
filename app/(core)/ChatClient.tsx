@@ -43,6 +43,7 @@ import { useSettings } from '@/contexts/SettingsContext';
 import { useStudyMode } from '@/contexts/StudyModeContext';
 import { StudyModeBadge } from '@/components/features/study/study-mode-badge';
 import { StudyFramework } from '@/lib/types';
+
 import { Streak } from '@/components/features/spaces/Streak';
 import { SurprisePromptButton } from '@/components/features/spaces/SurprisePromptButton';
 
@@ -208,32 +209,9 @@ const HomeContent = () => {
         return currentSpaceId ? getStudyModeForSpace(currentSpaceId) : null;
     }, [currentSpaceId, getStudyModeForSpace]);
 
-    // Handle framework selection
-    const handleFrameworkSelect = useCallback(
-        (frameworkString: string) => {
-            if (!currentSpaceId) return;
 
-            const framework = frameworkString as StudyFramework;
-            setStudyMode(framework, currentSpaceId);
 
-            // Dispatch space change event for StudyModeContext
-            window.dispatchEvent(
-                new CustomEvent('spaceChanged', {
-                    detail: { spaceId: currentSpaceId },
-                }),
-            );
-        },
-        [currentSpaceId, setStudyMode],
-    );
 
-    // Handle study mode badge click (to change or disable mode)
-    const handleStudyModeBadgeClick = useCallback(() => {
-        if (!currentSpaceId) return;
-
-        // For now, just clear the study mode. Later we can show a selector.
-        setStudyMode(null, currentSpaceId);
-        toast.info('Study mode disabled');
-    }, [currentSpaceId, setStudyMode]);
 
     // Handle conversation compacting (summarize, create new space, reset context)
     const handleCompactSpace = useCallback(
@@ -366,7 +344,7 @@ const HomeContent = () => {
 
     // Wrap append to persist user messages to current space
     const appendWithPersist = useCallback(
-        async (messageProps: { role: 'user' | 'assistant'; content: string }, options: any = {}): Promise<any> => {
+        async (messageProps: { role: 'user' | 'assistant' | 'system'; content: string }, options: any = {}): Promise<any> => {
             if (messageProps.role === 'user') {
                 const userChatMessage: ChatMessage = {
                     id: crypto.randomUUID(),
@@ -382,17 +360,43 @@ const HomeContent = () => {
                 const result = await append(userChatMessage, options);
                 return result;
             } else {
-                // For other roles, if any are directly passed here.
-                // AI messages are primarily handled in onFinish.
-                // This path should ensure that if an assistant message is somehow passed here,
-                // it's at least appended to the useChat state.
-                // Persistence for assistant messages is handled in onFinish.
+                // For other roles (system, assistant), just append to useChat state
+                // We don't persist system messages to history to avoid clutter
                 const result = await append(messageProps, options);
                 return result;
             }
         },
         [append],
     ); // Remove addMessage dependency since we're using the ref
+
+    // Handle framework selection
+    const handleFrameworkSelect = useCallback(
+        (frameworkString: string) => {
+            if (!currentSpaceId) return;
+
+            const framework = frameworkString as StudyFramework;
+            setStudyMode(framework, currentSpaceId);
+
+            // Dispatch space change event for StudyModeContext
+            window.dispatchEvent(
+                new CustomEvent('spaceChanged', {
+                    detail: { spaceId: currentSpaceId },
+                }),
+            );
+        },
+        [currentSpaceId, setStudyMode],
+    );
+
+    // Handle study mode badge click (to change or disable mode)
+    const handleStudyModeBadgeClick = useCallback(() => {
+        if (!currentSpaceId) return;
+
+        // For now, just clear the study mode. Later we can show a selector.
+        setStudyMode(null, currentSpaceId);
+        toast.info('Study mode disabled');
+    }, [currentSpaceId, setStudyMode]);
+
+
 
     // Sync chat internal messages when switching spaces (only on space change, not on every message addition)
     useEffect(() => {
@@ -418,9 +422,9 @@ const HomeContent = () => {
         }
         // Reset initialization flag when switching spaces to allow new queries
         initializedRef.current = false;
-        // Only run this effect when the space ID changes, NOT when messages change
+        // Only run this effect when the space ID changes OR the framework changes
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentSpaceId]);
+    }, [currentSpaceId, currentStudyMode?.framework]);
 
     useEffect(() => {
         if (!initializedRef.current && initialState.query) {
