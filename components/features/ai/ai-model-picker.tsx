@@ -1,169 +1,226 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+    Search,
+    Check,
+    Sparkles,
+    Zap,
+    Cpu,
+    Code,
+    BrainCircuit,
+    Globe,
+    Lock,
+    Command
+} from 'lucide-react';
 
-// Define the model options - with Google Gemini 2.5 Flash as the default
-const models = [
+// Richer model definitions
+interface ModelDef {
+    value: string;
+    label: string;
+    description: string;
+    provider: string;
+    capabilities: string[];
+    contextWindow: string; // e.g. "128k"
+    tier: 'premium' | 'free' | 'preview';
+    tags: string[]; // for search
+}
+
+const ALL_MODELS: ModelDef[] = [
+    // --- Premium / Paid ---
     {
         value: 'neuman-gpt-5-mini',
         label: 'GPT 5 Mini',
-        description: 'OpenAI/Fast (Default)',
+        description: 'Balanced performance for everyday tasks.',
         provider: 'OpenAI',
-        color: 'blue',
-        isFree: false,
+        capabilities: ['Fast', 'Reasoning'],
+        contextWindow: '128k',
+        tier: 'premium',
+        tags: ['openai', 'gpt', 'smart', 'fast']
     },
     {
         value: 'neuman-gpt-5-1',
         label: 'GPT 5.1',
-        description: 'OpenAI/High End',
+        description: 'High-intelligence flagship model for complex reasoning.',
         provider: 'OpenAI',
-        color: 'blue',
-        isFree: false,
-    },
-    {
-        value: 'neuman-default',
-        label: 'Gemini 3 Flash',
-        description: 'Google',
-        provider: 'Google',
-        color: 'gemini',
-        isFree: false,
-    },
-    {
-        value: 'neuman-deepseek-free',
-        label: 'DeepSeek v3.1',
-        description: 'Nex-AGI/Free',
-        provider: 'OpenRouter',
-        color: 'purple',
-        isFree: true,
-    },
-    {
-        value: 'neuman-gpt-oss-free',
-        label: 'GPT OSS 120b',
-        description: 'OpenAI Native',
-        provider: 'Groq',
-        color: 'blue',
-        isFree: true,
-    },
-    {
-        value: 'neuman-glm-4',
-        label: 'GLM 4.5 Air',
-        description: 'Z-AI/Free',
-        provider: 'OpenRouter',
-        color: 'orange',
-        isFree: true,
-    },
-    {
-        value: 'neuman-qwen-coder',
-        label: 'Qwen 3 Coder',
-        description: 'Qwen/Free',
-        provider: 'OpenRouter',
-        color: 'green',
-        isFree: true,
-    },
-    {
-        value: 'neuman-gemma-3n',
-        label: 'Gemma 3n',
-        description: 'Google/Free',
-        provider: 'OpenRouter',
-        color: 'gemini',
-        isFree: true,
-    },
-    {
-        value: 'neuman-gemma-3-27b',
-        label: 'Gemma 3 27b',
-        description: 'Google/Free',
-        provider: 'OpenRouter',
-        color: 'gemini',
-        isFree: true,
-    },
-    {
-        value: 'neuman-deepseek-r1',
-        label: 'DeepSeek R1',
-        description: 'DeepSeek/Free',
-        provider: 'OpenRouter',
-        color: 'purple',
-        isFree: true,
-    },
-    {
-        value: 'neuman-gemini-3-flash',
-        label: 'Gemini 3 Flash',
-        description: 'Google/Preview',
-        provider: 'Google',
-        color: 'gemini',
-        isFree: false,
-    },
-    {
-        value: 'neuman-gemini-2-5-pro',
-        label: 'Gemini 2.5 Pro',
-        description: 'Google Native',
-        provider: 'Google',
-        color: 'gemini',
-        isFree: false,
-    },
-    {
-        value: 'neuman-gemini-2-5-flash',
-        label: 'Gemini 2.5 Flash',
-        description: 'Google/Fast',
-        provider: 'Google',
-        color: 'gemini',
-        isFree: false,
+        capabilities: ['Reasoning', 'Complex Tasks'],
+        contextWindow: '128k',
+        tier: 'premium',
+        tags: ['openai', 'gpt', 'best', 'smart']
     },
     {
         value: 'neuman-gpt-5-nano',
         label: 'GPT 5 Nano',
-        description: 'OpenAI Native',
+        description: 'Extremely fast and cost-effective.',
         provider: 'OpenAI',
-        color: 'blue',
-        isFree: false,
+        capabilities: ['Ultra Fast'],
+        contextWindow: '128k',
+        tier: 'premium',
+        tags: ['openai', 'speed']
+    },
+    {
+        value: 'neuman-gemini-2-5-pro',
+        label: 'Gemini 2.5 Pro',
+        description: 'Google\'s best model for large context and reasoning.',
+        provider: 'Google',
+        capabilities: ['2M Context', 'Reasoning'],
+        contextWindow: '2M',
+        tier: 'premium',
+        tags: ['google', 'gemini', 'long context']
+    },
+    {
+        value: 'neuman-gemini-2-5-flash',
+        label: 'Gemini 2.5 Flash',
+        description: 'Low latency, high throughput.',
+        provider: 'Google',
+        capabilities: ['Fast', '1M Context'],
+        contextWindow: '1M',
+        tier: 'premium',
+        tags: ['google', 'gemini', 'speed']
+    },
+    // --- Preview ---
+    {
+        value: 'neuman-gemini-3-flash',
+        label: 'Gemini 3 Flash',
+        description: 'Preview of the next generation multimodal model.',
+        provider: 'Google',
+        capabilities: ['Preview', 'Multimodal'],
+        contextWindow: '1M',
+        tier: 'preview',
+        tags: ['google', 'gemini', 'new']
+    },
+
+    // --- Free / Community ---
+    {
+        value: 'neuman-deepseek-free',
+        label: 'DeepSeek v3.1',
+        description: 'Powerful open model with strong reasoning capabilities.',
+        provider: 'DeepSeek',
+        capabilities: ['Coding', 'Reasoning', 'Free'],
+        contextWindow: '32k',
+        tier: 'free',
+        tags: ['deepseek', 'open', 'free']
+    },
+    {
+        value: 'neuman-deepseek-r1',
+        label: 'DeepSeek R1',
+        description: 'Optimized for retrieval and factual queries.',
+        provider: 'DeepSeek',
+        capabilities: ['RAG', 'Free'],
+        contextWindow: '32k',
+        tier: 'free',
+        tags: ['deepseek', 'rag', 'free']
+    },
+    {
+        value: 'neuman-gpt-oss-free',
+        label: 'GPT OSS 120b',
+        description: 'Large open source model hosted on Groq.',
+        provider: 'Groq',
+        capabilities: ['Fast', 'Free'],
+        contextWindow: '8k',
+        tier: 'free',
+        tags: ['groq', 'oss', 'free']
+    },
+    {
+        value: 'neuman-glm-4',
+        label: 'GLM 4.5 Air',
+        description: 'Balanced open model from Z-AI.',
+        provider: 'Z-AI',
+        capabilities: ['Balanced', 'Free'],
+        contextWindow: '32k',
+        tier: 'free',
+        tags: ['glm', 'free']
+    },
+    {
+        value: 'neuman-qwen-coder',
+        label: 'Qwen 3 Coder',
+        description: 'Specialized model for code generation.',
+        provider: 'Alibaba',
+        capabilities: ['Coding', 'Free'],
+        contextWindow: '32k',
+        tier: 'free',
+        tags: ['qwen', 'coding', 'free']
+    },
+    {
+        value: 'neuman-gemma-3n',
+        label: 'Gemma 3n',
+        description: 'Efficient open model from Google.',
+        provider: 'Google',
+        capabilities: ['Efficient', 'Free'],
+        contextWindow: '8k',
+        tier: 'free',
+        tags: ['google', 'gemma', 'free']
+    },
+    {
+        value: 'neuman-gemma-3-27b',
+        label: 'Gemma 3 27b',
+        description: 'Larger variant of Gemma 3.',
+        provider: 'Google',
+        capabilities: ['Balanced', 'Free'],
+        contextWindow: '8k',
+        tier: 'free',
+        tags: ['google', 'gemma', 'free']
     },
     {
         value: 'neuman-apriel-15b',
         label: 'Apriel 1.6 15b',
-        description: 'ServiceNow/Thinker',
+        description: 'Experimental thinker model.',
         provider: 'Hugging Face',
-        color: 'purple',
-        isFree: false,
+        capabilities: ['Experimental'],
+        contextWindow: '16k',
+        tier: 'free',
+        tags: ['hf', 'free']
     },
     {
         value: 'neuman-olmo-32b',
         label: 'Olmo 3.1 32B',
-        description: 'AllenAI/Think',
+        description: 'Fully open model by AllenAI.',
         provider: 'Hugging Face',
-        color: 'orange',
-        isFree: false,
+        capabilities: ['Open Science'],
+        contextWindow: '16k',
+        tier: 'free',
+        tags: ['hf', 'allenai', 'free']
     },
     {
         value: 'neuman-groq-compound',
         label: 'Groq Compound',
-        description: 'Groq/Compound',
+        description: 'Compound AI system running on Groq LPU.',
         provider: 'Groq',
-        color: 'blue',
-        isFree: true,
+        capabilities: ['Compound'],
+        contextWindow: '8k',
+        tier: 'free',
+        tags: ['groq', 'free']
     },
     {
         value: 'neuman-kimi-k2',
         label: 'Kimi K2 0905',
-        description: 'Moonshot (Groq)',
+        description: 'Moonshot AI model.',
         provider: 'Groq',
-        color: 'emerald',
-        isFree: true,
+        capabilities: ['Reasoning', 'Free'],
+        contextWindow: '32k',
+        tier: 'free',
+        tags: ['groq', 'moonshot', 'free']
     },
     {
         value: 'neuman-qwen-3',
         label: 'Qwen 3 32B',
-        description: 'Qwen (Groq)',
+        description: 'General purpose Qwen model.',
         provider: 'Groq',
-        color: 'purple',
-        isFree: true,
+        capabilities: ['General', 'Free'],
+        contextWindow: '32k',
+        tier: 'free',
+        tags: ['groq', 'qwen', 'free']
     },
     {
         value: 'neuman-llama-4-maverick-17b-128e-instruct',
         label: 'Llama 4 Maverick',
-        description: 'Meta (Groq)',
+        description: 'Latest Llama 4 fine-tune.',
         provider: 'Groq',
-        color: 'orange',
-        isFree: true,
+        capabilities: ['New', 'Free'],
+        contextWindow: '8k',
+        tier: 'free',
+        tags: ['groq', 'llama', 'free']
     },
 ];
 
@@ -175,9 +232,31 @@ interface AiModelPickerProps {
 }
 
 export function AiModelPicker({ selectedModel, onSelect, onClose, className = '' }: AiModelPickerProps) {
-    const currentModel = models.find((model) => model.value === selectedModel) || models[0];
+    const [searchQuery, setSearchQuery] = useState('');
 
-    // Close the picker when the user presses the Escape key
+    // Filter models based on search
+    const filteredModels = useMemo(() => {
+        const query = searchQuery.toLowerCase();
+        if (!query) return ALL_MODELS;
+
+        return ALL_MODELS.filter(m =>
+            m.label.toLowerCase().includes(query) ||
+            m.description.toLowerCase().includes(query) ||
+            m.provider.toLowerCase().includes(query) ||
+            m.tags.some(t => t.toLowerCase().includes(query))
+        );
+    }, [searchQuery]);
+
+    // Group models by tier
+    const groupedModels = useMemo(() => {
+        return {
+            premium: filteredModels.filter(m => m.tier === 'premium'),
+            preview: filteredModels.filter(m => m.tier === 'preview'),
+            free: filteredModels.filter(m => m.tier === 'free'),
+        };
+    }, [filteredModels]);
+
+    // Handle Escape key
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
@@ -185,116 +264,193 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                 onClose();
             }
         };
-
         window.addEventListener('keydown', handleKeyDown);
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
+        return () => window.removeEventListener('keydown', handleKeyDown);
     }, [onClose]);
+
+    // Focus search on mount
+    const searchInputRef = React.useRef<HTMLInputElement>(null);
+    useEffect(() => {
+        if (searchInputRef.current) {
+            searchInputRef.current.focus();
+        }
+    }, []);
 
     return (
         <motion.div
             className={`
-                absolute bottom-full left-0 w-80 mb-2 z-[1000]
-                bg-white/80 dark:bg-neutral-900/80 
-                backdrop-blur-xl backdrop-saturate-150
-                border border-white/30 dark:border-neutral-700/40
-                shadow-xl shadow-black/5 dark:shadow-black/20
-                rounded-lg overflow-hidden 
-                text-neutral-900 dark:text-white
+                absolute bottom-12 left-0 w-[480px] z-[1000]
+                bg-white/90 dark:bg-[#0A0A0A]/90
+                backdrop-blur-2xl backdrop-saturate-150
+                border border-black/5 dark:border-white/10
+                shadow-2xl shadow-black/20 dark:shadow-black/40
+                rounded-2xl overflow-hidden flex flex-col
+                max-h-[600px]
                 ${className}
             `}
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            initial={{ opacity: 0, y: 10, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{
-                duration: 0.2,
-                ease: [0.4, 0.0, 0.2, 1]
-            }}
+            exit={{ opacity: 0, y: 10, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         >
-            <div className="p-2">
-                <div className="mb-1.5">
-                    <div className="text-xs font-medium mb-0.5 text-neutral-800 dark:text-neutral-100 flex items-center justify-between">
-                        <span>AI Model</span>
-                        <span className="text-[10px] text-neutral-500 font-normal">
-                            Provider: {(currentModel as any).provider}
-                        </span>
-                    </div>
-                    <div className="text-[9px] text-neutral-600 dark:text-neutral-400">
-                        Current: <span className="text-neutral-800 dark:text-neutral-100 font-medium">{currentModel.label}</span>
-                    </div>
-                </div>
-
-                <div
-                    className="max-h-[160px] overflow-y-auto mb-1.5"
-                    role="listbox"
-                    aria-label="Available AI models"
-                >
-                    <div className="space-y-2">
-                        {models.map((model) => (
-                            <motion.div
-                                key={model.value}
-                                role="option"
-                                aria-selected={model.value === selectedModel}
-                                className={`
-                                    p-1.5 cursor-pointer rounded transition-all duration-150 
-                                    border backdrop-blur-sm
-                                    ${model.value === selectedModel
-                                        ? 'bg-white/50 dark:bg-neutral-800/50 border-neutral-300/40 dark:border-neutral-600/40 shadow-md'
-                                        : 'bg-white/20 dark:bg-neutral-800/20 border-neutral-200/20 dark:border-neutral-700/20 hover:bg-white/40 dark:hover:bg-neutral-800/40'
-                                    }
-                                `}
-                                onClick={() => onSelect(model.value)}
-                                whileHover={{ scale: 1.01 }}
-                                whileTap={{ scale: 0.99 }}
-                            >
-                                <div className="flex flex-col">
-                                    <div className="flex items-center justify-between mb-0.5">
-                                        <div className="flex items-center gap-1.5">
-                                            <span className="text-[11px] font-medium text-neutral-800 dark:text-neutral-100">
-                                                {model.label}
-                                            </span>
-                                            {(model as any).isFree && (
-                                                <span
-                                                    className={`w-1.5 h-1.5 rounded-full ${(model as any).dotColor === 'red'
-                                                        ? 'bg-red-500 shadow-[0_0_4px_rgba(239,68,68,0.4)]'
-                                                        : 'bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.4)]'
-                                                        }`}
-                                                    title={(model as any).dotColor === 'red' ? "Groq Free Model" : "Free Model"}
-                                                />
-                                            )}
-                                        </div>
-                                        <span className="text-[9px] text-neutral-400 dark:text-neutral-500 font-medium">
-                                            {(model as any).provider}
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-[9px] text-neutral-600 dark:text-neutral-400">
-                                            {model.description}
-                                        </span>
-                                        {model.value === selectedModel && (
-                                            <span className="text-[8px] bg-emerald-100/60 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 px-1 py-0.5 rounded font-medium">
-                                                ✓
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="border-t border-neutral-200/20 dark:border-neutral-700/20 pt-1.5">
-                    <div className="text-[9px] text-neutral-500 dark:text-neutral-400 flex items-center justify-between">
-                        <span>Click to select</span>
-                        <span className="flex items-center gap-1">
-                            <span className="bg-neutral-100/40 dark:bg-neutral-700/40 px-0.5 py-0.5 rounded font-mono text-[8px]">esc</span>
-                            <span>close</span>
-                        </span>
+            {/* Header / Search */}
+            <div className="p-3 border-b border-black/5 dark:border-white/5 bg-white/50 dark:bg-white/5 shrink-0">
+                <div className="relative flex items-center">
+                    <Search className="w-4 h-4 text-neutral-400 absolute left-3" />
+                    <input
+                        ref={searchInputRef}
+                        type="text"
+                        placeholder="Search models (e.g., 'reasoning', 'coding')..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="
+                            w-full pl-9 pr-4 py-2.5 
+                            bg-black/5 dark:bg-white/5 
+                            rounded-xl text-sm font-medium
+                            text-neutral-900 dark:text-neutral-100
+                            placeholder-neutral-500
+                            outline-none focus:ring-2 focus:ring-blue-500/50
+                            border-transparent border
+                        "
+                    />
+                    <div className="absolute right-3 flex gap-1">
+                        <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 px-1.5 font-mono text-[10px] font-medium text-neutral-500 dark:text-neutral-400">
+                            <span className="text-xs">Esc</span>
+                        </kbd>
                     </div>
                 </div>
             </div>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-neutral-200 dark:scrollbar-thumb-neutral-800">
+                {Object.entries(groupedModels).map(([tier, models]) => {
+                    if (models.length === 0) return null;
+
+                    let title = '';
+                    let Icon = Sparkles;
+                    let colorClass = '';
+
+                    switch (tier) {
+                        case 'premium':
+                            title = 'Premium Models';
+                            Icon = Zap;
+                            colorClass = 'text-amber-500';
+                            break;
+                        case 'preview':
+                            title = 'Preview Builds';
+                            Icon = BrainCircuit;
+                            colorClass = 'text-blue-500';
+                            break;
+                        case 'free':
+                            title = 'Community & Free';
+                            Icon = Globe;
+                            colorClass = 'text-emerald-500';
+                            break;
+                    }
+
+                    return (
+                        <div key={tier} className="mb-4 last:mb-0">
+                            <div className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                                <Icon className={`w-3 h-3 ${colorClass}`} />
+                                {title}
+                            </div>
+                            <div className="space-y-1">
+                                {models.map((model) => (
+                                    <ModelItem
+                                        key={model.value}
+                                        model={model}
+                                        isSelected={model.value === selectedModel}
+                                        onSelect={() => onSelect(model.value)}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    );
+                })}
+
+                {filteredModels.length === 0 && (
+                    <div className="p-8 text-center text-neutral-500">
+                        <Command className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                        <p className="text-sm">No models found matching "{searchQuery}"</p>
+                    </div>
+                )}
+            </div>
+
+            {/* Footer */}
+            <div className="p-2 border-t border-black/5 dark:border-white/5 bg-neutral-50/50 dark:bg-neutral-900/50 text-[10px] text-neutral-400 flex justify-between px-4">
+                <span>Press ↵ to select</span>
+                <span>All models secured & private</span>
+            </div>
         </motion.div>
+    );
+}
+
+function ModelItem({ model, isSelected, onSelect }: { model: ModelDef, isSelected: boolean, onSelect: () => void }) {
+    return (
+        <button
+            onClick={onSelect}
+            className={`
+                w-full text-left relative group
+                p-3 rounded-xl transition-all duration-200
+                border
+                ${isSelected
+                    ? 'bg-blue-50/80 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                    : 'bg-transparent border-transparent hover:bg-neutral-100 dark:hover:bg-white/5'
+                }
+            `}
+        >
+            <div className="flex justify-between items-start gap-3">
+                {/* Icon / Avatar placeholder */}
+                <div className={`
+                    w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold shadow-sm
+                    ${isSelected
+                        ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                        : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400'
+                    }
+                `}>
+                    {model.provider.substring(0, 1)}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-0.5">
+                        <span className={`text-sm font-semibold truncate pr-2 ${isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-neutral-900 dark:text-neutral-100'}`}>
+                            {model.label}
+                        </span>
+                        {isSelected && <Check className="w-4 h-4 text-blue-500" />}
+                    </div>
+
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1 mb-1.5">
+                        {model.description}
+                    </p>
+
+                    <div className="flex flex-wrap gap-1.5 items-center">
+                        <Badge>{model.provider}</Badge>
+                        <Badge variant="outline">{model.contextWindow}</Badge>
+                        {model.capabilities.map(cap => (
+                            <Badge key={cap} variant="secondary" className="opacity-80">{cap}</Badge>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </button>
+    );
+}
+
+function Badge({ children, variant = 'default', className = '' }: { children: React.ReactNode, variant?: 'default' | 'outline' | 'secondary', className?: string }) {
+    const variants = {
+        default: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 border-transparent',
+        outline: 'bg-transparent border-neutral-200 dark:border-neutral-700 text-neutral-500',
+        secondary: 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 border-transparent'
+    };
+
+    return (
+        <span className={`
+            px-1.5 py-0.5 rounded-md text-[9px] font-medium border
+            uppercase tracking-wide
+            ${variants[variant]}
+            ${className}
+        `}>
+            {children}
+        </span>
     );
 }
