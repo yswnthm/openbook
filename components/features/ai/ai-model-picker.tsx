@@ -23,7 +23,7 @@ interface ModelDef {
     provider: string;
     capabilities: string[];
     contextWindow: string; // e.g. "128k"
-    tier: 'premium' | 'free' | 'preview';
+    tier: 'premium' | 'free' | 'preview' | 'local';
     tags: string[]; // for search
 }
 
@@ -238,6 +238,27 @@ const ALL_MODELS: ModelDef[] = [
         tier: 'free',
         tags: ['groq', 'llama', 'free']
     },
+    // --- Local / WebLLM ---
+    {
+        value: 'local-phi-3-mini',
+        label: 'Phi-3 Mini (Local)',
+        description: 'Runs entirely in your browser using WebGPU.',
+        provider: 'Microsoft',
+        capabilities: ['Local', 'Private', 'Offline'],
+        contextWindow: '4k',
+        tier: 'local',
+        tags: ['local', 'phi', 'webgpu', 'offline']
+    },
+    {
+        value: 'local-phi-2',
+        label: 'Phi-2 (Local)',
+        description: 'Smaller local model for older devices.',
+        provider: 'Microsoft',
+        capabilities: ['Local', 'Private', 'Offline'],
+        contextWindow: '2k',
+        tier: 'local',
+        tags: ['local', 'phi', 'webgpu', 'offline']
+    },
 ];
 
 interface AiModelPickerProps {
@@ -245,9 +266,11 @@ interface AiModelPickerProps {
     onSelect: (model: string) => void;
     onClose: () => void;
     className?: string;
+    loadingModelId?: string | null;
+    loadingProgress?: number;
 }
 
-export function AiModelPicker({ selectedModel, onSelect, onClose, className = '' }: AiModelPickerProps) {
+export function AiModelPicker({ selectedModel, onSelect, onClose, className = '', loadingModelId, loadingProgress }: AiModelPickerProps) {
     const [searchQuery, setSearchQuery] = useState('');
 
     // Filter models based on search
@@ -269,6 +292,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
             premium: filteredModels.filter(m => m.tier === 'premium'),
             preview: filteredModels.filter(m => m.tier === 'preview'),
             free: filteredModels.filter(m => m.tier === 'free'),
+            local: filteredModels.filter(m => m.tier === 'local'),
         };
     }, [filteredModels]);
 
@@ -362,6 +386,11 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                             Icon = Globe;
                             colorClass = 'text-emerald-500';
                             break;
+                        case 'local':
+                            title = 'On-Device (WebGPU)';
+                            Icon = Cpu;
+                            colorClass = 'text-purple-500';
+                            break;
                     }
 
                     return (
@@ -377,6 +406,8 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                                         model={model}
                                         isSelected={model.value === selectedModel}
                                         onSelect={() => onSelect(model.value)}
+                                        isLoading={model.value === loadingModelId}
+                                        progress={loadingProgress}
                                     />
                                 ))}
                             </div>
@@ -401,7 +432,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
     );
 }
 
-function ModelItem({ model, isSelected, onSelect }: { model: ModelDef, isSelected: boolean, onSelect: () => void }) {
+function ModelItem({ model, isSelected, onSelect, isLoading, progress }: { model: ModelDef, isSelected: boolean, onSelect: () => void, isLoading?: boolean, progress?: number }) {
     return (
         <button
             onClick={onSelect}
@@ -409,13 +440,21 @@ function ModelItem({ model, isSelected, onSelect }: { model: ModelDef, isSelecte
                 w-full text-left relative group
                 p-3 rounded-xl transition-all duration-200
                 border
+                overflow-hidden
                 ${isSelected
                     ? 'bg-blue-50/80 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
                     : 'bg-transparent border-transparent hover:bg-neutral-100 dark:hover:bg-white/5'
                 }
             `}
         >
-            <div className="flex justify-between items-start gap-3">
+            {isLoading && (
+                <div
+                    className="absolute left-0 bottom-0 top-0 bg-blue-500/5 dark:bg-blue-500/10 pointer-events-none transition-all duration-300"
+                    style={{ width: `${Math.max(2, progress || 0)}%` }}
+                />
+            )}
+
+            <div className="flex justify-between items-start gap-3 relative z-10">
                 {/* Icon / Avatar placeholder */}
                 <div className={`
                     w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold shadow-sm
@@ -433,6 +472,14 @@ function ModelItem({ model, isSelected, onSelect }: { model: ModelDef, isSelecte
                             {model.label}
                         </span>
                         {isSelected && <Check className="w-4 h-4 text-blue-500" />}
+                        {isLoading && (
+                            <div className="flex items-center gap-1.5 ml-2">
+                                <div className="w-3 h-3 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
+                                <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400">
+                                    {Math.round(progress || 0)}%
+                                </span>
+                            </div>
+                        )}
                     </div>
 
                     <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1 mb-1.5">

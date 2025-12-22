@@ -61,7 +61,9 @@ export const neuman = customProvider({
     'groq-compound': groq('groq/compound'),
     'moonshot-kimi-k2': groq('moonshotai/kimi-k2-instruct-0905'),
     'groq-qwen-3': groq('qwen/qwen3-32b'),
-    'groq-llama-4-maverick-17b-128e-instruct': groq('meta-llama/llama-4-maverick-17b-128e-instruct')
+    'groq-llama-4-maverick-17b-128e-instruct': groq('meta-llama/llama-4-maverick-17b-128e-instruct'),
+    'local-phi-2': openai('local-phi-2'), // Placeholder for local model
+    'local-phi-3-mini': openai('local-phi-3-mini') // Placeholder for local model
   },
 });
 

@@ -44,6 +44,7 @@ import { useStudyMode } from '@/contexts/StudyModeContext';
 import { StudyModeBadge } from '@/components/features/study/study-mode-badge';
 import { StudyFramework } from '@/lib/types';
 import { getFrameworkDisplayName } from '@/lib/study-prompts';
+import { useWebLLM } from '@/hooks/use-web-llm';
 
 import { Streak } from '@/components/features/spaces/Streak';
 import { SurprisePromptButton } from '@/components/features/spaces/SurprisePromptButton';
@@ -340,8 +341,35 @@ const HomeContent = () => {
         };
     }, [selectedModel, selectedGroup, userId, currentStudyMode, systemPrompt]);
 
-    const { input, messages, setInput, append, handleSubmit, setMessages, reload, stop, status, error } =
+    const { input, messages, setInput, append, handleSubmit, setMessages, reload, stop, status: chatStatus, error } =
         useChat(chatOptions);
+
+    // WebLLM Integration
+    const { state: webLLMState, loadModel: loadWebLLMModel, generate: generateWebLLM, currentModel: currentWebLLMModel } = useWebLLM();
+
+    // Determine if using local model
+    const isLocalModel = selectedModel.startsWith('local-');
+
+    // Combined status
+    const status = isLocalModel
+        ? (webLLMState.isLoading ? 'loading' : (webLLMState.isModelLoaded ? 'ready' : (chatStatus === 'streaming' ? 'streaming' : 'ready'))) // Simplify status mapping
+        : chatStatus;
+
+    // Load local model when selected
+    useEffect(() => {
+        if (isLocalModel) {
+            const modelId = selectedModel.replace('local-', '');
+            loadWebLLMModel(modelId);
+        }
+    }, [isLocalModel, selectedModel, loadWebLLMModel]);
+
+    // Show model loading progress in toast or UI
+    useEffect(() => {
+        if (isLocalModel && webLLMState.isLoading) {
+            // Alternatively could use a persistent toast or just rely on the UI status
+            // For now, let's just log or rely on status
+        }
+    }, [isLocalModel, webLLMState.isLoading, webLLMState.text]);
 
     // Wrap append to persist user messages to current space
     const appendWithPersist = useCallback(
@@ -358,8 +386,95 @@ const HomeContent = () => {
                 // Pass the same object (with id, role, content) to useChat's append
                 // The @ai-sdk/react 'Message' type has id, role, content.
                 // Our ChatMessage {id, role, content, timestamp} is compatible for append.
-                const result = await append(userChatMessage, options);
-                return result;
+                // Our ChatMessage {id, role, content, timestamp} is compatible for append.
+
+                if (isLocalModel) {
+                    // Handle Local Logic
+                    // 1. Manually add user message to UI immediately
+                    // setMessages(prev => [...prev, userChatMessage]); // Actually useEffect syncs this from space, but for instant feedback:
+                    // Wait, useEffect syncs from currentSpace.messages which we just updated via addMessage.
+                    // But let's assume we want to trigger generation.
+
+                    if (!webLLMState.isModelLoaded) {
+                        toast.error(`Model is still loading: ${webLLMState.text} (${Math.round(webLLMState.progress)}%)`);
+                        return null;
+                    }
+
+                    try {
+                        // Create a placeholder assistant message
+                        const assistantMsgId = crypto.randomUUID();
+                        const assistantMsgTimestamp = Date.now();
+
+                        // We need to construct the full context for the model
+                        // Get current history from currentSpace or messages
+                        const history = [...messages, userChatMessage].map(m => ({
+                            role: m.role,
+                            content: m.content
+                        }));
+
+                        // Start generation
+                        // We won't add assistant message to space yet, only after completion or chunks?
+                        // Actually, better to add to space at the end?
+                        // Or we can add a placeholder?
+                        // Let's mimic useChat: stream content.
+
+                        // Since we don't have setStatus exposed from useChat easily to 'streaming', 
+                        // we might rely on our own 'status' derived state if we could control it.
+                        // But useChat controls its own status.
+                        // We override 'status' variable in scope above! 
+                        // But we need to update 'messages' state to show the streaming response.
+
+                        let currentText = '';
+
+                        await generateWebLLM(
+                            history,
+                            (text, delta) => {
+                                currentText = text;
+                                // Update UI messages with partial assistant response
+                                // We need to append or update the last message if it's assistant
+                                // But 'messages' state update here might clash with useEffect syncing from space.
+                                // Ideally we temporarily disable sync or validly update space?
+                                // Updating space on every token is too expensive (localStorage).
+                                // So we update 'messages' state directly for UI.
+
+                                setMessages(prev => {
+                                    const last = prev[prev.length - 1];
+                                    if (last && last.role === 'assistant' && last.id === assistantMsgId) {
+                                        return [...prev.slice(0, -1), { ...last, content: text }];
+                                    } else {
+                                        return [...prev, {
+                                            id: assistantMsgId,
+                                            role: 'assistant',
+                                            content: text,
+                                            timestamp: assistantMsgTimestamp
+                                        }];
+                                    }
+                                });
+                            },
+                            (finalText) => {
+                                // On finish, save to space
+                                const assistantChatMessage: ChatMessage = {
+                                    id: assistantMsgId,
+                                    role: 'assistant',
+                                    content: finalText,
+                                    timestamp: assistantMsgTimestamp
+                                };
+                                spaceFunctionsRef.current.addMessage(assistantChatMessage);
+                                // transform status back to ready (implicitly handled by derived status)
+                            }
+                        );
+
+                        return null; // Return null as we handled it
+
+                    } catch (err: any) {
+                        console.error("Local generation failed", err);
+                        toast.error("Local generation failed: " + err.message);
+                    }
+
+                } else {
+                    const result = await append(userChatMessage, options);
+                    return result;
+                }
             } else {
                 // For other roles (system, assistant), just append to useChat state
                 // We don't persist system messages to history to avoid clutter
@@ -786,6 +901,9 @@ const HomeContent = () => {
                                         onFrameworkSelect={handleFrameworkSelect}
                                         currentSpaceId={currentSpaceId}
                                         onCompactSpace={handleCompactSpace}
+                                        loadingProgress={webLLMState.progress}
+                                        loadingText={webLLMState.text}
+                                        loadingModelId={webLLMState.isLoading ? `local-${currentWebLLMModel}` : null}
                                     />
                                 </div>
                             </div>

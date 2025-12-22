@@ -35,10 +35,13 @@ interface ChatInputProps {
     attachments: ChatAttachment[];
     onAttachmentsChange: (attachments: ChatAttachment[]) => void;
     fileInputRef: React.RefObject<HTMLInputElement>;
-    status: 'submitted' | 'streaming' | 'ready' | 'error';
+    status: 'submitted' | 'streaming' | 'ready' | 'error' | 'loading';
     onFrameworkSelect?: (framework: string) => void;
     currentSpaceId?: string;
     onCompactSpace?: (spaceId: string) => Promise<void>;
+    loadingProgress?: number;
+    loadingText?: string;
+    loadingModelId?: string | null;
 }
 
 // Derive the Active Recall command from the StudyFramework enum
@@ -94,11 +97,14 @@ export function ChatInput({
     onFrameworkSelect,
     currentSpaceId,
     onCompactSpace,
+    loadingProgress,
+    loadingText,
+    loadingModelId,
 }: ChatInputProps) {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const textareaRef = useAutoResize(value, 5);
-    const isProcessing = status === 'submitted' || status === 'streaming';
+    const isProcessing = status === 'submitted' || status === 'streaming' || status === 'loading';
 
     // Create dynamic commands list based on available props
     const COMMANDS: ChatCommand[] = [
@@ -222,12 +228,34 @@ export function ChatInput({
 
     return (
         <div className="relative w-full">
+            {/* Loading Progress Bar - Positioned ABOVE input */}
+            {status === 'loading' && (
+                <div className="absolute bottom-full left-0 right-0 mb-3 px-1">
+                    <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] text-neutral-500 font-medium truncate flex-1">
+                            {loadingText || 'Downloading model...'}
+                        </span>
+                        <span className="text-[10px] text-neutral-400 font-mono">
+                            {Math.round(loadingProgress || 0)}%
+                        </span>
+                    </div>
+                    <div className="h-1 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden shadow-sm">
+                        <div
+                            className="h-full bg-blue-500 transition-all duration-300 ease-out"
+                            style={{ width: `${Math.max(5, loadingProgress || 0)}%` }}
+                        />
+                    </div>
+                </div>
+            )}
+
             {/* Command menus */}
             {activeMenu === 'model' && (
                 <AiModelPicker
                     selectedModel={selectedModel}
                     onSelect={handleModelSelect}
                     onClose={closeMenu}
+                    loadingModelId={loadingModelId}
+                    loadingProgress={loadingProgress}
                 />
             )}
             {activeMenu === 'frameworks' && (
@@ -301,7 +329,11 @@ export function ChatInput({
                             : 'text-neutral-500 hover:text-neutral-700'
                     )}
                 >
-                    {isProcessing ? (
+                    {status === 'loading' ? (
+                        <div className="flex items-center justify-center w-6 h-6">
+                            <div className="w-4 h-4 rounded-full border-2 border-neutral-200 border-t-blue-500 animate-spin" />
+                        </div>
+                    ) : isProcessing ? (
                         <span className="text-xs">■</span>
                     ) : (
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -327,6 +359,8 @@ export function ChatInput({
                     ))}
                 </div>
             )}
+
+
         </div>
     );
 }
