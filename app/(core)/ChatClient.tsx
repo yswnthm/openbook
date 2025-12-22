@@ -154,8 +154,10 @@ const HomeContent = () => {
     // Study mode context
     const { getStudyModeForSpace, setStudyMode } = useStudyMode();
     const { systemPrompt } = useSettings();
-    // Set Google Gemini 2.5 Flash as the default model
-    const [selectedModel, setSelectedModel] = useLocalStorage(SELECTED_MODEL_KEY, 'google-default');
+    // Set GPT-5 Mini as the default model
+    // [EDIT HERE] To change the default model, replace 'openai-gpt-5-mini' with another model ID from ai-model-picker.tsx
+    // Example: 'openai-gpt-5-1' or 'deepseek-free'
+    const [selectedModel, setSelectedModel] = useLocalStorage(SELECTED_MODEL_KEY, 'openai-gpt-5-mini');
 
     // One-time migration: move previously saved model from the legacy key
     useEffect(() => {

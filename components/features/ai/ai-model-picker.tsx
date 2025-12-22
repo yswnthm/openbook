@@ -28,6 +28,8 @@ interface ModelDef {
 }
 
 const ALL_MODELS: ModelDef[] = [
+    // [REFERENCE] These 'value' fields are what you use in ChatClient.tsx to set the default model.
+    // Example: 'openai-gpt-5-mini', 'google-gemini-2-5-pro', etc.
     // --- Premium / Paid ---
     {
         value: 'openai-gpt-5-mini',

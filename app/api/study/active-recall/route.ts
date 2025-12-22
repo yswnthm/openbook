@@ -5,7 +5,7 @@ import { StudyFramework } from '@/lib/types';
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { messages, model = 'google-default' } = body;
+        const { messages, model = 'openai-gpt-5-mini' } = body;
 
         // Get the Active Recall system prompt
         const systemPrompt = getStudyFrameworkPrompt(StudyFramework.ActiveRecall);

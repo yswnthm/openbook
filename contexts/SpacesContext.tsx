@@ -109,6 +109,8 @@ export const SpacesProvider = ({ children }: { children: ReactNode }) => {
         // Initialize default space within the default notebook
         const defaultNotebook = notebooks[0]; // The first notebook is the default one
         const defaultSpace: Space = {
+            // [EDIT HERE] To set a default study mode (e.g., 'feynman-technique'), add:
+            // studyMode: { framework: 'feynman-technique', activatedAt: Date.now() },
             id: crypto.randomUUID(),
             name: 'Untitled',
             messages: [],
