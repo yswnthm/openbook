@@ -111,7 +111,7 @@ export function ChatInput({
     useEffect(() => {
         const isCommand = value?.startsWith('/') && !value.includes(' ');
         setShowSuggestions(isCommand);
-        
+
         // Auto-open menus for complete commands
         if (value === '/model') setActiveMenu('model');
         else if (value === '/frameworks') setActiveMenu('frameworks');
@@ -224,20 +224,20 @@ export function ChatInput({
         <div className="relative w-full">
             {/* Command menus */}
             {activeMenu === 'model' && (
-                <AiModelPicker 
+                <AiModelPicker
                     selectedModel={selectedModel}
-                    onSelect={handleModelSelect} 
+                    onSelect={handleModelSelect}
                     onClose={closeMenu}
                 />
             )}
             {activeMenu === 'frameworks' && (
-                <StudyFrameworkPicker 
-                    onSelect={handleFrameworkSelect} 
+                <StudyFrameworkPicker
+                    onSelect={handleFrameworkSelect}
                     onClose={closeMenu}
                 />
             )}
             {activeMenu === 'compact' && (
-                <ChatCompactConfirmation 
+                <ChatCompactConfirmation
                     onConfirm={handleCompactChat}
                     onCancel={closeMenu}
                 />
@@ -278,7 +278,7 @@ export function ChatInput({
                     disabled={isProcessing}
                     aria-label="Message input"
                 />
-                
+
                 {/* Hidden file input */}
                 <input
                     ref={fileInputRef}
@@ -296,8 +296,8 @@ export function ChatInput({
                     size="sm"
                     className={cn(
                         'h-6 w-6 p-0 rounded-full',
-                        isProcessing 
-                            ? 'text-red-500 hover:text-red-600' 
+                        isProcessing
+                            ? 'text-red-500 hover:text-red-600'
                             : 'text-neutral-500 hover:text-neutral-700'
                     )}
                 >

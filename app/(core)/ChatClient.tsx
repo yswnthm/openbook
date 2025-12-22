@@ -31,6 +31,7 @@ import { InstallPrompt } from '@/components/modals/InstallPrompt';
 import { useLocalStorage } from '@/hooks/use-local-storage';
 import { cn, getUserId, SearchGroupId } from '@/lib/utils';
 import { SIDEBAR_STATE_KEY, SELECTED_MODEL_KEY } from '@/lib/storageKeys';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 import Messages from '@/components/features/spaces/chat/messages';
 import { Input } from '@/components/ui/input';
@@ -141,6 +142,7 @@ const WidgetSection: React.FC<{
 WidgetSection.displayName = 'WidgetSection';
 
 const HomeContent = () => {
+    const { isOpen: isSidebarOpen } = useSidebar();
     const [query] = useQueryState('query', parseAsString.withDefault(''));
     const [q] = useQueryState('q', parseAsString.withDefault(''));
 
@@ -692,13 +694,13 @@ const HomeContent = () => {
                         <div
                             className="fixed bottom-0 left-0 right-0 pb-3 sm:pb-4 z-40 pointer-events-none"
                             style={{
-                                paddingLeft: 0,
+                                paddingLeft: isSidebarOpen ? SIDEBAR_WIDTH : 0,
                                 paddingRight: 0,
                                 transition: 'padding-left 0.3s ease',
                             }}
                         >
-                            <div className="w-[95%] xs:w-[90%] sm:max-w-2xl md:max-w-3xl mx-auto px-2 xs:px-3 sm:px-4 md:px-6 pointer-events-auto">
-                                <div className="relative z-50 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-sm rounded-md p-1 sm:p-1.5 shadow-lg w-full">
+                            <div className="w-full max-w-[95%] xs:max-w-[90%] sm:max-w-2xl md:max-w-3xl mx-auto pointer-events-auto">
+                                <div className="relative z-50 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-sm rounded-md p-1 shadow-lg w-full">
                                     <ChatInput
                                         value={input}
                                         onChange={setInput}
