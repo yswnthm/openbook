@@ -43,6 +43,7 @@ import { useSettings } from '@/contexts/SettingsContext';
 import { useStudyMode } from '@/contexts/StudyModeContext';
 import { StudyModeBadge } from '@/components/features/study/study-mode-badge';
 import { StudyFramework } from '@/lib/types';
+import { getFrameworkDisplayName } from '@/lib/study-prompts';
 
 import { Streak } from '@/components/features/spaces/Streak';
 import { SurprisePromptButton } from '@/components/features/spaces/SurprisePromptButton';
@@ -369,12 +370,31 @@ const HomeContent = () => {
         [append],
     ); // Remove addMessage dependency since we're using the ref
 
+    const isFrameworkSwitchingRef = useRef(false);
+
     // Handle framework selection
     const handleFrameworkSelect = useCallback(
         (frameworkString: string) => {
             if (!currentSpaceId) return;
 
             const framework = frameworkString as StudyFramework;
+
+            // 1. Set flag to indicate we are switching frameworks
+            isFrameworkSwitchingRef.current = true;
+
+            // 2. Create the activation message manually
+            const name = getFrameworkDisplayName(framework);
+            const userChatMessage: ChatMessage = {
+                id: crypto.randomUUID(),
+                role: 'user',
+                content: `Activate ${name}`,
+                timestamp: Date.now(),
+            };
+
+            // 3. Persist to storage immediately
+            spaceFunctionsRef.current.addMessage(userChatMessage);
+
+            // 4. Update study mode state (this triggers the effect)
             setStudyMode(framework, currentSpaceId);
 
             // Dispatch space change event for StudyModeContext
@@ -418,6 +438,13 @@ const HomeContent = () => {
                 );
                 const sortedMessages = [...currentSpace.messages].sort((a, b) => a.timestamp - b.timestamp);
                 setMessages(sortedMessages);
+
+                // If we just switched frameworks, trigger a reload to send the new activation message
+                if (isFrameworkSwitchingRef.current) {
+                    console.log('[FRAMEWORK] Triggering reload for framework activation');
+                    reload();
+                    isFrameworkSwitchingRef.current = false;
+                }
             }
         }
         // Reset initialization flag when switching spaces to allow new queries
