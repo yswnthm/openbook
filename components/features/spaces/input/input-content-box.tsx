@@ -228,22 +228,29 @@ export function ChatInput({
 
     return (
         <div className="relative w-full">
-            {/* Loading Progress Bar - Positioned ABOVE input */}
+            {/* Loading Progress Bar - Positioned ABOVE input with improved visuals */}
             {status === 'loading' && (
-                <div className="absolute bottom-full left-0 right-0 mb-3 px-1">
-                    <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] text-neutral-500 font-medium truncate flex-1">
-                            {loadingText || 'Downloading model...'}
-                        </span>
-                        <span className="text-[10px] text-neutral-400 font-mono">
-                            {Math.round(loadingProgress || 0)}%
-                        </span>
-                    </div>
-                    <div className="h-1 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden shadow-sm">
-                        <div
-                            className="h-full bg-blue-500 transition-all duration-300 ease-out"
-                            style={{ width: `${Math.max(5, loadingProgress || 0)}%` }}
-                        />
+                <div className="absolute bottom-full left-0 right-0 mb-3 px-1 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <div className="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md rounded-lg border border-neutral-200/50 dark:border-neutral-800/50 p-2 shadow-sm">
+                        <div className="flex items-center justify-between mb-1.5">
+                            <div className="flex items-center gap-2 overflow-hidden">
+                                <div className="w-3 h-3 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin shrink-0" />
+                                <span className="text-[11px] text-neutral-600 dark:text-neutral-300 font-medium truncate">
+                                    {loadingText || 'Downloading model assets...'}
+                                </span>
+                            </div>
+                            <span className="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 shrink-0 ml-2">
+                                {Math.round(loadingProgress || 0)}%
+                            </span>
+                        </div>
+                        <div className="h-1.5 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+                            <div
+                                className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300 ease-out rounded-full relative"
+                                style={{ width: `${Math.max(5, loadingProgress || 0)}%` }}
+                            >
+                                <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
@@ -256,6 +263,7 @@ export function ChatInput({
                     onClose={closeMenu}
                     loadingModelId={loadingModelId}
                     loadingProgress={loadingProgress}
+                    loadingText={loadingText}
                 />
             )}
             {activeMenu === 'frameworks' && (

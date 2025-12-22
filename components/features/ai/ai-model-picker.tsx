@@ -23,7 +23,7 @@ interface ModelDef {
     provider: string;
     capabilities: string[];
     contextWindow: string; // e.g. "128k"
-    tier: 'premium' | 'free' | 'preview' | 'local';
+    tier: 'premium' | 'free' | 'preview' | 'local' | 'ollama';
     tags: string[]; // for search
 }
 
@@ -259,6 +259,17 @@ const ALL_MODELS: ModelDef[] = [
         tier: 'local',
         tags: ['local', 'phi', 'webgpu', 'offline']
     },
+    // --- Ollama ---
+    {
+        value: 'ollama-gemma-3-270m',
+        label: 'Gemma 3 270M (Local)',
+        description: 'Runs locally via Ollama.',
+        provider: 'Google',
+        capabilities: ['Local', 'Ollama'],
+        contextWindow: '8k',
+        tier: 'ollama',
+        tags: ['ollama', 'local', 'gemma']
+    },
 ];
 
 interface AiModelPickerProps {
@@ -268,9 +279,10 @@ interface AiModelPickerProps {
     className?: string;
     loadingModelId?: string | null;
     loadingProgress?: number;
+    loadingText?: string;
 }
 
-export function AiModelPicker({ selectedModel, onSelect, onClose, className = '', loadingModelId, loadingProgress }: AiModelPickerProps) {
+export function AiModelPicker({ selectedModel, onSelect, onClose, className = '', loadingModelId, loadingProgress, loadingText }: AiModelPickerProps) {
     const [searchQuery, setSearchQuery] = useState('');
 
     // Filter models based on search
@@ -293,6 +305,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
             preview: filteredModels.filter(m => m.tier === 'preview'),
             free: filteredModels.filter(m => m.tier === 'free'),
             local: filteredModels.filter(m => m.tier === 'local'),
+            ollama: filteredModels.filter(m => m.tier === 'ollama'),
         };
     }, [filteredModels]);
 
@@ -391,6 +404,11 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                             Icon = Cpu;
                             colorClass = 'text-purple-500';
                             break;
+                        case 'ollama':
+                            title = 'Local (Ollama)';
+                            Icon = Cpu;
+                            colorClass = 'text-orange-500';
+                            break;
                     }
 
                     return (
@@ -408,6 +426,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                                         onSelect={() => onSelect(model.value)}
                                         isLoading={model.value === loadingModelId}
                                         progress={loadingProgress}
+                                        loadingText={loadingText}
                                     />
                                 ))}
                             </div>
@@ -432,7 +451,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
     );
 }
 
-function ModelItem({ model, isSelected, onSelect, isLoading, progress }: { model: ModelDef, isSelected: boolean, onSelect: () => void, isLoading?: boolean, progress?: number }) {
+function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingText }: { model: ModelDef, isSelected: boolean, onSelect: () => void, isLoading?: boolean, progress?: number, loadingText?: string }) {
     return (
         <button
             onClick={onSelect}
@@ -448,9 +467,14 @@ function ModelItem({ model, isSelected, onSelect, isLoading, progress }: { model
             `}
         >
             {isLoading && (
+                <div className="absolute inset-0 z-0 bg-blue-50/50 dark:bg-blue-900/10 pointer-events-none" />
+            )}
+
+            {/* Progress Bar background for loading state */}
+            {isLoading && (
                 <div
-                    className="absolute left-0 bottom-0 top-0 bg-blue-500/5 dark:bg-blue-500/10 pointer-events-none transition-all duration-300"
-                    style={{ width: `${Math.max(2, progress || 0)}%` }}
+                    className="absolute left-0 bottom-0 h-[2px] bg-blue-500 z-20 transition-all duration-300 ease-out"
+                    style={{ width: `${Math.max(5, progress || 0)}%` }}
                 />
             )}
 
@@ -473,18 +497,26 @@ function ModelItem({ model, isSelected, onSelect, isLoading, progress }: { model
                         </span>
                         {isSelected && <Check className="w-4 h-4 text-blue-500" />}
                         {isLoading && (
-                            <div className="flex items-center gap-1.5 ml-2">
-                                <div className="w-3 h-3 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
-                                <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400">
-                                    {Math.round(progress || 0)}%
-                                </span>
+                            <div className="flex flex-col items-end ml-auto">
+                                <div className="flex items-center gap-1.5">
+                                    <div className="w-3 h-3 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
+                                    <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 font-bold">
+                                        {Math.round(progress || 0)}%
+                                    </span>
+                                </div>
                             </div>
                         )}
                     </div>
 
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1 mb-1.5">
-                        {model.description}
-                    </p>
+                    {isLoading ? (
+                        <p className="text-xs text-blue-600 dark:text-blue-400 animate-pulse font-medium mb-1.5 truncate">
+                            {loadingText || 'Downloading model...'}
+                        </p>
+                    ) : (
+                        <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1 mb-1.5">
+                            {model.description}
+                        </p>
+                    )}
 
                     <div className="flex flex-wrap gap-1.5 items-center">
                         <Badge>{model.provider}</Badge>

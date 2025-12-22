@@ -39,6 +39,12 @@ const google = createGoogleGenerativeAI({
 });
 
 // Custom provider with multiple AI models
+// Ollama Configuration (via OpenAI compatible endpoint)
+const ollama = createOpenAI({
+  baseURL: 'http://localhost:11434/v1',
+  apiKey: 'ollama',
+});
+
 // Custom provider with multiple AI models
 export const neuman = customProvider({
   languageModels: {
@@ -62,8 +68,18 @@ export const neuman = customProvider({
     'moonshot-kimi-k2': groq('moonshotai/kimi-k2-instruct-0905'),
     'groq-qwen-3': groq('qwen/qwen3-32b'),
     'groq-llama-4-maverick-17b-128e-instruct': groq('meta-llama/llama-4-maverick-17b-128e-instruct'),
+
+    // WebLLM (Browser)
     'local-phi-2': openai('local-phi-2'), // Placeholder for local model
-    'local-phi-3-mini': openai('local-phi-3-mini') // Placeholder for local model
+    'local-phi-3-mini': openai('local-phi-3-mini'), // Placeholder for local model
+
+    // Ollama (Localhost)
+    'ollama-llama-3': ollama('llama3'),
+    'ollama-mistral': ollama('mistral'),
+    'ollama-gemma-2': ollama('gemma2'),
+    'ollama-phi-3': ollama('phi3'),
+    'ollama-llama-3-70b': ollama('llama3:70b'),
+    'ollama-gemma-3-270m': ollama('gemma3:270m'),
   },
 });
 
