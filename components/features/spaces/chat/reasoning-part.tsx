@@ -45,22 +45,28 @@ SpinnerIcon.displayName = 'SpinnerIcon';
 // Custom renderer for Marked
 const MarkdownRenderer = React.memo(({ content }: { content: string }) => {
     // Define custom renderer with proper types
+    const generateKey = () => {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    };
+
+    // Define custom renderer with proper types
     const renderer = {
         code(code: string, language?: string) {
             return (
-                <pre className="bg-neutral-200 dark:bg-neutral-800 p-2 rounded-md overflow-x-auto my-3">
+                <pre key={generateKey()} className="bg-neutral-200 dark:bg-neutral-800 p-2 rounded-md overflow-x-auto my-3">
                     <code className="text-neutral-800 dark:text-neutral-300 text-xs">{code}</code>
                 </pre>
             );
         },
         codespan(code: string) {
-            return <code className="bg-neutral-200 dark:bg-neutral-800 px-1 py-0.5 rounded text-xs">{code}</code>;
+            return <code key={generateKey()} className="bg-neutral-200 dark:bg-neutral-800 px-1 py-0.5 rounded text-xs">{code}</code>;
         },
         // Render inline and block LaTeX math expressions
         text(text: string) {
             if (!text.includes('$')) return text;
             return (
                 <Latex
+                    key={generateKey()}
                     delimiters={[
                         { left: '$$', right: '$$', display: true },
                         { left: '$', right: '$', display: false },
@@ -74,8 +80,9 @@ const MarkdownRenderer = React.memo(({ content }: { content: string }) => {
         paragraph(text: ReactNode) {
             if (typeof text === 'string' && text.includes('$')) {
                 return (
-                    <p className="mb-3 last:mb-0">
+                    <p key={generateKey()} className="mb-3 last:mb-0">
                         <Latex
+                            key={generateKey()}
                             delimiters={[
                                 { left: '$$', right: '$$', display: true },
                                 { left: '$', right: '$', display: false },
@@ -87,7 +94,7 @@ const MarkdownRenderer = React.memo(({ content }: { content: string }) => {
                     </p>
                 );
             }
-            return <p className="mb-3 last:mb-0">{text}</p>;
+            return <p key={generateKey()} className="mb-3 last:mb-0">{text}</p>;
         },
         heading(text: ReactNode, level: number) {
             const Tag = `h${level}` as keyof JSX.IntrinsicElements;
@@ -101,11 +108,12 @@ const MarkdownRenderer = React.memo(({ content }: { content: string }) => {
             };
 
             const className = classes[`h${level}` as keyof typeof classes] || '';
-            return <Tag className={className}>{text}</Tag>;
+            return <Tag key={generateKey()} className={className}>{text}</Tag>;
         },
         link(href: string, text: ReactNode) {
             return (
                 <a
+                    key={generateKey()}
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -117,42 +125,42 @@ const MarkdownRenderer = React.memo(({ content }: { content: string }) => {
         },
         list(body: ReactNode, ordered: boolean) {
             const Type = ordered ? 'ol' : 'ul';
-            return <Type className={`${ordered ? 'list-decimal' : 'list-disc'} pl-5 mb-3 last:mb-1`}>{body}</Type>;
+            return <Type key={generateKey()} className={`${ordered ? 'list-decimal' : 'list-disc'} pl-5 mb-3 last:mb-1`}>{body}</Type>;
         },
         listItem(text: ReactNode) {
-            return <li className="mb-1">{text}</li>;
+            return <li key={generateKey()} className="mb-1">{text}</li>;
         },
         blockquote(text: ReactNode) {
             return (
-                <blockquote className="border-l-2 border-neutral-300 dark:border-neutral-700 pl-3 py-1 my-3 italic">
+                <blockquote key={generateKey()} className="border-l-2 border-neutral-300 dark:border-neutral-700 pl-3 py-1 my-3 italic">
                     {text}
                 </blockquote>
             );
         },
         hr() {
-            return <hr className="my-4 border-t border-neutral-200 dark:border-neutral-800" />;
+            return <hr key={generateKey()} className="my-4 border-t border-neutral-200 dark:border-neutral-800" />;
         },
         table(children: ReactNode[]) {
             return (
-                <div className="overflow-x-auto mb-3">
+                <div key={generateKey()} className="overflow-x-auto mb-3">
                     <table className="min-w-full border-collapse text-xs">{children}</table>
                 </div>
             );
         },
         tableRow(content: ReactNode) {
-            return <tr className="border-b border-neutral-200 dark:border-neutral-800">{content}</tr>;
+            return <tr key={generateKey()} className="border-b border-neutral-200 dark:border-neutral-800">{content}</tr>;
         },
         tableCell(children: ReactNode[], flags: TableFlags) {
             const align = flags.align ? `text-${flags.align}` : '';
             return flags.header ? (
-                <th className={`px-2 py-1 font-semibold bg-neutral-100 dark:bg-neutral-800 ${align}`}>{children}</th>
+                <th key={generateKey()} className={`px-2 py-1 font-semibold bg-neutral-100 dark:bg-neutral-800 ${align}`}>{children}</th>
             ) : (
-                <td className={`px-2 py-1 ${align}`}>{children}</td>
+                <td key={generateKey()} className={`px-2 py-1 ${align}`}>{children}</td>
             );
         },
         // Treat any raw HTML as literal text to prevent XSS
         html(htmlString: string) {
-            return <span>{htmlString}</span>;
+            return <span key={generateKey()}>{htmlString}</span>;
         },
     };
 
@@ -317,7 +325,7 @@ export const ReasoningPartView: React.FC<ReasoningPartViewProps> = React.memo(
                                                         className={cn(
                                                             'px-3 py-3 text-xs leading-relaxed',
                                                             detailIndex !== part.details.length - 1 &&
-                                                                'border-b border-neutral-100 dark:border-neutral-800/80',
+                                                            'border-b border-neutral-100 dark:border-neutral-800/80',
                                                         )}
                                                     >
                                                         <div className="text-neutral-800 dark:text-neutral-300 prose prose-sm dark:prose-invert max-w-none">
@@ -325,7 +333,7 @@ export const ReasoningPartView: React.FC<ReasoningPartViewProps> = React.memo(
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    '<redacted>'
+                                                    <span key={detailIndex}>&lt;redacted&gt;</span>
                                                 ),
                                             )
                                         ) : part.reasoning ? (
