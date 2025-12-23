@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageLoading, TypingIndicator, StreamingProgress } from '@/components/features/spaces/chat/message-loading';
 import { TypingMessage } from '@/components/features/spaces/chat/message-typing';
 import { AIProgressIndicator, WordCountIndicator } from '@/components/features/spaces/loading/progress-indicators';
+import { getModelLabel } from '@/components/features/ai/ai-model-picker';
 
 import { LoadingDots } from '@/components/ui/loading-dots';
 
@@ -40,6 +41,7 @@ interface MessagesProps {
 
     status: string;
     error: any; // Add error from useChat
+    selectedModel?: string;
 }
 
 // Interface for reasoning timing
@@ -63,6 +65,7 @@ const Messages: React.FC<MessagesProps> = ({
 
     status,
     error,
+    selectedModel,
 }) => {
     // Track visibility state for each reasoning section using messageIndex-partIndex as key
     const [reasoningVisibilityMap, setReasoningVisibilityMap] = useState<Record<string, boolean>>({});
@@ -286,6 +289,9 @@ const Messages: React.FC<MessagesProps> = ({
                                 />
                                 <h2 className="text-md font-medium text-neutral-800 dark:text-neutral-200 flex items-center gap-2">
                                     Neuman
+                                    <span className="text-[10px] text-neutral-400 dark:text-neutral-500 font-normal ml-1">
+                                        • {getModelLabel(message.model || selectedModel || '')}
+                                    </span>
                                     {/* Show loading dots while AI is responding */}
                                     {status !== 'ready' &&
                                         message.role === 'assistant' &&

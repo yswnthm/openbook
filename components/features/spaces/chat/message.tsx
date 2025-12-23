@@ -243,8 +243,6 @@ const Message: React.FC<MessageProps> = ({
                 {message.parts?.map((part: MessagePart, partIndex: number) =>
                     renderPart(part, index, partIndex, message.parts as MessagePart[], message),
                 )}
-
-
             </>
         );
     }

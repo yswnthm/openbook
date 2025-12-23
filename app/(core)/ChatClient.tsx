@@ -329,6 +329,7 @@ const HomeContent = () => {
                         role: 'assistant',
                         content: aiMessageFromSDK.content,
                         timestamp: aiMessageFromSDK.createdAt ? aiMessageFromSDK.createdAt.getTime() : Date.now(),
+                        model: selectedModel,
                     };
                     spaceFunctionsRef.current.addMessage(assistantChatMessage);
 
@@ -459,7 +460,8 @@ const HomeContent = () => {
                                     id: assistantMsgId,
                                     role: 'assistant',
                                     content: finalText,
-                                    timestamp: assistantMsgTimestamp
+                                    timestamp: assistantMsgTimestamp,
+                                    model: selectedModel,
                                 };
                                 spaceFunctionsRef.current.addMessage(assistantChatMessage);
                                 // transform status back to ready (implicitly handled by derived status)
@@ -852,6 +854,7 @@ const HomeContent = () => {
                                     reload={reload}
                                     status={status}
                                     error={error}
+                                    selectedModel={selectedModel}
                                 />
                             </div>
                         )}

@@ -17,6 +17,7 @@ export type ChatMessage = {
     content: string;
     timestamp: number;
     hidden?: boolean;
+    model?: string;
 };
 
 export type Space = {

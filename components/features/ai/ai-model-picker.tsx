@@ -276,6 +276,10 @@ const ALL_MODELS: ModelDef[] = [
     },
 ];
 
+export const getModelLabel = (value: string) => {
+    return value;
+};
+
 interface AiModelPickerProps {
     selectedModel: string;
     onSelect: (model: string) => void;
