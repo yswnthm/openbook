@@ -2,8 +2,8 @@
 
 ## Phase 1: Foundation & State Management
 - [x] Task: Create `OnboardingContext` to manage tutorial state (active step, visibility, seen status). [587e1e8]
-- [ ] Task: Implement `useOnboarding` hook for components to register themselves as tour targets.
-- [ ] Task: Create a persistent storage mechanism (localStorage) to remember if the user has completed the tutorial.
+- [x] Task: Implement `useOnboarding` hook for components to register themselves as tour targets. [3fae293]
+- [x] Task: Create a persistent storage mechanism (localStorage) to remember if the user has completed the tutorial. [3fae293]
 - [ ] Task: Conductor - User Manual Verification 'Foundation & State Management' (Protocol in workflow.md)
 
 ## Phase 2: UI Components
