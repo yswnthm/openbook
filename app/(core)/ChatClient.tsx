@@ -817,6 +817,7 @@ const HomeContent = () => {
                                     onFrameworkSelect={handleFrameworkSelect}
                                     currentSpaceId={currentSpaceId}
                                     onCompactSpace={handleCompactSpace}
+                                    pickerPlacement="bottom" // Explicitly bottom for centered input
                                 />
                             </div>
                         )}
@@ -906,6 +907,7 @@ const HomeContent = () => {
                                         loadingProgress={webLLMState.progress}
                                         loadingText={webLLMState.text}
                                         loadingModelId={webLLMState.isLoading ? `local-${currentWebLLMModel}` : null}
+                                        pickerPlacement="top"
                                     />
                                 </div>
                             </div>

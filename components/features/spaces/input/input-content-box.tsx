@@ -42,6 +42,7 @@ interface ChatInputProps {
     loadingProgress?: number;
     loadingText?: string;
     loadingModelId?: string | null;
+    pickerPlacement?: 'top' | 'bottom';
 }
 
 // Derive the Active Recall command from the StudyFramework enum
@@ -100,6 +101,7 @@ export function ChatInput({
     loadingProgress,
     loadingText,
     loadingModelId,
+    pickerPlacement = 'bottom',
 }: ChatInputProps) {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -264,14 +266,14 @@ export function ChatInput({
                     loadingModelId={loadingModelId}
                     loadingProgress={loadingProgress}
                     loadingText={loadingText}
-                    placement="bottom"
+                    placement={pickerPlacement}
                 />
             )}
             {activeMenu === 'frameworks' && (
                 <StudyFrameworkPicker
                     onSelect={handleFrameworkSelect}
                     onClose={closeMenu}
-                    placement="bottom"
+                    placement={pickerPlacement}
                 />
             )}
             {activeMenu === 'compact' && (
