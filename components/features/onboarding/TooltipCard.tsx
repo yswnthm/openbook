@@ -61,6 +61,24 @@ export function TooltipCard() {
         };
     }, [isVisible, step, activeStep]);
 
+    useEffect(() => {
+        if (!isVisible || !step) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                skipTutorial();
+            } else if (e.key === 'ArrowRight') {
+                if (isLastStep) completeTutorial();
+                else nextStep();
+            } else if (e.key === 'ArrowLeft' && activeStep > 0) {
+                prevStep();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isVisible, step, activeStep, isLastStep, nextStep, prevStep, skipTutorial, completeTutorial]);
+
     if (!isVisible || !step) return null;
 
     const isCentered = !step.targetId || !position;
