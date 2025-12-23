@@ -6,11 +6,11 @@
 - [x] Task: Create a persistent storage mechanism (localStorage) to remember if the user has completed the tutorial. [3fae293]
 - [x] Task: Conductor - User Manual Verification 'Foundation & State Management' (Protocol in workflow.md)
 
-## Phase 2: UI Components
+## Phase 2: UI Components [checkpoint: 24f51bc]
 - [x] Task: Design and build the `OnboardingOverlay` component (backdrop and spotlight effect). [f14e269]
 - [x] Task: Create the `TooltipCard` component for displaying the explanation text and navigation buttons ("Next", "Skip"). [3fa79e7]
 - [x] Task: Implement smooth Framer Motion animations for the overlay and tooltip transitions. [3fa79e7]
-- [ ] Task: Conductor - User Manual Verification 'UI Components' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'UI Components' (Protocol in workflow.md)
 
 ## Phase 3: Integration & Content
 - [ ] Task: Integrate `OnboardingContext` into the root layout.
