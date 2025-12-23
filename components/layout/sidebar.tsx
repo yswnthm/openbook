@@ -117,7 +117,16 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     const handleCreateJournal = () => {
         const defaultTitle = 'Untitled';
         // Use current notebook or fall back to the first one (usually Default)
-        const targetNotebookId = currentNotebookId || (notebooks.length > 0 ? notebooks[0].id : undefined);
+        let targetNotebookId = currentNotebookId || (notebooks.length > 0 ? notebooks[0].id : undefined);
+
+        // If no notebooks exist, try to create a default one first
+        if (!targetNotebookId) {
+            targetNotebookId = createNotebook() || undefined; // createNotebook returns string | null
+            if (!targetNotebookId) {
+                console.error('[Sidebar] Failed to create notebook for new journal');
+                return;
+            }
+        }
 
         const newEntry = createEntry(defaultTitle, targetNotebookId);
 
@@ -125,13 +134,24 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             setEditingJournalId(newEntry.id);
             setEditingJournalTitle(defaultTitle);
             router.push(`/journal/${newEntry.id}`);
+        } else {
+            console.error('[Sidebar] Failed to create journal entry');
         }
     };
 
     const handleCreateSpace = () => {
         const defaultTitle = 'Untitled';
         // Use current notebook or fall back to the first one (usually Default)
-        const targetNotebookId = currentNotebookId || (notebooks.length > 0 ? notebooks[0].id : undefined);
+        let targetNotebookId = currentNotebookId || (notebooks.length > 0 ? notebooks[0].id : undefined);
+
+        // If no notebooks exist, try to create a default one first
+        if (!targetNotebookId) {
+            targetNotebookId = createNotebook() || undefined;
+            if (!targetNotebookId) {
+                console.error('[Sidebar] Failed to create notebook for new space');
+                return;
+            }
+        }
 
         const newSpaceId = createSpace(defaultTitle, targetNotebookId);
 
@@ -140,6 +160,8 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             // We don't have a space name state at this level to set easily like journal title, 
             // but the space will be created with default title "Untitled"
             router.push(`/space/${newSpaceId}`);
+        } else {
+            console.error('[Sidebar] Failed to create space');
         }
     };
 

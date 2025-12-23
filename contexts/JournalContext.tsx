@@ -86,48 +86,53 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
 
     const createEntry = useCallback(
         (title: string, notebook_id?: string) => {
-            if (!premium && notebook_id) {
-                // Count existing entries for this notebook
-                const notebookEntries = entries.filter((entry) => entry.notebook_id === notebook_id);
-                if (notebookEntries.length >= JOURNAL_LIMIT) {
-                    showLimitModal(
-                        `You've reached the maximum of ${JOURNAL_LIMIT} journals per notebook in the free plan. Upgrade to premium for unlimited journals.`,
-                        'journal',
-                    );
-                    return null;
-                }
-            }
-
-            const now = new Date().toISOString();
-            const id =
-                typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-                    ? crypto.randomUUID()
-                    : Math.random().toString(36).substring(2, 9);
-
-            // Determine a unique default title when the input title is empty or auto-generated
-            const trimmedInputTitle = title.trim();
-            const defaultTitle = generateUniqueUntitledTitle(entries, notebook_id);
-
-            // Use input title only if it's non-empty and not an auto-generated placeholder
-            const finalTitle = !trimmedInputTitle || trimmedInputTitle === 'Untitled' ? defaultTitle : trimmedInputTitle;
-
-            const newEntry: JournalEntry = {
-                id,
-                title: finalTitle,
-                blocks: [],
-                createdAt: now,
-                updatedAt: now,
-                notebook_id,
-            };
+            let result: JournalEntry | null = null;
 
             setEntries((prev) => {
-                const updated = [newEntry, ...prev];
-                return updated;
+                if (!premium && notebook_id) {
+                    // Count existing entries for this notebook using latest state
+                    const notebookEntries = prev.filter((entry) => entry.notebook_id === notebook_id);
+                    if (notebookEntries.length >= JOURNAL_LIMIT) {
+                        // Use a timeout to show modal to avoid side-effects inside updater
+                        setTimeout(() => {
+                            showLimitModal(
+                                `You've reached the maximum of ${JOURNAL_LIMIT} journals per notebook in the free plan. Upgrade to premium for unlimited journals.`,
+                                'journal',
+                            );
+                        }, 0);
+                        return prev;
+                    }
+                }
+
+                const now = new Date().toISOString();
+                const id =
+                    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+                        ? crypto.randomUUID()
+                        : Math.random().toString(36).substring(2, 9);
+
+                // Determine a unique default title based on the latest state (prev)
+                const trimmedInputTitle = title.trim();
+                const defaultTitle = generateUniqueUntitledTitle(prev, notebook_id);
+
+                // Use input title only if it's non-empty and not an auto-generated placeholder
+                const finalTitle = !trimmedInputTitle || trimmedInputTitle === 'Untitled' ? defaultTitle : trimmedInputTitle;
+
+                const newEntry: JournalEntry = {
+                    id,
+                    title: finalTitle,
+                    blocks: [],
+                    createdAt: now,
+                    updatedAt: now,
+                    notebook_id,
+                };
+
+                result = newEntry;
+                return [newEntry, ...prev];
             });
 
-            return newEntry;
+            return result;
         },
-        [entries, premium, showLimitModal],
+        [premium, showLimitModal],
     );
 
     const updateEntry = useCallback((id: string, updates: Partial<Pick<JournalEntry, 'title' | 'blocks'>>) => {
@@ -188,11 +193,11 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
                 .filter(
                     (entry) =>
                         entry.title.toLowerCase().includes(lower) ||
-                        entry.blocks.some((block) => block.content.toLowerCase().includes(lower)),
+                        entry.blocks.some((block) => block.content?.toLowerCase().includes(lower)),
                 )
                 .map((entry) => {
                     // Find matching block content for context
-                    const matchingBlock = entry.blocks.find((block) => block.content.toLowerCase().includes(lower));
+                    const matchingBlock = entry.blocks.find((block) => block.content?.toLowerCase().includes(lower));
 
                     return {
                         ...entry,
