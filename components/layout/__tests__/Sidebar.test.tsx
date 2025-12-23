@@ -60,7 +60,7 @@ mock.module('@/components/features/search/search-modal', () => ({
 }));
 
 mock.module('@/components/features/settings/settings-panel', () => ({
-  SettingsPanel: () => <div>SettingsPanel</div>
+  SettingsPanel: ({ children }: { children: React.ReactNode }) => <div>{children}</div>
 }));
 
 afterEach(cleanup);
