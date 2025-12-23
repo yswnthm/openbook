@@ -46,9 +46,9 @@ import { StudyFramework } from '@/lib/types';
 import { getFrameworkDisplayName } from '@/lib/study-prompts';
 import { useWebLLM } from '@/hooks/use-web-llm';
 
-import { Streak } from '@/components/features/spaces/Streak';
-import { SurprisePromptButton } from '@/components/features/spaces/SurprisePromptButton';
+
 import { useOnboarding } from '@/contexts/OnboardingContext';
+import { WidgetSection } from './_components/WidgetSection';
 
 interface Attachment {
     name: string;
@@ -110,40 +110,7 @@ function throttle<T extends (...args: any[]) => void>(fn: T, wait: number) {
     return throttled as T & { cancel: () => void };
 }
 
-// Define WidgetSection outside of HomeContent to avoid recreating it on every render
-const WidgetSection: React.FC<{
-    status: string;
-    appendWithPersist: (messageProps: { role: 'user' | 'assistant'; content: string }, options?: any) => Promise<any>;
-    lastSubmittedQueryRef: React.MutableRefObject<string>;
-    setHasSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
-}> = memo(({ status, appendWithPersist, lastSubmittedQueryRef, setHasSubmitted }) => {
-    const handleSurprisePrompt = useCallback(
-        (prompt: string) => {
-            if (status !== 'ready') return;
-            void appendWithPersist({
-                content: prompt,
-                role: 'user',
-            });
-            lastSubmittedQueryRef.current = prompt;
-            setHasSubmitted(true);
-        },
-        [status, appendWithPersist, lastSubmittedQueryRef, setHasSubmitted],
-    );
 
-    return (
-        <div className="w-full mt-0 sm:mt-2 md:mt-4">
-            <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
-                {/* Daily streak indicator */}
-                <Streak />
-
-                {/* Surprise prompt button */}
-                <SurprisePromptButton onPrompt={handleSurprisePrompt} />
-            </div>
-        </div>
-    );
-});
-
-WidgetSection.displayName = 'WidgetSection';
 
 const HomeContent = () => {
     const { isOpen: isSidebarOpen } = useSidebar();
