@@ -15,6 +15,7 @@ OpenBook is a first-principles learning platform designed to help students and e
 - **Multi-Model Intelligence:** Access to a variety of LLMs (OpenAI, Google, Anthropic, etc.) to get different perspectives on a single concept.
 - **Interactive Knowledge Interface:** A rich, streaming environment supporting LaTeX, code, and file attachments for a comprehensive learning experience.
 - **Research & Discovery:** Advanced search capabilities for both casual web inquiries and scholarly paper exploration.
+- **Interactive Onboarding:** A guided, step-by-step introduction to help users quickly master the platform's advanced research and learning features.
 
 # Success Metrics
 - User adoption of specific study frameworks (e.g., Feynman Technique sessions).

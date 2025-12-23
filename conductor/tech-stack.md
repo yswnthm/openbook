@@ -21,6 +21,11 @@
 - **Search Integrations:** Tavily, Exa
 - **Validation:** Zod
 
+## Testing
+- **Test Runner:** Bun Test
+- **Environment:** Happy DOM (@happy-dom/global-registrator)
+- **React Testing:** @testing-library/react
+
 ## Development & Deployment
 - **Linting:** ESLint
 - **Formatting:** Prettier
