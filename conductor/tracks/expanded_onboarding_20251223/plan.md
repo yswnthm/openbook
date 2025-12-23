@@ -2,7 +2,7 @@
 
 This plan expands the interactive onboarding tutorial to cover advanced research tools, study frameworks, and utility features.
 
-## Phase 1: Infrastructure & ID Preparation
+## Phase 1: Infrastructure & ID Preparation [checkpoint: 55806e5]
 Prepare the UI components by adding necessary DOM IDs for targeting by the onboarding overlay.
 
 - [x] Task: Add DOM IDs to Chat Components [aecc7e5]
