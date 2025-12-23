@@ -1,0 +1,8 @@
+{
+    "track_id": "onboarding_tutorial_20251223",
+    "type": "feature",
+    "status": "new",
+    "created_at": "2025-12-23T00:00:00Z",
+    "updated_at": "2025-12-23T00:00:00Z",
+    "description": "Add an interactive onboarding tutorial to explain OpenBook's interface with minimal component overlays."
+}
