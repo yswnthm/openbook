@@ -114,7 +114,7 @@ function throttle<T extends (...args: any[]) => void>(fn: T, wait: number) {
 
 const HomeContent = () => {
     const { isOpen: isSidebarOpen } = useSidebar();
-    const { registerStep, isCompleted, startTutorial } = useOnboarding();
+    const { registerStep, isCompleted, startTutorial, steps } = useOnboarding();
     const [query] = useQueryState('query', parseAsString.withDefault(''));
     const [q] = useQueryState('q', parseAsString.withDefault(''));
 
@@ -159,14 +159,14 @@ const HomeContent = () => {
 
     // Auto-start tutorial for new users
     useEffect(() => {
-        if (!isCompleted) {
+        if (!isCompleted && steps.length > 0) {
             // Small delay to ensure everything is rendered
             const timer = setTimeout(() => {
                 startTutorial();
             }, 1000);
             return () => clearTimeout(timer);
         }
-    }, [isCompleted, startTutorial]);
+    }, [isCompleted, startTutorial, steps.length]);
 
     // Conversation spaces context
     const { currentSpace, currentSpaceId, switchSpace, addMessage, createSpace, markSpaceContextReset } = useSpaces();
