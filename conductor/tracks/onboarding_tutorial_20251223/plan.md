@@ -1,10 +1,10 @@
 # Track Plan: Interactive Onboarding Tutorial
 
-## Phase 1: Foundation & State Management
+## Phase 1: Foundation & State Management [checkpoint: 979ab93]
 - [x] Task: Create `OnboardingContext` to manage tutorial state (active step, visibility, seen status). [587e1e8]
 - [x] Task: Implement `useOnboarding` hook for components to register themselves as tour targets. [3fae293]
 - [x] Task: Create a persistent storage mechanism (localStorage) to remember if the user has completed the tutorial. [3fae293]
-- [ ] Task: Conductor - User Manual Verification 'Foundation & State Management' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Foundation & State Management' (Protocol in workflow.md)
 
 ## Phase 2: UI Components
 - [ ] Task: Design and build the `OnboardingOverlay` component (backdrop and spotlight effect).
