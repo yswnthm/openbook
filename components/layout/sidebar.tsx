@@ -50,7 +50,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     const { registerStep } = useOnboarding();
     const [initialExpansionDone, setInitialExpansionDone] = useState(false);
 
-    // Register sidebar onboarding step
+    // Register sidebar onboarding steps
     useEffect(() => {
         if (isOpen) {
             registerStep({
@@ -58,6 +58,18 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                 title: 'Knowledge Base Search',
                 description: 'Quickly find any previous conversation, journal entry, or saved note across your entire library.',
                 targetId: 'sidebar-search-trigger'
+            });
+            registerStep({
+                id: 'personalization',
+                title: 'Personalization & Identity',
+                description: 'Configure your custom system prompt, switch themes, and manage your AI preferences here.',
+                targetId: 'sidebar-settings-trigger'
+            });
+            registerStep({
+                id: 'data-control',
+                title: 'Privacy & Data Control',
+                description: 'Your data is stored locally. Use this to permanently clear all local information and reset the application.',
+                targetId: 'sidebar-clear-storage-trigger'
             });
         }
     }, [isOpen, registerStep]);
