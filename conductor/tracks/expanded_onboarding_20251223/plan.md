@@ -30,13 +30,13 @@ Add the remaining onboarding steps for Settings and Clear Storage within the Sid
     - [x] Register 'personalization' step targeting `sidebar-settings-trigger`.
     - [x] Register 'data-control' step targeting `sidebar-clear-storage-trigger`.
     - [x] Ensure tests pass.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: Sidebar Utility Steps' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 3: Sidebar Utility Steps' (Protocol in workflow.md)
 
 ## Phase 4: Final Sequence & Polish
 Refine the sequence and descriptions to ensure a smooth user flow.
 
-- [ ] Task: Refine Step Sequence and Copy
-    - [ ] Review all registered steps for logical flow: Welcome -> Model -> Study -> Compact -> Widgets -> Search -> Settings -> Clear Storage.
-    - [ ] Update descriptions to match the professional copy defined in the spec.
+- [x] Task: Refine Step Sequence and Copy [8fa9ec8]
+    - [x] Review all registered steps for logical flow: Welcome -> Model -> Study -> Compact -> Widgets -> Search -> Settings -> Clear Storage.
+    - [x] Update descriptions to match the professional copy defined in the spec.
     - [ ] Perform a full walkthrough to verify tooltip positioning.
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Sequence & Polish' (Protocol in workflow.md)
