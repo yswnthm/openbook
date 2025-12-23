@@ -89,7 +89,7 @@ export const NotebookProvider = ({ children }: { children: ReactNode }) => {
         // Check if limit is reached for free users
         if (!premium && notebooks.length >= NOTEBOOK_LIMIT) {
             showLimitModal(
-                `You've reached the maximum of ${NOTEBOOK_LIMIT} notebooks in the free plan. Upgrade to premium for unlimited notebooks.`,
+                `You've reached the maximum of ${NOTEBOOK_LIMIT} notebooks. Please delete some notebooks to create new ones.`,
                 'notebook',
             );
             return null;

@@ -7,7 +7,7 @@ import { useLimitModal } from './LimitModalContext';
 import { JOURNAL_ENTRIES_KEY } from '@/lib/storageKeys';
 
 const STORAGE_KEY = JOURNAL_ENTRIES_KEY;
-const JOURNAL_LIMIT = 3;
+const JOURNAL_LIMIT = 10;
 
 interface JournalContextType {
     entries: JournalEntry[];
@@ -100,7 +100,7 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
                         // Use a timeout to show modal to avoid side-effects inside updater
                         setTimeout(() => {
                             showLimitModal(
-                                `You've reached the maximum of ${JOURNAL_LIMIT} journals per notebook in the free plan. Upgrade to premium for unlimited journals.`,
+                                `You've reached the maximum of ${JOURNAL_LIMIT} journals per notebook. Please delete some journals to create new ones.`,
                                 'journal',
                             );
                         }, 0);
