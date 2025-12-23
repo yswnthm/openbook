@@ -2,15 +2,15 @@
 
 This plan expands the interactive onboarding tutorial to cover advanced research tools, study frameworks, and utility features.
 
-## Phase 1: Infrastructure & ID Preparation [checkpoint: 55806e5]
+## Phase 1: Infrastructure & ID Preparation [checkpoint: be5cdfc]
 Prepare the UI components by adding necessary DOM IDs for targeting by the onboarding overlay.
 
 - [x] Task: Add DOM IDs to Chat Components [aecc7e5]
-    - [ ] Add `id="onboarding-widgets-container"` to the `WidgetSection` wrapper in `app/(core)/ChatClient.tsx`.
+    - [x] Add `id="onboarding-widgets-container"` to the `WidgetSection` wrapper in `app/(core)/ChatClient.tsx`.
 - [x] Task: Add DOM IDs to Sidebar Components [a56b4ae]
-    - [ ] Add `id="sidebar-settings-trigger"` to the Settings button in `components/layout/sidebar.tsx`.
-    - [ ] Add `id="sidebar-clear-storage-trigger"` to the Clear Storage button in `components/layout/sidebar.tsx`.
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure & ID Preparation' (Protocol in workflow.md)
+    - [x] Add `id="sidebar-settings-trigger"` to the Settings button in `components/layout/sidebar.tsx`.
+    - [x] Add `id="sidebar-clear-storage-trigger"` to the Clear Storage button in `components/layout/sidebar.tsx`.
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Infrastructure & ID Preparation' (Protocol in workflow.md) [checkpoint: be5cdfc]
 
 ## Phase 2: Expanded Registration Logic
 Update the onboarding step registration to split slash commands and add the new widget step.
