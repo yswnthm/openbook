@@ -12,14 +12,14 @@
 - [x] Task: Implement smooth Framer Motion animations for the overlay and tooltip transitions. [3fa79e7]
 - [x] Task: Conductor - User Manual Verification 'UI Components' (Protocol in workflow.md)
 
-## Phase 3: Integration & Content
+## Phase 3: Integration & Content [checkpoint: f51adba]
 - [x] Task: Integrate `OnboardingContext` into the root layout. [c22dd55]
 - [x] Task: Update the `AIModelPicker` component to register as step 1. [c22dd55]
 - [x] Task: Update the `ModeToggle` (or equivalent) component to register as step 2. [c22dd55]
 - [x] Task: Update the main `ChatInput` area to register as step 3. [c22dd55]
 - [x] Task: Update the `Sidebar` toggle to register as step 4. [c22dd55]
 - [x] Task: Define the final tour content (text strings) for each step. [c22dd55]
-- [ ] Task: Conductor - User Manual Verification 'Integration & Content' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Integration & Content' (Protocol in workflow.md)
 
 ## Phase 4: Polish & Review
 - [ ] Task: Verify keyboard navigation and focus management for accessibility.
