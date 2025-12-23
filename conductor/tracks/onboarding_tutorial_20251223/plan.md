@@ -13,12 +13,12 @@
 - [x] Task: Conductor - User Manual Verification 'UI Components' (Protocol in workflow.md)
 
 ## Phase 3: Integration & Content
-- [~] Task: Integrate `OnboardingContext` into the root layout.
-- [ ] Task: Update the `AIModelPicker` component to register as step 1.
-- [ ] Task: Update the `ModeToggle` (or equivalent) component to register as step 2.
-- [ ] Task: Update the main `ChatInput` area to register as step 3.
-- [ ] Task: Update the `Sidebar` toggle to register as step 4.
-- [ ] Task: Define the final tour content (text strings) for each step.
+- [x] Task: Integrate `OnboardingContext` into the root layout. [c22dd55]
+- [x] Task: Update the `AIModelPicker` component to register as step 1. [c22dd55]
+- [x] Task: Update the `ModeToggle` (or equivalent) component to register as step 2. [c22dd55]
+- [x] Task: Update the main `ChatInput` area to register as step 3. [c22dd55]
+- [x] Task: Update the `Sidebar` toggle to register as step 4. [c22dd55]
+- [x] Task: Define the final tour content (text strings) for each step. [c22dd55]
 - [ ] Task: Conductor - User Manual Verification 'Integration & Content' (Protocol in workflow.md)
 
 ## Phase 4: Polish & Review
