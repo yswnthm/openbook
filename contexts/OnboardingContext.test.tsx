@@ -28,4 +28,39 @@ describe("OnboardingContext", () => {
         expect(result.current.activeStep).toBe(0);
         expect(result.current.isCompleted).toBe(false);
     });
+
+    test("should allow registering steps", () => {
+        const wrapper = ({ children }) => (
+            React.createElement(OnboardingProvider, null, children)
+        );
+        const { result } = renderHook(() => useOnboarding(), { wrapper });
+
+        const step = {
+            id: "step1",
+            title: "Step 1",
+            description: "Description 1",
+            targetId: "target1"
+        };
+
+        React.act(() => {
+            result.current.registerStep(step);
+        });
+
+        expect(result.current.steps).toHaveLength(1);
+        expect(result.current.steps[0]).toEqual(step);
+    });
+
+    test("should mark as completed", () => {
+        const wrapper = ({ children }) => (
+            React.createElement(OnboardingProvider, null, children)
+        );
+        const { result } = renderHook(() => useOnboarding(), { wrapper });
+
+        React.act(() => {
+            result.current.completeTutorial();
+        });
+
+        expect(result.current.isCompleted).toBe(true);
+        expect(result.current.isVisible).toBe(false);
+    });
 });
