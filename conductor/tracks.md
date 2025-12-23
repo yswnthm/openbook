@@ -4,5 +4,5 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [ ] Track: Add an interactive onboarding tutorial to explain OpenBook's interface
+## [~] Track: Add an interactive onboarding tutorial to explain OpenBook's interface
 *Link: [./conductor/tracks/onboarding_tutorial_20251223/](./conductor/tracks/onboarding_tutorial_20251223/)*
