@@ -22,7 +22,7 @@
 - [x] Task: Conductor - User Manual Verification 'Integration & Content' (Protocol in workflow.md)
 
 ## Phase 4: Polish & Review
-- [ ] Task: Verify keyboard navigation and focus management for accessibility.
-- [ ] Task: Test the "Skip" and "Complete" flows to ensure persistence works.
+- [x] Task: Verify keyboard navigation and focus management for accessibility. [aeae8d2]
+- [~] Task: Test the "Skip" and "Complete" flows to ensure persistence works.
 - [ ] Task: Refine animations and visual styling to match product guidelines.
 - [ ] Task: Conductor - User Manual Verification 'Polish & Review' (Protocol in workflow.md)
