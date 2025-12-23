@@ -54,6 +54,7 @@ function generateUniqueUntitledTitle(entries: JournalEntry[], notebook_id?: stri
 export const JournalProvider = ({ children }: { children: ReactNode }) => {
     const [entries, setEntries] = useState<JournalEntry[]>([]);
     const [initialized, setInitialized] = useState(false);
+    const [loadFailed, setLoadFailed] = useState(false);
     const { premium } = useUser();
     const { showLimitModal } = useLimitModal();
 
@@ -63,17 +64,20 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
         if (data) {
             try {
                 setEntries(JSON.parse(data));
+                setInitialized(true);
             } catch (e) {
                 console.error('Failed to parse journal entries from storage', e);
+                setLoadFailed(true);
             }
+        } else {
+            // Mark as initialized if no data was present
+            setInitialized(true);
         }
-        // Mark as initialized whether or not data was present
-        setInitialized(true);
     }, []);
 
     // Persist entries on change, but skip initial load to avoid overwriting
     useEffect(() => {
-        if (!initialized) {
+        if (!initialized || loadFailed) {
             return;
         }
 
@@ -82,7 +86,7 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
         } catch (e) {
             console.error('Failed to persist entries', e);
         }
-    }, [entries, initialized]);
+    }, [entries, initialized, loadFailed]);
 
     const createEntry = useCallback(
         (title: string, notebook_id?: string) => {
