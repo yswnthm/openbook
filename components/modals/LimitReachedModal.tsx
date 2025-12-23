@@ -157,56 +157,12 @@ export const LimitReachedModal = ({ isOpen, onClose, message, limitType }: Limit
                                     {message}
                                 </p>
 
-                                <div className="w-full p-4 mb-4 bg-white/30 dark:bg-black/30 rounded-lg backdrop-blur-sm border border-white/30 dark:border-neutral-700/30">
-                                    <div className="flex items-center justify-center gap-2 mb-2">
-                                        <Crown
-                                            className="h-5 w-5 text-neutral-700 dark:text-neutral-300"
-                                            aria-hidden="true"
-                                        />
-                                        <span className="font-medium text-neutral-800 dark:text-neutral-100">
-                                            Premium Benefits
-                                        </span>
-                                    </div>
-                                    <ul className="text-xs text-left text-neutral-600 dark:text-neutral-300 space-y-1.5">
-                                        <li className="flex items-center gap-2">
-                                            <span className="text-neutral-700 dark:text-neutral-300" aria-hidden="true">
-                                                ✓
-                                            </span>
-                                            <span>Unlimited notebooks</span>
-                                        </li>
-                                        <li className="flex items-center gap-2">
-                                            <span className="text-neutral-700 dark:text-neutral-300" aria-hidden="true">
-                                                ✓
-                                            </span>
-                                            <span>Unlimited journals per notebook</span>
-                                        </li>
-                                        <li className="flex items-center gap-2">
-                                            <span className="text-neutral-700 dark:text-neutral-300" aria-hidden="true">
-                                                ✓
-                                            </span>
-                                            <span>Unlimited spaces per notebook</span>
-                                        </li>
-                                        <li className="flex items-center gap-2">
-                                            <span className="text-neutral-700 dark:text-neutral-300" aria-hidden="true">
-                                                ✓
-                                            </span>
-                                            <span>Enhanced AI capabilities</span>
-                                        </li>
-                                    </ul>
-                                </div>
-
                                 <div className="flex gap-3 w-full">
                                     <button
                                         onClick={onClose}
-                                        className="flex-1 px-4 py-2 text-sm font-medium rounded-md bg-white/20 dark:bg-white/10 backdrop-blur-sm text-neutral-700 dark:text-neutral-200 hover:bg-white/30 dark:hover:bg-black/30 transition-colors border border-white/30 dark:border-neutral-700/30"
-                                    >
-                                        Maybe Later
-                                    </button>
-                                    <button
-                                        onClick={handleEnablePremium}
                                         className="flex-1 px-4 py-2 text-sm font-medium rounded-md bg-gradient-to-r from-neutral-600 to-neutral-800 dark:from-neutral-700 dark:to-black text-white hover:from-neutral-700 hover:to-neutral-900 dark:hover:from-neutral-600 dark:hover:to-neutral-900 transition-colors shadow-md"
                                     >
-                                        Enable Premium
+                                        Got it
                                     </button>
                                 </div>
                             </div>

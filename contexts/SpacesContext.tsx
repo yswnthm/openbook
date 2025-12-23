@@ -71,6 +71,7 @@ const SpacesContext = React.createContext<SpacesContextType | undefined>(undefin
 import { SPACES_DATA_KEY } from '@/lib/storageKeys';
 
 const STORAGE_KEY = SPACES_DATA_KEY;
+const SPACE_LIMIT = 10;
 
 export const SpacesProvider = ({ children }: { children: ReactNode }) => {
     const [spaces, setSpaces] = React.useState<Space[]>([]);
@@ -232,9 +233,9 @@ export const SpacesProvider = ({ children }: { children: ReactNode }) => {
     const createSpace = (name: string, notebook_id?: string) => {
         if (!premium && notebook_id) {
             const notebookSpacesCount = spaces.filter((s) => s.notebook_id === notebook_id).length;
-            if (notebookSpacesCount >= 3) {
+            if (notebookSpacesCount >= SPACE_LIMIT) {
                 showLimitModal(
-                    "You've reached the maximum of 3 spaces per notebook in the free plan. Upgrade to premium for unlimited spaces.",
+                    `You've reached the maximum of ${SPACE_LIMIT} spaces per notebook. Please delete some spaces to create new ones.`,
                     'space',
                 );
                 return null;
@@ -255,7 +256,7 @@ export const SpacesProvider = ({ children }: { children: ReactNode }) => {
             // Re-check the count inside the functional update to ensure atomicity
             if (!premium && notebook_id) {
                 const currentNotebookSpacesCount = prev.filter((s) => s.notebook_id === notebook_id).length;
-                if (currentNotebookSpacesCount >= 3) {
+                if (currentNotebookSpacesCount >= SPACE_LIMIT) {
                     // Abort creation – limit reached (race-condition safety)
                     if (pendingSpaceCreation.current === newId) {
                         pendingSpaceCreation.current = null;
