@@ -229,7 +229,7 @@ export function ChatInput({
     };
 
     return (
-        <div className="relative w-full">
+        <div id="chat-input-container" className="relative w-full">
             {/* Loading Progress Bar - Positioned ABOVE input with improved visuals */}
             {status === 'loading' && (
                 <div className="absolute bottom-full left-0 right-0 mb-3 px-1 animate-in fade-in slide-in-from-bottom-2 duration-300">

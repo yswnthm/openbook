@@ -10,6 +10,8 @@ import { SettingsProvider } from '@/contexts/SettingsContext';
 import { JournalProvider } from '@/contexts/JournalContext';
 import { SidebarProvider } from '@/contexts/SidebarContext';
 import SidebarLayout from './SidebarLayout';
+import { OnboardingProvider } from '@/contexts/OnboardingContext';
+import { OnboardingOverlay, TooltipCard } from '@/components/features/onboarding';
 
 export default function CoreLayout({
     children,
@@ -25,9 +27,13 @@ export default function CoreLayout({
                             <JournalProvider>
                                 <Toaster position="top-center" />
                                 <SidebarProvider>
-                                    <SidebarLayout>
-                                        {children}
-                                    </SidebarLayout>
+                                    <OnboardingProvider>
+                                        <SidebarLayout>
+                                            {children}
+                                        </SidebarLayout>
+                                        <OnboardingOverlay />
+                                        <TooltipCard />
+                                    </OnboardingProvider>
                                 </SidebarProvider>
                             </JournalProvider>
                         </SpacesProvider>

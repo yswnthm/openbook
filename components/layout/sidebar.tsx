@@ -38,6 +38,7 @@ import SidebarNotebook from '@/components/layout/SidebarNotebook';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SearchModal } from '@/components/features/search/search-modal';
 import { SettingsPanel } from '@/components/features/settings/settings-panel';
+import { useOnboarding } from '@/contexts/OnboardingContext';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -45,7 +46,20 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
+    const { registerStep } = useOnboarding();
     const [initialExpansionDone, setInitialExpansionDone] = useState(false);
+
+    // Register sidebar onboarding step
+    useEffect(() => {
+        if (isOpen) {
+            registerStep({
+                id: 'sidebar-search',
+                title: 'Knowledge Base Search',
+                description: 'Quickly find any previous conversation, journal entry, or saved note across your entire library.',
+                targetId: 'sidebar-search-trigger'
+            });
+        }
+    }, [isOpen, registerStep]);
     const [showSearchModal, setShowSearchModal] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<{
@@ -271,6 +285,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                         {/* Search button styled like the original input */}
                         <div className="relative px-4 mt-4 mb-2">
                             <button
+                                id="sidebar-search-trigger"
                                 className="w-full flex items-center justify-between px-2 py-1.5 bg-neutral-50 dark:bg-neutral-800 rounded-md border border-neutral-200 dark:border-neutral-700 text-neutral-400 dark:text-neutral-500 text-sm cursor-text hover:bg-neutral-100 dark:hover:bg-neutral-700/50"
                                 onClick={() => setShowSearchModal(true)}
                             >

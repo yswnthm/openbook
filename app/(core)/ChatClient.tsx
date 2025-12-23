@@ -48,6 +48,7 @@ import { useWebLLM } from '@/hooks/use-web-llm';
 
 import { Streak } from '@/components/features/spaces/Streak';
 import { SurprisePromptButton } from '@/components/features/spaces/SurprisePromptButton';
+import { useOnboarding } from '@/contexts/OnboardingContext';
 
 interface Attachment {
     name: string;
@@ -146,8 +147,42 @@ WidgetSection.displayName = 'WidgetSection';
 
 const HomeContent = () => {
     const { isOpen: isSidebarOpen } = useSidebar();
+    const { registerStep, isCompleted, startTutorial } = useOnboarding();
     const [query] = useQueryState('query', parseAsString.withDefault(''));
     const [q] = useQueryState('q', parseAsString.withDefault(''));
+
+    // Register onboarding steps
+    useEffect(() => {
+        registerStep({
+            id: 'chat-input',
+            title: 'Welcome to OpenBook',
+            description: 'This is your smart chat input. You can type natural language questions or use / commands to unlock powerful research tools.',
+            targetId: 'chat-input-container'
+        });
+        registerStep({
+            id: 'command-menu',
+            title: 'Slash Commands',
+            description: 'Type / to switch AI models, activate study frameworks, or compact long conversations into concise summaries.',
+            targetId: 'chat-input-container'
+        });
+        registerStep({
+            id: 'sidebar-search',
+            title: 'Universal Search',
+            description: 'Looking for a specific note or a past conversation? Use the global search to find anything in your library instantly.',
+            targetId: 'sidebar-search-trigger'
+        });
+    }, [registerStep]);
+
+    // Auto-start tutorial for new users
+    useEffect(() => {
+        if (!isCompleted) {
+            // Small delay to ensure everything is rendered
+            const timer = setTimeout(() => {
+                startTutorial();
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [isCompleted, startTutorial]);
 
     // Conversation spaces context
     const { currentSpace, currentSpaceId, switchSpace, addMessage, createSpace, markSpaceContextReset } = useSpaces();
