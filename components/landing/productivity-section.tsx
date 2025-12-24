@@ -71,10 +71,9 @@ export function ProductivitySection() {
                             </div>
                         </div>
 
-                        <div className="mt-12 max-w-2xl mx-auto">
-                            <h3 className="text-2xl font-semibold mb-6">Talk to Your Notebook</h3>
+                        <div className="mt-12 w-full">
                             <div className="relative z-10 w-full">
-                                <div className="bg-background rounded-2xl border border-border shadow-2xl">
+                                <div className="bg-background rounded-2xl border border-border shadow-2xl p-6">
                                     <ChatInput
                                         value={input}
                                         onChange={setInput}
