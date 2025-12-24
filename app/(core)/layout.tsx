@@ -2,7 +2,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Toaster } from 'sonner';
-import './globals.css';
+
 import { Providers } from '../(config)/providers';
 import { SpacesProvider } from '@/contexts/SpacesContext';
 import { NotebookProvider } from '@/contexts/NotebookContext';

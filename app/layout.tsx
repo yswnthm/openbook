@@ -1,8 +1,9 @@
 import { GeistSans } from 'geist/font/sans';
 import 'katex/dist/katex.min.css';
+import './globals.css';
 
 import { Metadata, Viewport } from 'next';
-import { Syne } from 'next/font/google';
+import { Syne, Instrument_Serif } from 'next/font/google';
 import Script from 'next/script';
 
 export const metadata: Metadata = {
@@ -68,6 +69,13 @@ export const viewport: Viewport = {
     ],
 };
 
+const instrumentSerif = Instrument_Serif({
+    subsets: ['latin'],
+    variable: '--font-instrument-serif',
+    weight: '400',
+    display: 'swap',
+});
+
 const syne = Syne({
     subsets: ['latin'],
     variable: '--font-syne',
@@ -92,7 +100,7 @@ export default function RootLayout({
                     />
                 )}
             </head>
-            <body className={`${GeistSans.variable} ${syne.variable} font-sans antialiased`}>
+            <body className={`${GeistSans.variable} ${syne.variable} ${instrumentSerif.variable} font-sans antialiased`}>
                 {children}
             </body>
         </html>

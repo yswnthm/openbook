@@ -300,3 +300,26 @@
 .callout {
   @apply bg-yellow-100 dark:bg-yellow-800 border-l-4 border-yellow-500 p-4 my-2;
 }
+
+/* Landing Page Styles */
+@layer utilities {
+  .bg-dots {
+    background-image: radial-gradient(circle at 0 0, hsl(var(--muted-foreground)) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .light .bg-dots {
+    background-image: radial-gradient(circle at 0 0, rgba(0, 0, 0, 0.9) 1px, transparent 2px);
+    background-size: 40px 40px;
+  }
+
+  .gradient-text {
+    background: linear-gradient(to right, var(--foreground), var(--muted-foreground));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .header-layer { z-index: 50; }
+  .dropdown-layer { z-index: 55; }
+}
