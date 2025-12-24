@@ -7,8 +7,8 @@ import CombinedFooter from "@/components/landing/CombinedFooter"
 import { HeroSection } from "@/components/landing/hero-section"
 import { FeaturesSection } from "@/components/landing/features-section"
 import { InterfacePreviewSection } from "@/components/landing/interface-preview-section"
-import { ChatDemoSection } from "@/components/landing/chat-demo-section"
 import { ProductivitySection } from "@/components/landing/productivity-section"
+
 import { TestimonialsSection } from "@/components/landing/testimonials-section"
 import { CTASection } from "@/components/landing/cta-section"
 import AnimateInView from "@/components/landing/animate-in-view"
@@ -42,11 +42,7 @@ export default function LandingPage() {
                         <SectionSeparator />
                     </AnimateInView>
 
-                    <ChatDemoSection />
 
-                    <AnimateInView>
-                        <SectionSeparator />
-                    </AnimateInView>
 
                     <ProductivitySection />
 
