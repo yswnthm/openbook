@@ -105,14 +105,6 @@ export default function CombinedFooter() {
                   Team
                 </Link>
               </li>
-              <li>
-                <Link 
-                  href="/blogs" 
-                  className="text-sm text-muted-foreground hover:text-foreground"
-                >
-                  Blogs
-                </Link>
-              </li>
             </ul>
           </div>
 

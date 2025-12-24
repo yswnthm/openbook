@@ -76,12 +76,6 @@ export default function Header() {
                         <div className="line-clamp-2 text-sm leading-snug text-muted-foreground">Meet the people behind OpenBook</div>
                       </Link>
                     </motion.div>
-                    <motion.div whileHover={hoverAnimation}>
-                      <Link href="/blogs" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground">
-                        <div className="text-sm font-medium">Blogs</div>
-                        <div className="line-clamp-2 text-sm leading-snug text-muted-foreground">Read our latest articles and updates</div>
-                      </Link>
-                    </motion.div>
                   </div>
                 )}
               </div>
@@ -210,15 +204,6 @@ export default function Header() {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Team
-                </Link>
-              </motion.div>
-              <motion.div whileHover={{ x: 2 }}>
-                <Link
-                  href="/blogs"
-                  className="block py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Blogs
                 </Link>
               </motion.div>
             </div>
