@@ -1,5 +1,6 @@
 import { BookOpen, Mail, MapPin, Phone, Github, Twitter, MessagesSquare, MessageCircleIcon } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import css from './footer.module.css';
 
 export default function CombinedFooter() {
@@ -16,7 +17,7 @@ export default function CombinedFooter() {
           {/* First column - OpenBook info with more width */}
           <div className="md:col-span-5 space-y-4">
             <div className="flex items-center space-x-2">
-              <BookOpen className="h-6 w-6" />
+              <Image src="/logo.svg" alt="OpenBook Logo" width={24} height={24} className="h-6 w-6 dark:invert" />
               <span className="text-xl font-bold">OpenBook</span>
             </div>
             <p className="text-sm text-muted-foreground max-w-md">
@@ -46,27 +47,27 @@ export default function CombinedFooter() {
             <h3 className="text-sm font-semibold uppercase tracking-wider">Resources</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link 
-                  href="https://github.com/yeswanth49/openbook" 
-                  target="_blank" 
+                <Link
+                  href="https://github.com/yeswanth49/openbook"
+                  target="_blank"
                   className="block text-sm text-muted-foreground hover:text-foreground"
                 >
                   GitHub
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="https://x.com/GoOpenBook" 
-                  target="_blank" 
+                <Link
+                  href="https://x.com/GoOpenBook"
+                  target="_blank"
                   className="block text-sm text-muted-foreground hover:text-foreground"
                 >
                   Twitter
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="https://discord.com/users/810347349418573825" 
-                  target="_blank" 
+                <Link
+                  href="https://discord.com/users/810347349418573825"
+                  target="_blank"
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
                 >
                   <MessagesSquare className="h-4 w-4" />
@@ -74,8 +75,8 @@ export default function CombinedFooter() {
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/chat" 
+                <Link
+                  href="/chat"
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
                 >
                   <MessageCircleIcon className="h-4 w-4" />
@@ -90,16 +91,16 @@ export default function CombinedFooter() {
             <h3 className="text-sm font-semibold uppercase tracking-wider">Company</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link 
-                  href="/about" 
+                <Link
+                  href="/about"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   About
                 </Link>
               </li>
               <li>
-                <Link 
-                  href="/team" 
+                <Link
+                  href="/team"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
                   Team

@@ -1,12 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { BookOpen, ChevronDown, Menu, X, Github, Twitter, MessagesSquare, MessageCircleIcon } from "lucide-react"
+import { ChevronDown, Menu, X, Github, Twitter, MessagesSquare, MessageCircleIcon } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
+
+import Image from "next/image"
+
+// ... imports
 
 // Animation variants for hover effects
 const hoverAnimation = {
@@ -43,14 +47,14 @@ export default function Header() {
         <div className="flex items-center gap-6">
           <Link className="relative cursor-pointer flex items-center gap-2" href="/">
             <motion.div whileHover={{ rotate: 10 }} transition={{ type: "spring", stiffness: 400 }}>
-              <BookOpen className="h-[22px] w-[22px]" />
+              <Image src="/logo.svg" alt="OpenBook Logo" width={22} height={22} className="h-[22px] w-[22px] dark:invert" />
             </motion.div>
             <span className="text-lg font-bold tracking-tight">OpenBook</span>
           </Link>
-          
+
           <div className="hidden md:block">
             <div className="flex items-center space-x-1 gap-1">
-              <div 
+              <div
                 className="relative group cursor-pointer"
                 onMouseEnter={() => handleMouseEnter('company')}
                 onMouseLeave={handleMouseLeave}
@@ -59,9 +63,9 @@ export default function Header() {
                   Company
                   <ChevronDown className={`ml-1 h-4 w-4 transition-transform ${activeItem === 'company' ? 'rotate-180' : ''}`} />
                 </div>
-                
+
                 {activeItem === 'company' && (
-                  <div 
+                  <div
                     className="dropdown-layer absolute top-full left-0 mt-1 bg-popover/95 backdrop-blur-lg rounded-lg border shadow-lg p-4 w-[400px] z-50 grid gap-3"
                   >
                     <motion.div whileHover={hoverAnimation}>
@@ -79,8 +83,8 @@ export default function Header() {
                   </div>
                 )}
               </div>
-              
-              <div 
+
+              <div
                 className="relative group cursor-pointer"
                 onMouseEnter={() => handleMouseEnter('resources')}
                 onMouseLeave={handleMouseLeave}
@@ -89,9 +93,9 @@ export default function Header() {
                   Resources
                   <ChevronDown className={`ml-1 h-4 w-4 transition-transform ${activeItem === 'resources' ? 'rotate-180' : ''}`} />
                 </div>
-                
+
                 {activeItem === 'resources' && (
-                  <div 
+                  <div
                     className="dropdown-layer absolute top-full left-0 mt-1 bg-popover/95 backdrop-blur-lg rounded-lg border shadow-lg p-4 w-[400px] z-50"
                   >
                     <div className="grid grid-cols-2 gap-3">
@@ -145,7 +149,7 @@ export default function Header() {
             </div>
           </div>
         </div>
-        
+
         <div className="hidden md:flex items-center gap-2">
           <motion.div whileHover={buttonHoverAnimation}>
             <ThemeToggle />
@@ -166,8 +170,8 @@ export default function Header() {
           </motion.div>
         </div>
 
-        <motion.button 
-          className="md:hidden" 
+        <motion.button
+          className="md:hidden"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
