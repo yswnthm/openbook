@@ -10,13 +10,16 @@ import { InterfacePreviewSection } from "@/components/landing/interface-preview-
 import { ChatDemoSection } from "@/components/landing/chat-demo-section"
 import { ProductivitySection } from "@/components/landing/productivity-section"
 import { BlogSection } from "@/components/landing/blog-section"
+import { TestimonialsSection } from "@/components/landing/testimonials-section"
 import { CTASection } from "@/components/landing/cta-section"
 import AnimateInView from "@/components/landing/animate-in-view"
+import { ImageBackground } from '@/components/landing/image-background';
 
 export default function LandingPage() {
     return (
         <Providers>
-            <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/20">
+            <ImageBackground />
+            <div className="min-h-screen text-foreground overflow-x-hidden selection:bg-primary/20">
                 <Header />
                 
                 <main className="animate-fadeIn pt-16 md:pt-24">
@@ -51,6 +54,12 @@ export default function LandingPage() {
                     </AnimateInView>
 
                     <BlogSection />
+
+                    <AnimateInView>
+                        <SectionSeparator />
+                    </AnimateInView>
+
+                    <TestimonialsSection />
 
                     <AnimateInView>
                         <SectionSeparator />

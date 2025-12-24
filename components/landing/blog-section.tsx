@@ -68,7 +68,7 @@ export function BlogSection() {
     }, [router]);
 
     return (
-        <section className="py-24 bg-muted/20">
+        <section className="py-24">
             <div className="container mx-auto px-4 md:px-6">
                 <SectionHeading title="From Our Blog" description="Latest articles and insights for better learning" />
 

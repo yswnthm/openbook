@@ -83,8 +83,6 @@ const syne = Syne({
     display: 'swap',
 });
 
-import { ImageBackground } from '@/components/landing/image-background';
-
 export default function RootLayout({
     children,
 }: {
@@ -103,7 +101,6 @@ export default function RootLayout({
                 )}
             </head>
             <body className={`${GeistSans.variable} ${syne.variable} ${instrumentSerif.variable} font-sans antialiased`}>
-                <ImageBackground />
                 {children}
             </body>
         </html>
