@@ -12,18 +12,18 @@ import { ProductivitySection } from "@/components/landing/productivity-section"
 import { TestimonialsSection } from "@/components/landing/testimonials-section"
 import { CTASection } from "@/components/landing/cta-section"
 import AnimateInView from "@/components/landing/animate-in-view"
-import { ImageBackground } from '@/components/landing/image-background';
+
 
 export default function LandingPage() {
     return (
         <Providers>
-            <ImageBackground />
+
             <div className="min-h-screen text-foreground overflow-x-hidden selection:bg-primary/20">
                 <Header />
-                
+
                 <main className="animate-fadeIn pt-16 md:pt-24">
                     <HeroSection />
-                    
+
                     <AnimateInView>
                         <SectionSeparator />
                     </AnimateInView>
