@@ -14,8 +14,8 @@ Remove every trace of the blog feature, including components, pages, routes, log
 - [x] Task: Conductor - User Manual Verification 'UI & Component Removal' (Protocol in workflow.md) [8b3aa3a]
 
 ## Phase 3: Route & Logic Removal
-- [ ] Task: Delete blog-related pages in `app/` (e.g., `app/(pages)/blog` if it exists, or similar)
-- [ ] Task: Remove any blog-specific API routes in `app/api/`
+- [x] Task: Delete blog-related pages in `app/` (e.g., `app/(pages)/blog` if it exists, or similar) [N/A]
+- [x] Task: Remove any blog-specific API routes in `app/api/` [N/A]
 - [ ] Task: Clean up blog-specific types in `lib/types.ts` or `types/`
 - [ ] Task: Conductor - User Manual Verification 'Route & Logic Removal' (Protocol in workflow.md)
 
