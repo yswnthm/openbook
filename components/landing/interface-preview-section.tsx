@@ -6,8 +6,8 @@ import SectionHeading from "./section-heading"
 
 export function InterfacePreviewSection() {
   return (
-    <section className="py-24 relative overflow-hidden bg-muted/30">
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[55%] h-[140%] z-0 hidden lg:block pointer-events-none">
+    <section className="py-40 lg:py-64 relative overflow-hidden bg-muted/30">
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[55%] h-[120%] z-0 hidden lg:block pointer-events-none">
         <div className="relative w-full h-full">
           <Image
             src="/screenshots/iPhones1.png"
