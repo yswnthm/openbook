@@ -104,7 +104,6 @@ export default function RootLayout({
             </head>
             <body className={`${GeistSans.variable} ${syne.variable} ${instrumentSerif.variable} font-sans antialiased`}>
                 <ImageBackground />
-                <div className="bg-dots-overlay" />
                 {children}
             </body>
         </html>
