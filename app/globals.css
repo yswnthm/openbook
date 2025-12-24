@@ -53,6 +53,10 @@
   text-wrap: balance;
 }
 
+@utility font-instrument-serif {
+  font-family: var(--font-instrument-serif);
+}
+
 @layer utilities {
   .markdown-body .katex {
     font-size: 1.1em;
