@@ -1,0 +1,13 @@
+
+export { default as Header } from "./header"
+export { default as CombinedFooter } from "./CombinedFooter"
+export { LandingBackground } from "./landing-background"
+export { PageHero } from "./page-hero"
+export { default as AnimateInView } from "./animate-in-view"
+export { HeroSection } from "./hero-section"
+export { FeaturesSection } from "./features-section"
+export { InterfacePreviewSection } from "./interface-preview-section"
+export { ProductivitySection } from "./productivity-section"
+export { TestimonialsSection } from "./testimonials-section"
+export { CTASection } from "./cta-section"
+export { CallToAction } from "./call-to-action"
