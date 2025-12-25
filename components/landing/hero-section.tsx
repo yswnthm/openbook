@@ -51,6 +51,15 @@ export function HeroSection() {
           </AnimateInView>
         </div>
       </div>
+
+      {/* Graph Overlay */}
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] pointer-events-none opacity-20 dark:opacity-40 hidden lg:block z-0">
+        <img
+          src="/screenshots/graph69.png"
+          alt="Graph Overlay"
+          className="w-full h-full object-contain"
+        />
+      </div>
     </section>
   )
 }
