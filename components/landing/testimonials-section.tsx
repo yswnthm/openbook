@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import SectionHeading from "./section-heading"
 import { cn } from "@/lib/utils"
-import { BadgeCheck } from "lucide-react"
+
 
 const TESTIMONIALS = [
   {
@@ -121,7 +121,10 @@ const TestimonialCard = ({ testimonial }: { testimonial: typeof TESTIMONIALS[0] 
           <div className="flex flex-col">
             <div className="flex items-center gap-1">
               <span className="font-semibold text-sm text-foreground">{testimonial.name}</span>
-              <BadgeCheck className="h-4 w-4 text-primary fill-primary/10" />
+              <svg className="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20.396 11c-.018-.646-.215-1.275-.57-1.816-.354-.54-.852-.972-1.438-1.246.223-.603.27-1.264.14-1.897-.131-.634-.437-1.218-.882-1.687-.47-.445-1.053-.75-1.687-.882-.633-.13-1.294-.083-1.897.14-.273-.587-.704-1.086-1.245-1.44S11.647 1.62 11 1.604c-.646.017-1.273.213-1.813.568s-.969.854-1.24 1.44c-.604-.223-1.264-.27-1.896-.14-.635.13-1.218.436-1.687.882-.445.468-.75 1.053-.882 1.687-.13.633-.083 1.294.14 1.897-.588.274-1.087.705-1.44 1.246-.354.54-.55 1.17-.568 1.816.017.647.213 1.276.568 1.817.354.54.853.972 1.44 1.245-.224.604-.27 1.265-.14 1.898.13.634.437 1.218.882 1.687.47.445 1.053.75 1.687.882.634.13 1.293.083 1.897-.14.273.587.704 1.086 1.244 1.44s1.168.55 1.814.568c.647-.017 1.276-.213 1.817-.568.54-.354.97-.853 1.244-1.44.604.224 1.264.271 1.897.14.634-.132 1.218-.437 1.687-.882.445-.47.75-1.053.882-1.687.13-.634.083-1.294-.14-1.898.587-.273 1.087-.704 1.44-1.244.353-.54.55-1.17.568-1.817z" fill="#1D9BF0" />
+                <path d="M10.135 16.215L6.467 12.55l1.414-1.414 2.254 2.254 5.679-5.679 1.414 1.414-7.093 7.09z" fill="white" />
+              </svg>
             </div>
             <span className="text-xs text-muted-foreground">{testimonial.username} · {testimonial.time}</span>
           </div>
