@@ -18,7 +18,7 @@ export default function CombinedFooter() {
           <div className="md:col-span-5 space-y-4">
             <div className="flex items-center space-x-2">
               <Image src="/logo.svg" alt="OpenBook Logo" width={24} height={24} className="h-6 w-6 dark:invert" />
-              <span className="text-xl font-bold">OpenBook</span>
+              <span className="text-xl font-bold text-neutral-900 dark:text-foreground">OpenBook</span>
             </div>
             <p className="text-sm text-neutral-900 dark:text-muted-foreground max-w-md">
               Your smart Notebook. Personalized learning that adapts to your needs—accessible anytime, anywhere.
