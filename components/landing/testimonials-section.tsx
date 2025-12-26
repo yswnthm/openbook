@@ -194,8 +194,8 @@ export function TestimonialsSection() {
         />
       </div>
 
-      <div className="flex flex-col gap-6 relative [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-        <MarqueeRow items={firstRow} direction="left" speed={70} />
+      <div className="flex flex-col gap-6 relative [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
+        <MarqueeRow items={firstRow} direction="left" speed={80} />
         <MarqueeRow items={secondRow} direction="right" speed={80} />
       </div>
     </section>
