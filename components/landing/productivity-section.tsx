@@ -24,7 +24,7 @@ export function ProductivitySection() {
     }
 
     return (
-        <section className="py-24">
+        <section className="pt-24 pb-6">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="max-w-4xl mx-auto text-center">
                     <AnimateInView>
