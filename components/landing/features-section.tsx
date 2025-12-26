@@ -1,31 +1,62 @@
-"use client"
+"use client";
 
-import { Brain, Search, KeyRound, Lightbulb, Zap, Share2 } from "lucide-react"
-import AnimateInView from "./animate-in-view"
-import SectionHeading from "./section-heading"
-import Image from "next/image"
-import { motion } from "framer-motion"
-
-// Simplified Feature Card
-function SimpleFeature({ icon: Icon, title, description, delay }: { icon: any, title: string, description: string, delay: number }) {
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay }}
-      viewport={{ once: true }}
-      className="p-6 rounded-2xl bg-card/50 border border-border/40 backdrop-blur-sm hover:bg-card/80 transition-colors"
-    >
-      <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 text-primary">
-        <Icon className="h-6 w-6" />
-      </div>
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
-      <p className="text-muted-foreground leading-relaxed">{description}</p>
-    </motion.div>
-  )
-}
+import { Brain, Search, KeyRound, Lightbulb, Zap, Share2 } from "lucide-react";
+import AnimateInView from "./animate-in-view";
+import SectionHeading from "./section-heading";
+import Image from "next/image";
+import { BentoGrid, BentoGridItem } from "@/components/landing/bento-grid/bento-grid";
+import animationData from "@/components/landing/lottie-animations/data.json";
 
 export function FeaturesSection() {
+  const items = [
+    {
+      title: "Lightning-Fast Interface",
+      description: "Navigate your entire notebook using just your keyboard. Process and organize information in seconds.",
+      icon: <KeyRound className="h-4 w-4 text-neutral-500" />,
+      className: "md:col-span-2",
+      lottieData: animationData
+    },
+    {
+      title: "AI-Powered Learning",
+      description: "Let our AI generate explanations, create practice questions, and provide personalized study materials.",
+      icon: <Brain className="h-4 w-4 text-neutral-500" />,
+      className: "md:col-span-1",
+      lottieData: animationData
+    },
+    {
+      title: "Smart Search",
+      description: "Create personalized learning flows that match exactly how you study, memorize, and process information.",
+      icon: <Search className="h-4 w-4 text-neutral-500" />,
+      className: "md:col-span-1",
+      lottieData: animationData
+    },
+    {
+      title: "Instant Clarity",
+      description: "Turn complex topics into simple summaries. Understanding is just one click away.",
+      icon: <Lightbulb className="h-4 w-4 text-neutral-500" />,
+      className: "md:col-span-2",
+      lottieData: animationData
+    },
+    {
+      title: "Active Recall",
+      description: "Automated flashcards and quizzes testing your knowledge gaps exactly when you need it.",
+      icon: <Zap className="h-4 w-4 text-neutral-500" />,
+      className: "md:col-span-1",
+      lottieData: animationData
+    },
+    {
+      title: "Collaborative Spaces",
+      description: "Share your notes and learn together. Knowledge grows when it's shared.",
+      icon: <Share2 className="h-4 w-4 text-neutral-500" />,
+      className: "md:col-span-2", // This would make 2+1+1+2+1+2 = 9 cols. Wait.
+      // Grid is 3 cols.
+      // Row 1: 2 + 1 = 3 cols. OK.
+      // Row 2: 1 + 2 = 3 cols. OK.
+      // Row 3: 1 + 2 = 3 cols. OK.
+      lottieData: animationData
+    },
+  ];
+
   return (
     <section className="py-24 relative">
       <div className="container mx-auto px-4 md:px-6">
@@ -62,46 +93,19 @@ export function FeaturesSection() {
           </AnimateInView>
         </div>
 
-        {/* Grid Features */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <SimpleFeature 
-            icon={KeyRound}
-            title="Lightning-Fast Interface"
-            description="Navigate your entire notebook using just your keyboard. Process and organize information in seconds."
-            delay={0.1}
-          />
-          <SimpleFeature 
-            icon={Brain}
-            title="AI-Powered Learning"
-            description="Let our AI generate explanations, create practice questions, and provide personalized study materials."
-            delay={0.2}
-          />
-          <SimpleFeature 
-            icon={Search}
-            title="Smart Search"
-            description="Create personalized learning flows that match exactly how you study, memorize, and process information."
-            delay={0.3}
-          />
-          <SimpleFeature 
-            icon={Lightbulb}
-            title="Instant Clarity"
-            description="Turn complex topics into simple summaries. Understanding is just one click away."
-            delay={0.4}
-          />
-           <SimpleFeature 
-            icon={Zap}
-            title="Active Recall"
-            description="Automated flashcards and quizzes testing your knowledge gaps exactly when you need it."
-            delay={0.5}
-          />
-           <SimpleFeature 
-            icon={Share2}
-            title="Collaborative Spaces"
-            description="Share your notes and learn together. Knowledge grows when it's shared."
-            delay={0.6}
-          />
-        </div>
+        <BentoGrid className="max-w-4xl mx-auto">
+          {items.map((item, i) => (
+            <BentoGridItem
+              key={i}
+              title={item.title}
+              description={item.description}
+              icon={item.icon}
+              className={item.className}
+              lottieData={item.lottieData}
+            />
+          ))}
+        </BentoGrid>
       </div>
     </section>
-  )
+  );
 }
