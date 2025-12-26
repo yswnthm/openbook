@@ -39,7 +39,7 @@ export function TeamHero() {
   return (
     <section
       id="hero"
-      className="flex items-center justify-center px-10 md:px-20 lg:px-32 py-12 md:py-24"
+      className="flex items-center justify-center px-10 md:px-20 lg:px-32 py-12 md:py-24 min-h-[80vh] md:pl-48 lg:pl-64"
     >
       <div className="max-w-5xl mx-auto w-full">
         <div className="grid grid-cols-[auto_1fr] items-center gap-x-6 gap-y-8 md:gap-y-0 md:gap-x-12 lg:gap-x-20">
