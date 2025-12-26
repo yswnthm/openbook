@@ -39,14 +39,14 @@ export function TeamHero() {
   return (
     <section
       id="hero"
-      className="flex items-center justify-center px-10 md:px-20 lg:px-32 py-12 md:py-24 min-h-[80vh] md:pl-48 lg:pl-64"
+      className="flex items-center justify-center px-8 md:px-16 lg:px-24"
     >
-      <div className="max-w-5xl mx-auto w-full">
-        <div className="grid grid-cols-[auto_1fr] items-center gap-x-6 gap-y-8 md:gap-y-0 md:gap-x-12 lg:gap-x-20">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-6 md:gap-y-0 md:gap-x-8 lg:gap-x-12">
           {/* Profile Image - Left Side */}
           <div className="flex-shrink-0 row-span-1 md:row-span-2 self-start md:self-center">
             <div className="opacity-0 animate-fade-in-up">
-              <div className="relative w-20 h-20 sm:w-28 sm:h-28 md:w-56 md:h-56 lg:w-72 lg:h-72 rounded-full overflow-hidden border-4 border-border/20 shadow-lg">
+              <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-64 md:h-64 lg:w-80 lg:h-80 rounded-full overflow-hidden border-4 border-border/20 shadow-lg">
                 <Image
                   src="/pfp.webp"
                   alt="Yeswanth's profile picture"
@@ -63,26 +63,29 @@ export function TeamHero() {
           <div className="text-left max-w-2xl self-center md:self-end">
             <div className="opacity-0 animate-fade-in-up animate-delay-200">
               <h1
-                className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl mb-2 md:mb-4 font-bold leading-none tracking-tight font-league-spartan"
+                className="text-2xl sm:text-3xl md:text-6xl lg:text-7xl mb-1 md:mb-3 font-bold leading-none font-league-spartan"
               >
                 hi, i'm yswnth.
               </h1>
             </div>
 
             <div className="opacity-0 animate-fade-in-up animate-delay-300">
-              <p className="text-sm sm:text-base text-muted-foreground mb-1 leading-relaxed text-pretty font-mono">
+              <p className="text-xs sm:text-sm text-muted-foreground mb-1 leading-relaxed text-pretty">
                 been here for {currentAge} years
               </p>
+              <div className="mb-4 md:mb-6"></div>
             </div>
           </div>
 
-          {/* Remaining Content - Bottom */}
+          {/* Remaining Content - Bottom (Mobile: Full Width, Desktop: Right Side Bottom) */}
           <div className="col-span-2 md:col-span-1 text-left max-w-2xl md:w-full self-start">
-            <div className="opacity-0 animate-fade-in-up animate-delay-300 space-y-2 mb-6">
-              <p className="text-base text-muted-foreground leading-relaxed text-pretty">
+            <div className="opacity-0 animate-fade-in-up animate-delay-300">
+              <p className="text-sm text-muted-foreground mb-0 leading-relaxed text-pretty">
                 trying to learn everything, by breaking everything.
               </p>
-              <p className="text-base text-muted-foreground leading-relaxed text-pretty">
+            </div>
+            <div className="opacity-0 animate-fade-in-up animate-delay-300">
+              <p className="text-sm text-muted-foreground mb-0 leading-relaxed text-pretty">
                 <a
                   href="https://yswnth.bearblog.dev/things-i-admire-the-most/"
                   target="_blank"
@@ -92,7 +95,10 @@ export function TeamHero() {
                   things i admire the most.
                 </a>
               </p>
-              <p className="text-base text-muted-foreground leading-relaxed text-pretty">
+            </div>
+
+            <div className="opacity-0 animate-fade-in-up animate-delay-300">
+              <p className="text-sm text-muted-foreground mb-8 leading-relaxed text-pretty">
                 <a
                   href="https://yswnth.bearblog.dev/things-i-learnt-in-meanwhile/"
                   target="_blank"
@@ -111,39 +117,42 @@ export function TeamHero() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="X profile"
-                  className="group flex items-center text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out hover:scale-110"
+                  className="group flex items-center text-muted-foreground transition-all duration-300 ease-in-out"
                 >
-                  <XIcon className="w-5 h-5" />
+                  <XIcon className="w-4 h-4 group-hover:text-foreground transition-colors group-hover:drop-shadow-lg" />
+                  <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap text-xs text-muted-foreground group-hover:text-foreground/50">
+                    <span className="pl-2">@yswnth</span>
+                  </span>
                 </a>
                 <a
                   href="https://www.linkedin.com/in/yeswanth49"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LinkedIn profile"
-                  className="group flex items-center text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out hover:scale-110"
+                  className="group flex items-center text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-300 ease-in-out"
                 >
-                  <Linkedin className="w-5 h-5" />
+                  <Linkedin className="w-5 h-5 group-hover:drop-shadow-lg" />
                 </a>
                 <a
                   href="https://github.com/yeswanth49"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="GitHub profile"
-                  className="group flex items-center text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out hover:scale-110"
+                  className="group flex items-center text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-300 ease-in-out"
                 >
-                  <Github className="w-5 h-5" />
+                  <Github className="w-5 h-5 group-hover:drop-shadow-lg" />
                 </a>
                 <a
                   href="mailto:work.yeswanth@gmail.com"
                   aria-label="Send email"
-                  className="group flex items-center text-muted-foreground hover:text-foreground transition-all duration-300 ease-in-out hover:scale-110"
+                  className="group flex items-center text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-300 ease-in-out"
                 >
-                  <Mail className="w-5 h-5" />
+                  <Mail className="w-5 h-5 group-hover:drop-shadow-lg" />
                 </a>
               </div>
               
-               {/* CTA Button */}
-               <div className="mb-4">
+              {/* CTA Button */}
+              <div className="mb-4">
                 <Button asChild size="lg" className="rounded-full px-8 text-base font-semibold">
                   <a href="mailto:work.yeswanth@gmail.com">
                     Get in Touch
