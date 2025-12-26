@@ -113,7 +113,7 @@ export default function AboutPage() {
                                         work.yeswanth@gmail.com
                                     </Button>
                                 </Link>
-                                <Link href="https://yesh.vercel.app" target="_blank">
+                                <Link href="https://yswnth.in" target="_blank">
                                     <Button variant="ghost" className="text-lg h-12 gap-3">
                                         <Globe className="w-5 h-5" />
                                         Portfolio
