@@ -31,7 +31,7 @@
   background-size: 4px 4px;
   backdrop-filter: blur(3px);
   mask: linear-gradient(rgba(0, 0, 0, 0) 0%, rgb(0, 0, 0, 0.6) 100%);
-  opacity: 1;
+  opacity: 0.15;
   position: absolute;
   inset: 0;
   overflow: visible;

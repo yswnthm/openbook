@@ -20,20 +20,20 @@ export default function CombinedFooter() {
               <Image src="/logo.svg" alt="OpenBook Logo" width={24} height={24} className="h-6 w-6 dark:invert" />
               <span className="text-xl font-bold">OpenBook</span>
             </div>
-            <p className="text-sm text-muted-foreground max-w-md">
+            <p className="text-sm text-neutral-900 dark:text-muted-foreground max-w-md">
               Your smart Notebook. Personalized learning that adapts to your needs—accessible anytime, anywhere.
             </p>
             <div className="flex space-x-4">
-              <a href="https://discord.com/users/810347349418573825" target="_blank" className="text-muted-foreground hover:text-foreground">
+              <a href="https://discord.com/users/810347349418573825" target="_blank" className="text-neutral-900 dark:text-muted-foreground hover:text-foreground">
                 <MessagesSquare className="h-5 w-5" />
               </a>
-              <a href="https://x.com/GoOpenBook" target="_blank" className="text-muted-foreground hover:text-foreground">
+              <a href="https://x.com/GoOpenBook" target="_blank" className="text-neutral-900 dark:text-muted-foreground hover:text-foreground">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="https://github.com/yeswanth49/openbook" target="_blank" className="text-muted-foreground hover:text-foreground">
+              <a href="https://github.com/yeswanth49/openbook" target="_blank" className="text-neutral-900 dark:text-muted-foreground hover:text-foreground">
                 <Github className="h-5 w-5" />
               </a>
-              <a href="https://substack.com/@yeshh49" target="_blank" className="text-muted-foreground hover:text-foreground">
+              <a href="https://substack.com/@yeshh49" target="_blank" className="text-neutral-900 dark:text-muted-foreground hover:text-foreground">
                 <BookOpen className="h-5 w-5" />
               </a>
             </div>
@@ -44,13 +44,13 @@ export default function CombinedFooter() {
 
           {/* Resources column */}
           <div className="md:col-span-2">
-            <h3 className="text-sm font-semibold uppercase tracking-wider">Resources</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-900 dark:text-foreground">Resources</h3>
             <ul className="mt-4 space-y-2">
               <li>
                 <Link
                   href="https://github.com/yeswanth49/openbook"
                   target="_blank"
-                  className="block text-sm text-muted-foreground hover:text-foreground"
+                  className="block text-sm text-neutral-900 dark:text-muted-foreground hover:text-foreground"
                 >
                   GitHub
                 </Link>
@@ -59,7 +59,7 @@ export default function CombinedFooter() {
                 <Link
                   href="https://x.com/GoOpenBook"
                   target="_blank"
-                  className="block text-sm text-muted-foreground hover:text-foreground"
+                  className="block text-sm text-neutral-900 dark:text-muted-foreground hover:text-foreground"
                 >
                   Twitter
                 </Link>
@@ -68,7 +68,7 @@ export default function CombinedFooter() {
                 <Link
                   href="https://discord.com/users/810347349418573825"
                   target="_blank"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+                  className="flex items-center gap-2 text-sm text-neutral-900 dark:text-muted-foreground hover:text-foreground"
                 >
                   <MessagesSquare className="h-4 w-4" />
                   Discord
@@ -77,7 +77,7 @@ export default function CombinedFooter() {
               <li>
                 <Link
                   href="/chat"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+                  className="flex items-center gap-2 text-sm text-neutral-900 dark:text-muted-foreground hover:text-foreground"
                 >
                   <MessageCircleIcon className="h-4 w-4" />
                   Try Now
@@ -88,12 +88,12 @@ export default function CombinedFooter() {
 
           {/* Company column */}
           <div className="md:col-span-2 md:ml-auto">
-            <h3 className="text-sm font-semibold uppercase tracking-wider">Company</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-900 dark:text-foreground">Company</h3>
             <ul className="mt-4 space-y-2">
               <li>
                 <Link
                   href="/about"
-                  className="text-sm text-muted-foreground hover:text-foreground"
+                  className="text-sm text-neutral-900 dark:text-muted-foreground hover:text-foreground"
                 >
                   About
                 </Link>
@@ -101,7 +101,7 @@ export default function CombinedFooter() {
               <li>
                 <Link
                   href="/team"
-                  className="text-sm text-muted-foreground hover:text-foreground"
+                  className="text-sm text-neutral-900 dark:text-muted-foreground hover:text-foreground"
                 >
                   Team
                 </Link>
@@ -114,7 +114,7 @@ export default function CombinedFooter() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border/40">
-          <p className="text-sm text-muted-foreground text-center">
+          <p className="text-sm text-neutral-900 dark:text-muted-foreground text-center">
             © {new Date().getFullYear()} OpenBook. All rights reserved.
           </p>
         </div>
