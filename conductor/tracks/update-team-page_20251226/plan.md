@@ -7,7 +7,7 @@ This plan details the steps to replace the current Team page with a new, interac
 - [x] Task: Confirm `public/pfp.webp` is correctly placed and accessible.
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Preparation & Assets' (Protocol in workflow.md)
 
-## Phase 2: Component Development
+## Phase 2: Component Development [checkpoint: 049a73c]
 - [x] Task: Create `components/team/team-hero.tsx`.
     - Adapt logic from reference `hero.tsx`.
     - Implement dynamic age counter with 100ms interval.
@@ -16,7 +16,7 @@ This plan details the steps to replace the current Team page with a new, interac
 - [x] Task: Write unit tests for `TeamHero` in `components/team/__tests__/team-hero.test.tsx`.
     - Verify age calculation updates.
     - Verify social links are rendered correctly.
-- [~] Task: Conductor - User Manual Verification 'Phase 2: Component Development' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 2: Component Development' (Protocol in workflow.md)
 
 ## Phase 3: Page Integration
 - [ ] Task: Update `app/team/page.tsx`.
