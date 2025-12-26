@@ -1,56 +1,75 @@
-"use client";
+'use client';
 
-import React from "react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface SectionSeparatorProps {
-  className?: string;
+    className?: string;
 }
 
 export function SectionSeparator({ className }: SectionSeparatorProps) {
-  return (
-    <div className={cn("relative flex items-center justify-center py-8", className)}>
-      {/* Left Line with Gradient Fade */}
-      <motion.div
-        initial={{ scaleX: 0, opacity: 0 }}
-        whileInView={{ scaleX: 1, opacity: 1 }}
-        transition={{ duration: 1, ease: "easeOut" }}
-        className="h-[1px] w-24 md:w-64 bg-gradient-to-r from-transparent via-primary/50 to-primary origin-right"
-      />
+    return (
+        <div className={cn('relative flex items-center justify-center py-12', className)}>
+            {/* Left Line */}
+            <motion.div
+                initial={{ scaleX: 0, opacity: 0 }}
+                whileInView={{ scaleX: 1, opacity: 1 }}
+                viewport={{ once: true, margin: '-100px' }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                className="h-[2px] w-full max-w-[100px] md:max-w-[300px] bg-primary/20 origin-right"
+            />
 
-      {/* Center Animated Node */}
-      <div className="relative mx-4 flex items-center justify-center">
-        {/* Pulsing Outer Glow */}
-        <motion.div
-          animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0.5, 0.2] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute inset-0 rounded-full bg-primary/30 blur-md"
-        />
+            {/* Matchbox Container */}
+            <div className="relative mx-6 h-14 w-24 flex items-center justify-center">
+                {/* Drawer (Inner Box) - Slides out to the right */}
+                <motion.div
+                    initial={{ x: 0 }}
+                    whileInView={{ x: 15 }} // Slides out
+                    viewport={{ once: true, margin: '-100px' }}
+                    transition={{ duration: 1.2, delay: 0.2, type: 'spring', bounce: 0.3 }}
+                    className="absolute inset-y-1 inset-x-1 bg-primary/40 rounded-sm border border-primary/50"
+                >
+                    {/* Matches (Texture inside drawer) */}
+                    <div className="absolute right-1 top-1 bottom-1 w-2 flex flex-col justify-evenly">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+                    </div>
+                </motion.div>
 
-        {/* Core Dot */}
-        <motion.div
-          initial={{ scale: 0 }}
-          whileInView={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 200, damping: 10, delay: 0.2 }}
-          className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_2px_rgba(var(--primary),0.5)]"
-        />
+                {/* Sleeve (Outer Box) - Stays stationary */}
+                <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    viewport={{ once: true, margin: '-100px' }}
+                    transition={{ duration: 0.5 }}
+                    className="absolute inset-0 bg-background border-2 border-primary rounded-md z-10 flex items-center justify-center shadow-sm"
+                >
+                    {/* Decorative pattern on the matchbox sleeve - "Strike" strip */}
+                    <div className="absolute left-0 top-2 bottom-2 w-3 bg-primary/10 border-r border-primary/20 flex flex-col items-center justify-center gap-0.5">
+                        <div className="w-1 h-1 rounded-full bg-primary/20" />
+                        <div className="w-1 h-1 rounded-full bg-primary/20" />
+                        <div className="w-1 h-1 rounded-full bg-primary/20" />
+                        <div className="w-1 h-1 rounded-full bg-primary/20" />
+                    </div>
 
-        {/* Rotating Ring (Subtle) */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          className="absolute w-6 h-6 rounded-full border border-primary/20 border-t-transparent"
-        />
-      </div>
+                    {/* Center Design / Logo area */}
+                    <div className="ml-2 w-10 h-8 border border-primary/20 rounded-sm flex items-center justify-center">
+                        <div className="w-6 h-[2px] bg-primary/40 rotate-45" />
+                        <div className="absolute w-6 h-[2px] bg-primary/40 -rotate-45" />
+                    </div>
+                </motion.div>
+            </div>
 
-      {/* Right Line with Gradient Fade */}
-      <motion.div
-        initial={{ scaleX: 0, opacity: 0 }}
-        whileInView={{ scaleX: 1, opacity: 1 }}
-        transition={{ duration: 1, ease: "easeOut" }}
-        className="h-[1px] w-24 md:w-64 bg-gradient-to-l from-transparent via-primary/50 to-primary origin-left"
-      />
-    </div>
-  );
+            {/* Right Line */}
+            <motion.div
+                initial={{ scaleX: 0, opacity: 0 }}
+                whileInView={{ scaleX: 1, opacity: 1 }}
+                viewport={{ once: true, margin: '-100px' }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                className="h-[2px] w-full max-w-[100px] md:max-w-[300px] bg-primary/20 origin-left"
+            />
+        </div>
+    );
 }
