@@ -3,7 +3,7 @@ import 'katex/dist/katex.min.css';
 import './globals.css';
 
 import { Metadata, Viewport } from 'next';
-import { Syne, Instrument_Serif } from 'next/font/google';
+import { Syne, Instrument_Serif, League_Spartan } from 'next/font/google';
 import Script from 'next/script';
 
 export const metadata: Metadata = {
@@ -83,6 +83,13 @@ const syne = Syne({
     display: 'swap',
 });
 
+const leagueSpartan = League_Spartan({
+    subsets: ['latin'],
+    variable: '--font-league-spartan',
+    weight: ['400', '700'],
+    display: 'swap',
+});
+
 export default function RootLayout({
     children,
 }: {
@@ -100,7 +107,7 @@ export default function RootLayout({
                     />
                 )}
             </head>
-            <body className={`${GeistSans.variable} ${syne.variable} ${instrumentSerif.variable} font-sans antialiased`}>
+            <body className={`${GeistSans.variable} ${syne.variable} ${instrumentSerif.variable} ${leagueSpartan.variable} font-sans antialiased`}>
                 {children}
             </body>
         </html>

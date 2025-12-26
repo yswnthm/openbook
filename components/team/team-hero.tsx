@@ -46,7 +46,7 @@ export function TeamHero() {
           {/* Profile Image - Left Side */}
           <div className="flex-shrink-0 row-span-1 md:row-span-2 self-start md:self-center">
             <div className="opacity-0 animate-fade-in-up">
-              <div className="relative w-24 h-24 sm:w-32 sm:h-32 md:w-64 md:h-64 lg:w-80 lg:h-80 rounded-full overflow-hidden border-4 border-border/20 shadow-lg">
+              <div className="relative w-20 h-20 sm:w-28 sm:h-28 md:w-56 md:h-56 lg:w-72 lg:h-72 rounded-full overflow-hidden border-4 border-border/20 shadow-lg">
                 <Image
                   src="/pfp.webp"
                   alt="Yeswanth's profile picture"
@@ -63,7 +63,7 @@ export function TeamHero() {
           <div className="text-left max-w-2xl self-center md:self-end">
             <div className="opacity-0 animate-fade-in-up animate-delay-200">
               <h1
-                className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl mb-2 md:mb-4 font-bold leading-none tracking-tight font-syne"
+                className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl mb-2 md:mb-4 font-bold leading-none tracking-tight font-league-spartan"
               >
                 hi, i'm yswnth.
               </h1>

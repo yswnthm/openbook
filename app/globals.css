@@ -69,6 +69,10 @@
   font-family: var(--font-instrument-serif);
 }
 
+@utility font-league-spartan {
+  font-family: var(--font-league-spartan);
+}
+
 @layer utilities {
   .markdown-body .katex {
     font-size: 1.1em;
