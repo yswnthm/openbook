@@ -2,10 +2,10 @@
 
 This plan details the steps to replace the current Team page with a new, interactive Hero section based on the provided reference design.
 
-## Phase 1: Preparation & Assets
+## Phase 1: Preparation & Assets [checkpoint: e536d2d]
 - [x] Task: Verify and add necessary animations to `app/globals.css` (e.g., `fadeInUp`, `animate-fade-in-up`, and delays).
 - [x] Task: Confirm `public/pfp.webp` is correctly placed and accessible.
-- [~] Task: Conductor - User Manual Verification 'Phase 1: Preparation & Assets' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Preparation & Assets' (Protocol in workflow.md)
 
 ## Phase 2: Component Development
 - [ ] Task: Create `components/team/team-hero.tsx`.
