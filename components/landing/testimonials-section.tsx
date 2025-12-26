@@ -28,7 +28,7 @@ const TESTIMONIALS = [
 
 export function TestimonialsSection() {
   return (
-    <section className="py-24">
+    <section className="pt-6 pb-24">
       <div className="container mx-auto px-4 md:px-6">
         <SectionHeading
           title="Loved by Learners"

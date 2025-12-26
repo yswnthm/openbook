@@ -46,10 +46,6 @@ export default function LandingPage() {
 
                     <ProductivitySection />
 
-                    <AnimateInView>
-                        <SectionSeparator />
-                    </AnimateInView>
-
                     <TestimonialsSection />
 
                     <AnimateInView>
