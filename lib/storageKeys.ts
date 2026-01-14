@@ -32,6 +32,8 @@ export const SELECTED_MODEL_KEY = 'openbook_selected_model';
 export const INSTALL_PROMPT_DISMISSED_KEY = 'openbook_install_prompt_dismissed';
 export const USER_ID_KEY = 'openbook_user_id';
 
+export const ONBOARDING_COMPLETED_KEY = 'onboarding-completed';
+
 /**
  * All localStorage keys used by the OpenBook application
  * 
@@ -54,6 +56,7 @@ const OPENBOOK_STORAGE_KEYS: readonly string[] = [
   SELECTED_MODEL_KEY,
   INSTALL_PROMPT_DISMISSED_KEY,
   USER_ID_KEY,
+  ONBOARDING_COMPLETED_KEY,
 
   // Streak data
   STREAK_COUNT_KEY,
@@ -70,7 +73,7 @@ const STORAGE_KEY_CATEGORIES = {
     description: 'Core application data (spaces, journals, notebooks, etc.)'
   },
   PREFERENCES: {
-    keys: [SIDEBAR_STATE_KEY, ANIMATIONS_PREFERENCE_KEY, SELECTED_MODEL_KEY, INSTALL_PROMPT_DISMISSED_KEY, USER_ID_KEY],
+    keys: [SIDEBAR_STATE_KEY, ANIMATIONS_PREFERENCE_KEY, SELECTED_MODEL_KEY, INSTALL_PROMPT_DISMISSED_KEY, USER_ID_KEY, ONBOARDING_COMPLETED_KEY],
     description: 'User preferences and UI settings'
   }
 } as const;

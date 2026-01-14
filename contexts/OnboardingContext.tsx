@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { useLocalStorage } from '@/hooks/use-local-storage';
+import { ONBOARDING_COMPLETED_KEY } from '@/lib/storageKeys';
 
 export interface OnboardingStep {
     id: string;
@@ -29,7 +30,7 @@ const OnboardingContext = createContext<OnboardingContextType | undefined>(undef
 export function OnboardingProvider({ children }: { children: React.ReactNode }) {
     const [isVisible, setIsVisible] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
-    const [isCompleted, setIsCompleted] = useLocalStorage<boolean>('onboarding-completed', false);
+    const [isCompleted, setIsCompleted] = useLocalStorage<boolean>(ONBOARDING_COMPLETED_KEY, false);
     const [steps, setSteps] = useState<OnboardingStep[]>([]);
 
     const startTutorial = useCallback(() => {
