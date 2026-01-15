@@ -44,8 +44,16 @@ export function HeroSection() {
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="h-12 px-8 rounded-full text-lg border-foreground/20 hover:bg-foreground/5 backdrop-blur-sm">
-                See How It Works
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-12 px-8 rounded-full text-lg border-foreground/20 hover:bg-foreground/5 backdrop-blur-sm"
+                onClick={() => {
+                  const element = document.getElementById('features');
+                  element?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                Explore Features
               </Button>
             </div>
           </AnimateInView>
