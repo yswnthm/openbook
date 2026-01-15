@@ -14,7 +14,7 @@ export function CTASection() {
         <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 lg:gap-24">
           <div className="flex-1 relative w-full max-w-md md:max-w-xl lg:max-w-2xl mx-auto md:mx-0">
             <AnimateInView delay={0.2} className="relative">
-              <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-purple-500/20 rounded-[3rem] blur-3xl -z-10" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] bg-gradient-to-tr from-primary/30 to-purple-500/30 rounded-full blur-[80px] -z-10" />
               <Image
                 src="/screenshots/iPhone15.png"
                 alt="OpenBook App Interface on iPhone 15"
