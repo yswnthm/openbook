@@ -65,7 +65,7 @@ export default function Header() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="fixed top-0 header-layer w-full"
+      className="fixed top-0 header-layer w-full transform-gpu translate-z-0"
     >
       <nav className="border-input/50 bg-popover/95 backdrop-blur-lg flex w-full max-w-3xl mx-auto items-center justify-between gap-2 rounded-xl border p-2 px-4 mt-4 mb-2">
         <div className="flex items-center gap-6">
