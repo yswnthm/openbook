@@ -10,6 +10,7 @@
         "@ai-sdk/react": "^1.2.10",
         "@ai-sdk/ui-utils": "^1.2.9",
         "@cerebras/cerebras_cloud_sdk": "^1.59.0",
+        "@mediapipe/tasks-genai": "^0.10.26",
         "@mlc-ai/web-llm": "^0.2.80",
         "@phosphor-icons/react": "^2.1.7",
         "@radix-ui/react-dialog": "^1.1.6",
@@ -203,6 +204,8 @@
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.5", "", {}, "sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og=="],
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
+
+    "@mediapipe/tasks-genai": ["@mediapipe/tasks-genai@0.10.26", "", {}, "sha512-T93kfSsMWEQzdCfyyBpHWofrthU+5dYTKqxvmTDE5JhInUtjxceyDRD13q3f26Yi9ffOeFioXPXE3ZF0RL9hyw=="],
 
     "@mlc-ai/web-llm": ["@mlc-ai/web-llm@0.2.80", "", { "dependencies": { "loglevel": "^1.9.1" } }, "sha512-Hwy1OCsK5cOU4nKr2wIJ2qA1g595PENtO5f2d9Wd/GgFsj5X04uxfaaJfqED8eFAJOpQpn/DirogdEY/yp5jQg=="],
 

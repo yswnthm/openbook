@@ -20,6 +20,7 @@
         "@ai-sdk/react": "^1.2.10",
         "@ai-sdk/ui-utils": "^1.2.9",
         "@cerebras/cerebras_cloud_sdk": "^1.59.0",
+        "@mediapipe/tasks-genai": "^0.10.26",
         "@mlc-ai/web-llm": "^0.2.80",
         "@phosphor-icons/react": "^2.1.7",
         "@radix-ui/react-dialog": "^1.1.6",

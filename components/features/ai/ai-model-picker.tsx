@@ -265,6 +265,16 @@ const ALL_MODELS: ModelDef[] = [
         tier: 'ollama',
         tags: ['ollama', 'local', 'gemma']
     },
+    {
+        value: 'local-custom-file',
+        label: 'Custom Model (File)',
+        description: 'Load a local .task file (MediaPipe).',
+        provider: 'Custom',
+        capabilities: ['Local', 'Custom'],
+        contextWindow: 'Unknown',
+        tier: 'local',
+        tags: ['local', 'custom', 'file']
+    },
 ];
 
 export const getModelLabel = (value: string) => {
@@ -273,7 +283,7 @@ export const getModelLabel = (value: string) => {
 
 interface AiModelPickerProps {
     selectedModel: string;
-    onSelect: (model: string) => void;
+    onSelect: (model: string, file?: File) => void;
     onClose: () => void;
     className?: string;
     loadingModelId?: string | null;
@@ -429,7 +439,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                                         key={model.value}
                                         model={model}
                                         isSelected={model.value === selectedModel}
-                                        onSelect={() => onSelect(model.value)}
+                                        onSelect={(file) => onSelect(model.value, file)}
                                         isLoading={model.value === loadingModelId}
                                         progress={loadingProgress}
                                         loadingText={loadingText}
@@ -457,10 +467,27 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
     );
 }
 
-function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingText }: { model: ModelDef, isSelected: boolean, onSelect: () => void, isLoading?: boolean, progress?: number, loadingText?: string }) {
+function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingText }: { model: ModelDef, isSelected: boolean, onSelect: (file?: File) => void, isLoading?: boolean, progress?: number, loadingText?: string }) {
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+    const handleClick = () => {
+        if (model.value === 'local-custom-file') {
+            fileInputRef.current?.click();
+        } else {
+            onSelect();
+        }
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            onSelect(file);
+        }
+    };
+
     return (
         <button
-            onClick={onSelect}
+            onClick={handleClick}
             className={`
                 w-full text-left relative group
                 p-3 rounded-xl transition-all duration-200
@@ -533,6 +560,13 @@ function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingTe
                     </div>
                 </div>
             </div>
+            <input
+                type="file"
+                accept=".task, .bin"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileChange}
+            />
         </button>
     );
 }

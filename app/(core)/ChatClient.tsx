@@ -45,6 +45,7 @@ import { StudyModeBadge } from '@/components/features/study/study-mode-badge';
 import { StudyFramework } from '@/lib/types';
 import { getFrameworkDisplayName } from '@/lib/study-prompts';
 import { useWebLLM } from '@/hooks/use-web-llm';
+import { useMediaPipeLLM } from '@/hooks/use-mediapipe-llm';
 
 
 import { useOnboarding } from '@/contexts/OnboardingContext';
@@ -368,22 +369,28 @@ const HomeContent = () => {
 
     // WebLLM Integration
     const { state: webLLMState, loadModel: loadWebLLMModel, generate: generateWebLLM, currentModel: currentWebLLMModel } = useWebLLM();
+    // MediaPipe Integration
+    const { state: mediaPipeState, loadModel: loadMediaPipeModel, generate: generateMediaPipe } = useMediaPipeLLM();
 
     // Determine if using local model
     const isLocalModel = selectedModel.startsWith('local-');
+    const isMediaPipe = selectedModel === 'local-custom-file';
 
     // Combined status
     const status = isLocalModel
-        ? (webLLMState.isLoading ? 'loading' : (webLLMState.isModelLoaded ? 'ready' : (chatStatus === 'streaming' ? 'streaming' : 'ready'))) // Simplify status mapping
+        ? (isMediaPipe
+            ? (mediaPipeState.isLoading ? 'loading' : (mediaPipeState.isModelLoaded ? 'ready' : (chatStatus === 'streaming' ? 'streaming' : 'ready')))
+            : (webLLMState.isLoading ? 'loading' : (webLLMState.isModelLoaded ? 'ready' : (chatStatus === 'streaming' ? 'streaming' : 'ready')))
+        )
         : chatStatus;
 
     // Load local model when selected
     useEffect(() => {
-        if (isLocalModel) {
+        if (isLocalModel && !isMediaPipe) {
             const modelId = selectedModel.replace('local-', '');
             loadWebLLMModel(modelId);
         }
-    }, [isLocalModel, selectedModel, loadWebLLMModel]);
+    }, [isLocalModel, isMediaPipe, selectedModel, loadWebLLMModel]);
 
     // Show model loading progress in toast or UI
     useEffect(() => {
@@ -417,7 +424,12 @@ const HomeContent = () => {
                     // Wait, useEffect syncs from currentSpace.messages which we just updated via addMessage.
                     // But let's assume we want to trigger generation.
 
-                    if (!webLLMState.isModelLoaded) {
+                    if (isMediaPipe) {
+                        if (!mediaPipeState.isModelLoaded) {
+                            toast.error(`MediaPipe model is not loaded. Please select a .task file.`);
+                            return null;
+                        }
+                    } else if (!webLLMState.isModelLoaded) {
                         toast.error(`Model is still loading: ${webLLMState.text} (${Math.round(webLLMState.progress)}%)`);
                         return null;
                     }
@@ -446,46 +458,68 @@ const HomeContent = () => {
                         // We override 'status' variable in scope above! 
                         // But we need to update 'messages' state to show the streaming response.
 
-                        let currentText = '';
-
-                        await generateWebLLM(
-                            history,
-                            (text, delta) => {
-                                currentText = text;
-                                // Update UI messages with partial assistant response
-                                // We need to append or update the last message if it's assistant
-                                // But 'messages' state update here might clash with useEffect syncing from space.
-                                // Ideally we temporarily disable sync or validly update space?
-                                // Updating space on every token is too expensive (localStorage).
-                                // So we update 'messages' state directly for UI.
-
-                                setMessages(prev => {
-                                    const last = prev[prev.length - 1];
-                                    if (last && last.role === 'assistant' && last.id === assistantMsgId) {
-                                        return [...prev.slice(0, -1), { ...last, content: text }];
-                                    } else {
-                                        return [...prev, {
-                                            id: assistantMsgId,
-                                            role: 'assistant',
-                                            content: text,
-                                            timestamp: assistantMsgTimestamp
-                                        }];
-                                    }
-                                });
-                            },
-                            (finalText) => {
-                                // On finish, save to space
-                                const assistantChatMessage: ChatMessage = {
-                                    id: assistantMsgId,
-                                    role: 'assistant',
-                                    content: finalText,
-                                    timestamp: assistantMsgTimestamp,
-                                    model: selectedModel,
-                                };
-                                spaceFunctionsRef.current.addMessage(assistantChatMessage);
-                                // transform status back to ready (implicitly handled by derived status)
-                            }
-                        );
+                        if (isMediaPipe) {
+                            await generateMediaPipe(
+                                history,
+                                (text, delta) => {
+                                    setMessages(prev => {
+                                        const last = prev[prev.length - 1];
+                                        if (last && last.role === 'assistant' && last.id === assistantMsgId) {
+                                            return [...prev.slice(0, -1), { ...last, content: text }];
+                                        } else {
+                                            return [...prev, {
+                                                id: assistantMsgId,
+                                                role: 'assistant',
+                                                content: text,
+                                                timestamp: assistantMsgTimestamp
+                                            }];
+                                        }
+                                    });
+                                },
+                                (finalText) => {
+                                    const assistantChatMessage: ChatMessage = {
+                                        id: assistantMsgId,
+                                        role: 'assistant',
+                                        content: finalText,
+                                        timestamp: assistantMsgTimestamp,
+                                        model: selectedModel,
+                                    };
+                                    spaceFunctionsRef.current.addMessage(assistantChatMessage);
+                                }
+                            );
+                        } else {
+                            // WebLLM Logic
+                            let currentText = '';
+                            await generateWebLLM(
+                                history,
+                                (text, delta) => {
+                                    currentText = text;
+                                    setMessages(prev => {
+                                        const last = prev[prev.length - 1];
+                                        if (last && last.role === 'assistant' && last.id === assistantMsgId) {
+                                            return [...prev.slice(0, -1), { ...last, content: text }];
+                                        } else {
+                                            return [...prev, {
+                                                id: assistantMsgId,
+                                                role: 'assistant',
+                                                content: text,
+                                                timestamp: assistantMsgTimestamp
+                                            }];
+                                        }
+                                    });
+                                },
+                                (finalText) => {
+                                    const assistantChatMessage: ChatMessage = {
+                                        id: assistantMsgId,
+                                        role: 'assistant',
+                                        content: finalText,
+                                        timestamp: assistantMsgTimestamp,
+                                        model: selectedModel,
+                                    };
+                                    spaceFunctionsRef.current.addMessage(assistantChatMessage);
+                                }
+                            );
+                        }
 
                         return null; // Return null as we handled it
 
@@ -760,10 +794,17 @@ const HomeContent = () => {
 
     // Define the model change handler
     const handleModelChange = useCallback(
-        (model: string) => {
+        (model: string, file?: File) => {
+            console.log(`[ChatClient] handleModelChange: ${model}`, file);
             setSelectedModel(model);
+            if (model === 'local-custom-file' && file) {
+                console.log(`[ChatClient] Triggering loadMediaPipeModel with file: ${file.name}`);
+                loadMediaPipeModel(file);
+            } else if (model === 'local-custom-file' && !file) {
+                console.warn(`[ChatClient] Selected local-custom-file but no file provided`);
+            }
         },
-        [setSelectedModel],
+        [setSelectedModel, loadMediaPipeModel],
     );
 
 
@@ -923,12 +964,10 @@ const HomeContent = () => {
                                         onAttachmentsChange={setAttachments}
                                         fileInputRef={fileInputRef}
                                         status={status}
-                                        onFrameworkSelect={handleFrameworkSelect}
-                                        currentSpaceId={currentSpaceId}
-                                        onCompactSpace={handleCompactSpace}
-                                        loadingProgress={webLLMState.progress}
-                                        loadingText={webLLMState.text}
-                                        loadingModelId={webLLMState.isLoading ? `local-${currentWebLLMModel}` : null}
+                                        onSelect={handleModelChange}
+                                        loadingModelId={isLocalModel && ((isMediaPipe && mediaPipeState.isLoading) || (!isMediaPipe && webLLMState.isLoading)) ? selectedModel : null}
+                                        loadingProgress={isMediaPipe ? mediaPipeState.progress : webLLMState.progress}
+                                        loadingText={isMediaPipe ? mediaPipeState.text : webLLMState.text}
                                         pickerPlacement="top"
                                     />
                                 </div>

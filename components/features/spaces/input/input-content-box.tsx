@@ -43,6 +43,7 @@ interface ChatInputProps {
     loadingText?: string;
     loadingModelId?: string | null;
     pickerPlacement?: 'top' | 'bottom';
+    onSelect?: (model: string, file?: File) => void;
 }
 
 const BASE_COMMANDS: ChatCommand[] = [
@@ -97,6 +98,7 @@ export function ChatInput({
     loadingText,
     loadingModelId,
     pickerPlacement = 'bottom',
+    onSelect,
 }: ChatInputProps) {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -177,10 +179,13 @@ export function ChatInput({
         textareaRef.current?.focus();
     };
 
-    const handleModelSelect = (model: string) => {
-        onModelChange(model);
+    const handleModelSelect = (model: string, file?: File) => {
+        if (onSelect) {
+            onSelect(model, file);
+        } else {
+            onModelChange(model);
+        }
         closeMenu();
-        toast.success('Model changed');
     };
 
     const handleFrameworkSelect = (framework: StudyFramework) => {
