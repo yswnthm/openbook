@@ -1,5 +1,6 @@
 'use client';
 import 'katex/dist/katex.min.css';
+import { serverLog } from '@/lib/client-logger';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useChat, UseChatOptions, Message } from '@ai-sdk/react';
@@ -426,7 +427,8 @@ const HomeContent = () => {
 
                     if (isMediaPipe) {
                         if (!mediaPipeState.isModelLoaded) {
-                            toast.error(`MediaPipe model is not loaded. Please select a .task file.`);
+                            const errorMsg = mediaPipeState.error ? `: ${mediaPipeState.error}` : '';
+                            toast.error(`MediaPipe model is not loaded${errorMsg}. Please select a .task file.`);
                             return null;
                         }
                     } else if (!webLLMState.isModelLoaded) {
@@ -539,7 +541,7 @@ const HomeContent = () => {
                 return result;
             }
         },
-        [append],
+        [append, isLocalModel, isMediaPipe, selectedModel, webLLMState, mediaPipeState, generateWebLLM, generateMediaPipe],
     ); // Remove addMessage dependency since we're using the ref
 
     const isFrameworkSwitchingRef = useRef(false);
@@ -795,13 +797,13 @@ const HomeContent = () => {
     // Define the model change handler
     const handleModelChange = useCallback(
         (model: string, file?: File) => {
-            console.log(`[ChatClient] handleModelChange: ${model}`, file);
+            serverLog(`[ChatClient] handleModelChange: ${model}`, file?.name);
             setSelectedModel(model);
             if (model === 'local-custom-file' && file) {
-                console.log(`[ChatClient] Triggering loadMediaPipeModel with file: ${file.name}`);
+                serverLog(`[ChatClient] Triggering loadMediaPipeModel...`);
                 loadMediaPipeModel(file);
             } else if (model === 'local-custom-file' && !file) {
-                console.warn(`[ChatClient] Selected local-custom-file but no file provided`);
+                serverLog(`[ChatClient] Selected local-custom-file but no file provided`);
             }
         },
         [setSelectedModel, loadMediaPipeModel],

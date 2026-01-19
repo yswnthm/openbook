@@ -9,18 +9,24 @@ export interface MediaPipeLLMState {
     isModelLoaded: boolean;
 }
 
+import { serverLog } from '@/lib/client-logger';
+
+// Module-level variable to persist instance across re-renders/HMR
+let globalLlmInstance: LlmInference | null = null;
+
 export const useMediaPipeLLM = () => {
-    const llmRef = useRef<LlmInference | null>(null);
+    // We can still use a ref to track if *this* component instance "owns" the loading, 
+    // but the actual heavy object is global.
     const [state, setState] = useState<MediaPipeLLMState>({
         isLoading: false,
         progress: 0,
         text: '',
         error: null,
-        isModelLoaded: false,
+        isModelLoaded: !!globalLlmInstance, // Initialize based on global state
     });
 
     const loadModel = useCallback(async (file: File) => {
-        console.log(`[useMediaPipeLLM] loadModel called with: ${file.name}, size: ${file.size}`);
+        serverLog(`[useMediaPipeLLM] loadModel START. File: ${file.name}, Size: ${file.size}, Type: ${file.type}`);
         try {
             setState({
                 isLoading: true,
@@ -30,27 +36,35 @@ export const useMediaPipeLLM = () => {
                 isModelLoaded: false
             });
 
+            serverLog(`[useMediaPipeLLM] Initializing FilesetResolver...`);
             const genaiFileset = await FilesetResolver.forGenAiTasks(
                 "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-genai/wasm"
             );
 
             // The URL hack is required because LlmInference expects a URL or a modelPath, 
             // but for local files we need to use a Blob URL.
+            serverLog(`[useMediaPipeLLM] FilesetResolver initialized. Creating Blob URL...`);
             const url = URL.createObjectURL(file);
+            serverLog(`[useMediaPipeLLM] Blob URL created: ${url}`);
 
             setState(prev => ({ ...prev, text: 'Loading model...' }));
+
+            serverLog(`[useMediaPipeLLM] Creating LlmInference from options...`);
+
+            // Clean up previous instance if exists
+            if (globalLlmInstance) {
+                // globalLlmInstance.close(); // If there is a close method
+                globalLlmInstance = null;
+            }
 
             const llm = await LlmInference.createFromOptions(genaiFileset, {
                 baseOptions: {
                     modelAssetPath: url,
                 },
-                // maxTokens: 1000, // Optional
-                // topK: 40, // Optional
-                // temperature: 0.8, // Optional
-                // randomSeed: 101 // Optional
             });
 
-            llmRef.current = llm;
+            serverLog(`[useMediaPipeLLM] Model created successfully. Setting state to ready.`);
+            globalLlmInstance = llm;
 
             setState({
                 isLoading: false,
@@ -61,7 +75,7 @@ export const useMediaPipeLLM = () => {
             });
 
         } catch (err: any) {
-            console.error('MediaPipe Load Error:', err);
+            serverLog(`[useMediaPipeLLM] Load Error:`, err.message);
             setState({
                 isLoading: false,
                 progress: 0,
@@ -77,8 +91,10 @@ export const useMediaPipeLLM = () => {
         onUpdate: (currentText: string, delta: string) => void,
         onFinish: (finalText: string) => void
     ) => {
-        if (!llmRef.current) {
-            throw new Error("MediaPipe Engine not initialized");
+        if (!globalLlmInstance) {
+            serverLog(`[useMediaPipeLLM] Error: Engine not initialized (globalLlmInstance is null). Resetting state.`);
+            setState(prev => ({ ...prev, isModelLoaded: false, error: 'Model lost, please reload' }));
+            throw new Error("MediaPipe Engine not initialized. Please re-select the model file.");
         }
 
         try {
@@ -104,7 +120,7 @@ export const useMediaPipeLLM = () => {
             let fullText = "";
 
             // Use streaming generation
-            llmRef.current.generateResponse(
+            globalLlmInstance.generateResponse(
                 inputPrompt,
                 (partialResult, done) => {
                     if (partialResult) {

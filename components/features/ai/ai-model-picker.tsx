@@ -14,6 +14,7 @@ import {
     Lock,
     Command
 } from 'lucide-react';
+import { serverLog } from '@/lib/client-logger';
 
 // Richer model definitions
 interface ModelDef {
@@ -480,86 +481,89 @@ function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingTe
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
+        serverLog(`[AiModelPicker] File input changed. Selected: ${file?.name}`);
         if (file) {
             onSelect(file);
         }
     };
 
     return (
-        <button
-            onClick={handleClick}
-            className={`
-                w-full text-left relative group
-                p-3 rounded-xl transition-all duration-200
-                border
-                overflow-hidden
-                ${isSelected
-                    ? 'bg-blue-50/80 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
-                    : 'bg-transparent border-transparent hover:bg-neutral-100 dark:hover:bg-white/5'
-                }
-            `}
-        >
-            {isLoading && (
-                <div className="absolute inset-0 z-0 bg-blue-50/50 dark:bg-blue-900/10 pointer-events-none" />
-            )}
-
-            {/* Progress Bar background for loading state */}
-            {isLoading && (
-                <div
-                    className="absolute left-0 bottom-0 h-[2px] bg-blue-500 z-20 transition-all duration-300 ease-out"
-                    style={{ width: `${Math.max(5, progress || 0)}%` }}
-                />
-            )}
-
-            <div className="flex justify-between items-start gap-3 relative z-10">
-                {/* Icon / Avatar placeholder */}
-                <div className={`
-                    w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold shadow-sm
+        <>
+            <button
+                onClick={handleClick}
+                className={`
+                    w-full text-left relative group
+                    p-3 rounded-xl transition-all duration-200
+                    border
+                    overflow-hidden
                     ${isSelected
-                        ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                        : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400'
+                        ? 'bg-blue-50/80 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                        : 'bg-transparent border-transparent hover:bg-neutral-100 dark:hover:bg-white/5'
                     }
-                `}>
-                    {model.provider.substring(0, 1)}
-                </div>
+                `}
+            >
+                {isLoading && (
+                    <div className="absolute inset-0 z-0 bg-blue-50/50 dark:bg-blue-900/10 pointer-events-none" />
+                )}
 
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-0.5">
-                        <span className={`text-sm font-semibold truncate pr-2 ${isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-neutral-900 dark:text-neutral-100'}`}>
-                            {model.label}
-                        </span>
-                        {isSelected && <Check className="w-4 h-4 text-blue-500" />}
-                        {isLoading && (
-                            <div className="flex flex-col items-end ml-auto">
-                                <div className="flex items-center gap-1.5">
-                                    <div className="w-3 h-3 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
-                                    <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 font-bold">
-                                        {Math.round(progress || 0)}%
-                                    </span>
+                {/* Progress Bar background for loading state */}
+                {isLoading && (
+                    <div
+                        className="absolute left-0 bottom-0 h-[2px] bg-blue-500 z-20 transition-all duration-300 ease-out"
+                        style={{ width: `${Math.max(5, progress || 0)}%` }}
+                    />
+                )}
+
+                <div className="flex justify-between items-start gap-3 relative z-10">
+                    {/* Icon / Avatar placeholder */}
+                    <div className={`
+                        w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold shadow-sm
+                        ${isSelected
+                            ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                            : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400'
+                        }
+                    `}>
+                        {model.provider.substring(0, 1)}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-0.5">
+                            <span className={`text-sm font-semibold truncate pr-2 ${isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-neutral-900 dark:text-neutral-100'}`}>
+                                {model.label}
+                            </span>
+                            {isSelected && <Check className="w-4 h-4 text-blue-500" />}
+                            {isLoading && (
+                                <div className="flex flex-col items-end ml-auto">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-3 h-3 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
+                                        <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 font-bold">
+                                            {Math.round(progress || 0)}%
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
+                        </div>
+
+                        {isLoading ? (
+                            <p className="text-xs text-blue-600 dark:text-blue-400 animate-pulse font-medium mb-1.5 truncate">
+                                {loadingText || 'Downloading model...'}
+                            </p>
+                        ) : (
+                            <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1 mb-1.5">
+                                {model.description}
+                            </p>
                         )}
-                    </div>
 
-                    {isLoading ? (
-                        <p className="text-xs text-blue-600 dark:text-blue-400 animate-pulse font-medium mb-1.5 truncate">
-                            {loadingText || 'Downloading model...'}
-                        </p>
-                    ) : (
-                        <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1 mb-1.5">
-                            {model.description}
-                        </p>
-                    )}
-
-                    <div className="flex flex-wrap gap-1.5 items-center">
-                        <Badge>{model.provider}</Badge>
-                        <Badge variant="outline">{model.contextWindow}</Badge>
-                        {model.capabilities.map(cap => (
-                            <Badge key={cap} variant="secondary" className="opacity-80">{cap}</Badge>
-                        ))}
+                        <div className="flex flex-wrap gap-1.5 items-center">
+                            <Badge>{model.provider}</Badge>
+                            <Badge variant="outline">{model.contextWindow}</Badge>
+                            {model.capabilities.map(cap => (
+                                <Badge key={cap} variant="secondary" className="opacity-80">{cap}</Badge>
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
+            </button>
             <input
                 type="file"
                 accept=".task, .bin"
@@ -567,7 +571,7 @@ function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingTe
                 className="hidden"
                 onChange={handleFileChange}
             />
-        </button>
+        </>
     );
 }
 
