@@ -86,6 +86,17 @@ export const useMediaPipeLLM = () => {
                 modelUrl = URL.createObjectURL(input as File);
             }
 
+            // Clean up previous instance if exists
+            if (globalLlmInstance) {
+                serverLog(`[useMediaPipeLLM] Disposing previous engine instance...`);
+                try {
+                    globalLlmInstance.close();
+                } catch (e) {
+                    serverLog(`[useMediaPipeLLM] Disposal error: ${e}`);
+                }
+                globalLlmInstance = null;
+            }
+
             const llm = await LlmInference.createFromOptions(genaiFileset, { baseOptions: { modelAssetPath: modelUrl } });
             globalLlmInstance = llm;
             currentModelKey = modelKey;
@@ -123,6 +134,16 @@ export const useMediaPipeLLM = () => {
             const genaiFileset = await FilesetResolver.forGenAiTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-genai/wasm");
             
             serverLog(`[useMediaPipeLLM] Creating LlmInference...`);
+            if (globalLlmInstance) {
+                serverLog(`[useMediaPipeLLM] Disposing previous engine instance...`);
+                try {
+                    globalLlmInstance.close();
+                } catch (e) {
+                    serverLog(`[useMediaPipeLLM] Disposal error: ${e}`);
+                }
+                globalLlmInstance = null;
+            }
+
             const llm = await LlmInference.createFromOptions(genaiFileset, { baseOptions: { modelAssetPath: URL.createObjectURL(blob) } });
             
             serverLog(`[useMediaPipeLLM] Engine created.`);
