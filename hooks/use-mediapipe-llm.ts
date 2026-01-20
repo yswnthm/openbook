@@ -11,8 +11,11 @@ export interface MediaPipeLLMState {
 
 import { serverLog } from '@/lib/client-logger';
 
+import { modelCache } from '@/lib/utils/model-cache';
+
 // Module-level variable to persist instance across re-renders/HMR
 let globalLlmInstance: LlmInference | null = null;
+let currentModelKey: string | null = null;
 
 export const useMediaPipeLLM = () => {
     // We can still use a ref to track if *this* component instance "owns" the loading, 
@@ -27,8 +30,15 @@ export const useMediaPipeLLM = () => {
 
     const loadModel = useCallback(async (input: File | string) => {
         const isUrl = typeof input === 'string';
+        const modelKey = isUrl ? input : `local-file-${input.name}-${input.size}`;
         const logName = isUrl ? input : input.name;
         
+        // Avoid reloading the same model if it's already active
+        if (globalLlmInstance && currentModelKey === modelKey) {
+            serverLog(`[useMediaPipeLLM] Model ${logName} already loaded. Skipping.`);
+            return;
+        }
+
         serverLog(`[useMediaPipeLLM] loadModel START. Input: ${logName}, Type: ${isUrl ? 'URL' : 'File'}`);
         
         try {
@@ -48,41 +58,56 @@ export const useMediaPipeLLM = () => {
             let modelUrl: string;
 
             if (isUrl) {
-                serverLog(`[useMediaPipeLLM] Fetching model from URL: ${input}`);
-                setState(prev => ({ ...prev, text: 'Downloading model...' }));
+                // Check Cache first
+                serverLog(`[useMediaPipeLLM] Checking cache for: ${modelKey}`);
+                const cachedBlob = await modelCache.get(modelKey);
 
-                const response = await fetch(input as string);
-                if (!response.body) throw new Error("Failed to fetch model: Response body is empty");
+                if (cachedBlob) {
+                    serverLog(`[useMediaPipeLLM] Cache HIT. Loading from cache.`);
+                    setState(prev => ({ ...prev, text: 'Loading from cache...', progress: 100 }));
+                    modelUrl = URL.createObjectURL(cachedBlob);
+                } else {
+                    serverLog(`[useMediaPipeLLM] Cache MISS. Downloading from URL...`);
+                    setState(prev => ({ ...prev, text: 'Downloading model...' }));
 
-                const contentLength = response.headers.get('Content-Length');
-                const totalLength = contentLength ? parseInt(contentLength, 10) : 0;
-                const reader = response.body.getReader();
-                
-                let receivedLength = 0;
-                const chunks = [];
+                    const response = await fetch(input as string);
+                    if (!response.body) throw new Error("Failed to fetch model: Response body is empty");
 
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
+                    const contentLength = response.headers.get('Content-Length');
+                    const totalLength = contentLength ? parseInt(contentLength, 10) : 0;
+                    const reader = response.body.getReader();
+                    
+                    let receivedLength = 0;
+                    const chunks = [];
 
-                    chunks.push(value);
-                    receivedLength += value.length;
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
 
-                    if (totalLength > 0) {
-                        const progress = Math.round((receivedLength / totalLength) * 100);
-                        // Only update state if progress changed significantly to avoid spamming renders
-                        setState(prev => {
-                            if (prev.progress !== progress) {
-                                return { ...prev, progress, text: `Downloading model... ${progress}%` };
-                            }
-                            return prev;
-                        });
+                        chunks.push(value);
+                        receivedLength += value.length;
+
+                        if (totalLength > 0) {
+                            const progress = Math.round((receivedLength / totalLength) * 100);
+                            setState(prev => {
+                                if (prev.progress !== progress) {
+                                    return { ...prev, progress, text: `Downloading model... ${progress}%` };
+                                }
+                                return prev;
+                            });
+                        }
                     }
-                }
 
-                serverLog(`[useMediaPipeLLM] Download complete. Creating Blob...`);
-                const blob = new Blob(chunks);
-                modelUrl = URL.createObjectURL(blob);
+                    serverLog(`[useMediaPipeLLM] Download complete. Saving to cache...`);
+                    const blob = new Blob(chunks);
+                    
+                    // Save to cache asynchronously (don't block the UI loading)
+                    modelCache.store(modelKey, blob).catch(err => {
+                        serverLog(`[useMediaPipeLLM] Cache store error:`, err.message);
+                    });
+
+                    modelUrl = URL.createObjectURL(blob);
+                }
             } else {
                 // It's a File object
                 serverLog(`[useMediaPipeLLM] Creating Blob URL from File...`);
@@ -97,7 +122,7 @@ export const useMediaPipeLLM = () => {
 
             // Clean up previous instance if exists
             if (globalLlmInstance) {
-                // globalLlmInstance.close(); // If there is a close method
+                // globalLlmInstance.close(); 
                 globalLlmInstance = null;
             }
 
@@ -109,6 +134,7 @@ export const useMediaPipeLLM = () => {
 
             serverLog(`[useMediaPipeLLM] Model created successfully. Setting state to ready.`);
             globalLlmInstance = llm;
+            currentModelKey = modelKey;
 
             setState({
                 isLoading: false,
