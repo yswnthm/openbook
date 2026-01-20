@@ -47,7 +47,7 @@ import { StudyFramework } from '@/lib/types';
 import { getFrameworkDisplayName } from '@/lib/study-prompts';
 import { useWebLLM } from '@/hooks/use-web-llm';
 import { useMediaPipeLLM } from '@/hooks/use-mediapipe-llm';
-
+import { isLocalModel as isCuratedLocalModel, getLocalModelById } from '@/lib/local-models';
 
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { WidgetSection } from './_components/WidgetSection';
@@ -373,9 +373,12 @@ const HomeContent = () => {
     // MediaPipe Integration
     const { state: mediaPipeState, loadModel: loadMediaPipeModel, generate: generateMediaPipe } = useMediaPipeLLM();
 
-    // Determine if using local model
-    const isLocalModel = selectedModel.startsWith('local-');
-    const isMediaPipe = selectedModel === 'local-custom-file';
+    // Determine model types
+    const isWebLLM = selectedModel.startsWith('local-') && selectedModel !== 'local-custom-file';
+    const isCuratedMediaPipe = isCuratedLocalModel(selectedModel);
+    const isCustomMediaPipe = selectedModel === 'local-custom-file';
+    const isMediaPipe = isCuratedMediaPipe || isCustomMediaPipe;
+    const isLocalModel = isWebLLM || isMediaPipe;
 
     // Combined status
     const status = isLocalModel
@@ -387,11 +390,17 @@ const HomeContent = () => {
 
     // Load local model when selected
     useEffect(() => {
-        if (isLocalModel && !isMediaPipe) {
+        if (isWebLLM) {
             const modelId = selectedModel.replace('local-', '');
             loadWebLLMModel(modelId);
+        } else if (isCuratedMediaPipe) {
+            const model = getLocalModelById(selectedModel);
+            if (model) {
+                serverLog(`[ChatClient] Auto-loading curated MediaPipe model: ${model.name}`);
+                loadMediaPipeModel(model.url);
+            }
         }
-    }, [isLocalModel, isMediaPipe, selectedModel, loadWebLLMModel]);
+    }, [isWebLLM, isCuratedMediaPipe, selectedModel, loadWebLLMModel, loadMediaPipeModel]);
 
     // Show model loading progress in toast or UI
     useEffect(() => {
@@ -428,7 +437,11 @@ const HomeContent = () => {
                     if (isMediaPipe) {
                         if (!mediaPipeState.isModelLoaded) {
                             const errorMsg = mediaPipeState.error ? `: ${mediaPipeState.error}` : '';
-                            toast.error(`MediaPipe model is not loaded${errorMsg}. Please select a .task file.`);
+                            if (isCuratedMediaPipe) {
+                                toast.error(`Gemma model is still loading: ${mediaPipeState.text} (${Math.round(mediaPipeState.progress)}%)`);
+                            } else {
+                                toast.error(`MediaPipe model is not loaded${errorMsg}. Please select a .task file.`);
+                            }
                             return null;
                         }
                     } else if (!webLLMState.isModelLoaded) {
@@ -443,10 +456,18 @@ const HomeContent = () => {
 
                         // We need to construct the full context for the model
                         // Get current history from currentSpace or messages
-                        const history = [...messages, userChatMessage].map(m => ({
+                        let history = [...messages, userChatMessage].map(m => ({
                             role: m.role,
                             content: m.content
                         }));
+
+                        // Prepend system prompt if available
+                        if (systemPrompt && systemPrompt.trim().length > 0) {
+                            history = [
+                                { role: 'system', content: systemPrompt },
+                                ...history
+                            ];
+                        }
 
                         // Start generation
                         // We won't add assistant message to space yet, only after completion or chunks?
