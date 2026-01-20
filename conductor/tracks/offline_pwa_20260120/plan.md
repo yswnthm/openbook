@@ -9,17 +9,11 @@
     - [x] Sub-task: Add meta tags for PWA support (viewport, theme-color) in `layout.tsx`.
 - [ ] Task: Conductor - User Manual Verification 'PWA Foundations' (Protocol in workflow.md)
 
-## Phase 2: Offline UX & State Management
+## Phase 2: Offline UX & State Management [checkpoint: c264cc0]
 - [x] Task: Implement `useOnlineStatus` hook [809e23d]
-    - [x] Sub-task: Create a hook that listens to `window.addEventListener('online'/'offline')`.
-    - [x] Sub-task: Add unit tests for the hook.
 - [x] Task: Create Offline Indicator Component [3596e59]
-    - [x] Sub-task: Design a subtle UI component (e.g., status pill) to show when disconnected.
-    - [x] Sub-task: Integrate the component into the main `Layout` or `Sidebar`.
-- [x] Task: Update Model Selection Logic [d6921cd]
-    - [x] Sub-task: Modify the chat interface to check connection status before sending a message to a cloud provider.
-    - [x] Sub-task: Display an error toast/alert if sending to a cloud model while offline.
-- [ ] Task: Conductor - User Manual Verification 'Offline UX & State Management' (Protocol in workflow.md)
+- [x] Task: Update Model Selection Logic [c264cc0]
+- [x] Task: Conductor - User Manual Verification 'Offline UX & State Management' (Protocol in workflow.md)
 
 ## Phase 3: Advanced Caching Strategy
 - [ ] Task: Configure Service Worker for Static Assets
