@@ -44,6 +44,10 @@ mock.module('@/hooks/use-local-storage', () => ({
     useLocalStorage: () => ['openai-gpt-5-mini', () => {}],
 }));
 
+mock.module('@/hooks/useOnlineStatus', () => ({
+    useOnlineStatus: () => true,
+}));
+
 mock.module('@/contexts/SidebarContext', () => ({
     useSidebar: () => ({ isOpen: true }),
 }));
