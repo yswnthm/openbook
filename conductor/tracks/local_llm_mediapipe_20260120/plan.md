@@ -2,7 +2,7 @@
 
 This plan outlines the integration of client-side LLM inference using MediaPipe, supporting predefined Gemma 3 models and custom file uploads with persistent caching.
 
-## Phase 1: Core Engine Enhancements
+## Phase 1: Core Engine Enhancements [checkpoint: 736e61a]
 - [x] Task: Update `useMediaPipeLLM` for URL Loading and Progress eb2101c
     - [ ] Create unit tests for `useMediaPipeLLM` to verify loading states and progress reporting.
     - [ ] Enhance `loadModel` to accept a URL (string) in addition to a `File`.
