@@ -13,7 +13,7 @@
 - [x] Task: Implement `useOnlineStatus` hook [809e23d]
     - [x] Sub-task: Create a hook that listens to `window.addEventListener('online'/'offline')`.
     - [x] Sub-task: Add unit tests for the hook.
-- [ ] Task: Create Offline Indicator Component
+- [~] Task: Create Offline Indicator Component
     - [ ] Sub-task: Design a subtle UI component (e.g., status pill) to show when disconnected.
     - [ ] Sub-task: Integrate the component into the main `Layout` or `Sidebar`.
 - [ ] Task: Update Model Selection Logic
