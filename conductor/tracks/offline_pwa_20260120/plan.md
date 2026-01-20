@@ -16,9 +16,9 @@
 - [x] Task: Create Offline Indicator Component [3596e59]
     - [x] Sub-task: Design a subtle UI component (e.g., status pill) to show when disconnected.
     - [x] Sub-task: Integrate the component into the main `Layout` or `Sidebar`.
-- [ ] Task: Update Model Selection Logic
-    - [ ] Sub-task: Modify the chat interface to check connection status before sending a message to a cloud provider.
-    - [ ] Sub-task: Display an error toast/alert if sending to a cloud model while offline.
+- [x] Task: Update Model Selection Logic [d6921cd]
+    - [x] Sub-task: Modify the chat interface to check connection status before sending a message to a cloud provider.
+    - [x] Sub-task: Display an error toast/alert if sending to a cloud model while offline.
 - [ ] Task: Conductor - User Manual Verification 'Offline UX & State Management' (Protocol in workflow.md)
 
 ## Phase 3: Advanced Caching Strategy
