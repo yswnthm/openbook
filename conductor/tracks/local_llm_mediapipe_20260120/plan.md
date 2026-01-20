@@ -17,7 +17,7 @@ This plan outlines the integration of client-side LLM inference using MediaPipe,
 - [x] Task: Implement Model Caching Layer 30ad657
     - [ ] Create a utility for browser `CacheStorage` to store and retrieve large `.task` files.
     - [ ] Integrate caching into the `loadModel` flow: Check cache -> Fetch if missing -> Save to cache.
-- [ ] Task: Define Local Model Registry
+- [x] Task: Define Local Model Registry 4a4e2fa
     - [ ] Create a configuration file (e.g., `lib/local-models.ts`) containing metadata and URLs for Gemma 3 models (270M, 1B, 4B, 12B).
     - [ ] Ensure models are mapped to their respective LiteRT task file URLs.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Data Persistence & Model Management' (Protocol in workflow.md)
