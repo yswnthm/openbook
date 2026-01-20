@@ -425,7 +425,11 @@ const HomeContent = () => {
     // Wrap append to persist user messages to current space
     const appendWithPersist = useCallback(
         async (messageProps: { role: 'user' | 'assistant' | 'system'; content: string }, options: any = {}): Promise<any> => {
-            if (!isOnline && !isLocalModel) {
+            // Check both the hook state AND the live navigator state to ensure we catch offline status immediately
+            // navigator.onLine is the source of truth, isOnline is for UI reactivity
+            const isActuallyOffline = !isOnline || (typeof navigator !== 'undefined' && !navigator.onLine);
+            
+            if (isActuallyOffline && !isLocalModel) {
                 toast.error('You are currently offline.', {
                     description: 'Please switch to a local model or check your internet connection.',
                 });
