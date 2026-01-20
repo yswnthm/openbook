@@ -45,7 +45,11 @@ export const useMediaPipeLLM = () => {
         try {
             setState({ isLoading: true, progress: 0, text: 'Initializing MediaPipe...', error: null, isModelLoaded: false });
 
-            const genaiFileset = await FilesetResolver.forGenAiTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-genai/wasm");
+            serverLog(`[useMediaPipeLLM] Initializing FilesetResolver...`);
+            const genaiFileset = await FilesetResolver.forGenAiTasks(
+                "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-genai/wasm"
+            );
+
             let modelUrl: string;
 
             if (isUrl) {
@@ -158,17 +162,44 @@ export const useMediaPipeLLM = () => {
         }
     }, [state.isModelLoaded]);
 
-    const generate = useCallback(async (messages: { role: string; content: string }[], onUpdate: (text: string, delta: string) => void, onFinish: (text: string) => void) => {
-        if (!globalLlmInstance) throw new Error("Not initialized");
-        const system = messages.find(m => m.role === 'system');
-        const prompt = (system ? `(System Instruction: ${system.content})\n` : '') + 
-                      messages.filter(m => m.role !== 'system').map(m => `${m.role.charAt(0).toUpperCase() + m.role.slice(1)}: ${m.content}`).join('\n') + 
-                      '\nAssistant: ';
-        let fullText = "";
-        globalLlmInstance.generateResponse(prompt, (partial, done) => {
-            if (partial) { fullText += partial; onUpdate(fullText, partial); }
-            if (done) onFinish(fullText);
-        });
+    const generate = useCallback(async (
+        messages: { role: string; content: string }[],
+        onUpdate: (currentText: string, delta: string) => void,
+        onFinish: (finalText: string) => void
+    ) => {
+        serverLog(`[useMediaPipeLLM] Generate called. globalLlmInstance exists? ${!!globalLlmInstance}`);
+        if (!globalLlmInstance) {
+            serverLog(`[useMediaPipeLLM] Error: Engine not initialized (globalLlmInstance is null). Resetting state.`);
+            setState(prev => ({ ...prev, isModelLoaded: false, error: 'Model lost, please reload' }));
+            throw new Error("MediaPipe Engine not initialized. Please re-select the model file.");
+        }
+
+        try {
+            // Pass the conversation (User and Assistant) but exclude the System prompt
+            const prompt = messages
+                .filter(m => m.role !== 'system')
+                .map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`)
+                .join('\n') + '\nAssistant: ';
+
+            serverLog(`[useMediaPipeLLM] Generated Prompt (Conversation): ${prompt.slice(0, 100)}...`);
+
+            let fullText = "";
+            globalLlmInstance.generateResponse(
+                prompt,
+                (partialResult, done) => {
+                    if (partialResult) {
+                        fullText += partialResult;
+                        onUpdate(fullText, partialResult);
+                    }
+                    if (done) {
+                        onFinish(fullText);
+                    }
+                }
+            );
+        } catch (e: any) {
+            console.error("MediaPipe Generation error", e);
+            throw e;
+        }
     }, []);
 
     return { state, loadModel, generate, restoreCustomModel };
