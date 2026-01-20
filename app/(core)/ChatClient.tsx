@@ -51,6 +51,7 @@ import { isLocalModel as isCuratedLocalModel, getLocalModelById } from '@/lib/lo
 
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { WidgetSection } from './_components/WidgetSection';
+import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 
 interface Attachment {
     name: string;
@@ -116,6 +117,7 @@ function throttle<T extends (...args: any[]) => void>(fn: T, wait: number) {
 
 const HomeContent = () => {
     const { isOpen: isSidebarOpen } = useSidebar();
+    const isOnline = useOnlineStatus();
     const { registerStep, isCompleted, startTutorial, steps } = useOnboarding();
     const [query] = useQueryState('query', parseAsString.withDefault(''));
     const [q] = useQueryState('q', parseAsString.withDefault(''));
@@ -423,6 +425,13 @@ const HomeContent = () => {
     // Wrap append to persist user messages to current space
     const appendWithPersist = useCallback(
         async (messageProps: { role: 'user' | 'assistant' | 'system'; content: string }, options: any = {}): Promise<any> => {
+            if (!isOnline && !isLocalModel) {
+                toast.error('You are currently offline.', {
+                    description: 'Please switch to a local model or check your internet connection.',
+                });
+                return null;
+            }
+
             if (messageProps.role === 'user') {
                 const userChatMessage: ChatMessage = {
                     id: crypto.randomUUID(),
@@ -578,7 +587,7 @@ const HomeContent = () => {
                 return result;
             }
         },
-        [append, isLocalModel, isMediaPipe, selectedModel, webLLMState, mediaPipeState, generateWebLLM, generateMediaPipe],
+        [append, isLocalModel, isMediaPipe, selectedModel, webLLMState, mediaPipeState, generateWebLLM, generateMediaPipe, isOnline],
     ); // Remove addMessage dependency since we're using the ref
 
     const isFrameworkSwitchingRef = useRef(false);
@@ -919,6 +928,10 @@ const HomeContent = () => {
                                     currentSpaceId={currentSpaceId}
                                     onCompactSpace={handleCompactSpace}
                                     pickerPlacement="bottom" // Explicitly bottom for centered input
+                                    onSelect={handleModelChange}
+                                    loadingModelId={isLocalModel && ((isMediaPipe && mediaPipeState.isLoading) || (!isMediaPipe && webLLMState.isLoading)) ? selectedModel : null}
+                                    loadingProgress={isMediaPipe ? mediaPipeState.progress : webLLMState.progress}
+                                    loadingText={isMediaPipe ? mediaPipeState.text : webLLMState.text}
                                 />
                             </div>
                         )}
