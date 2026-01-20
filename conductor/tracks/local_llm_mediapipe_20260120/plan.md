@@ -13,7 +13,7 @@ This plan outlines the integration of client-side LLM inference using MediaPipe,
     - [ ] Verify with tests that the combined prompt is formatted correctly before being sent to the engine.
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Core Engine Enhancements' (Protocol in workflow.md)
 
-## Phase 2: Data Persistence & Model Management
+## Phase 2: Data Persistence & Model Management [checkpoint: 255fa3e]
 - [x] Task: Implement Model Caching Layer 30ad657
     - [ ] Create a utility for browser `CacheStorage` to store and retrieve large `.task` files.
     - [ ] Integrate caching into the `loadModel` flow: Check cache -> Fetch if missing -> Save to cache.
