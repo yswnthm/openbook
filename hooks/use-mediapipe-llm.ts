@@ -142,25 +142,40 @@ export const useMediaPipeLLM = () => {
         }
 
         try {
-            // MediaPipe LlmInference currently takes a single prompt string.
-            // We need to format the chat history into a string prompt.
-            // This formatting is model-specific (e.g. Gemma uses specific tokens).
-            // For now, we will construct a simple prompt or just use the last message
-            // if we assume the user will manage context manually or if single-turn.
-            // But ideally, we adhere to the chat prompt format of the model.
-            // Since we don't know the exact model type (could be Gemma, etc.),
-            // we'll try a generic format or just pass the last user message for now.
-            // Better yet, let's try to join them.
+            // Extract system prompt if present
+            const systemMessage = messages.find(m => m.role === 'system');
+            const otherMessages = messages.filter(m => m.role !== 'system');
 
-            // Construct prompt efficiently from full history
-            // We use a standard "Role: Content" format which works reasonably well for many base/instruct models
-            // Ideally, this should use the model's specific chat template (often stored in model metadata or tokenizer config)
-            // but for now, this generic format supports system prompts and multi-turn history.
-            const inputPrompt = messages.map(m => {
-                // Capitalize role for standard format (User, Assistant, System)
+            let promptParts: string[] = [];
+
+            // Add system prompt with specific formatting
+            if (systemMessage) {
+                promptParts.push(`(System Instruction: ${systemMessage.content})`);
+            }
+
+            // Format history
+            otherMessages.forEach(m => {
                 const roleName = m.role.charAt(0).toUpperCase() + m.role.slice(1);
-                return `${roleName}: ${m.content}`;
-            }).join('\n') + '\nAssistant: ';
+                promptParts.push(`${roleName}: ${m.content}`);
+            });
+            
+            // Add prompt for assistant to complete
+            promptParts.push('Assistant: ');
+
+            // Join with spaces or newlines?
+            // "Prepend system instructions to the user's prompt string: (System Instruction: <SYSTEM_PROMPT>) User: <USER_PROMPT>"
+            // This implies the system prompt might be on the same line or just before.
+            // Let's use newlines for separation between turns, but maybe the system prompt is attached to the first user message?
+            // The spec example shows: `(System Instruction: ...) User: ...` (same line or space separated).
+            // But typical chat formats use newlines.
+            // Let's stick to newlines for clarity unless we see issues, but the spec example `(System Instruction: <SYSTEM_PROMPT>) User: <USER_PROMPT>` *could* be interpreted as same line.
+            // However, `promptParts.join('\n')` is safer for standard LLM parsing.
+            // Let's assume newlines for now to match the existing `join('\n')` style but with the new prefix.
+            // Actually, if I look closely at the spec: `(System Instruction: <SYSTEM_PROMPT>) User: <USER_PROMPT>`
+            // I will use a newline after the system instruction to be safe and clean, 
+            // OR I can put it right before the first User message.
+            
+            const inputPrompt = promptParts.join('\n');
 
             // Log the prompt for debugging
             serverLog(`[useMediaPipeLLM] Generated Prompt: ${inputPrompt.slice(0, 200)}...`);
