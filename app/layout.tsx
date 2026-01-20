@@ -55,6 +55,7 @@ export const metadata: Metadata = {
         title: 'OpenBook',
         statusBarStyle: 'black-translucent',
     },
+    manifest: '/manifest.json',
 };
 
 export const viewport: Viewport = {
