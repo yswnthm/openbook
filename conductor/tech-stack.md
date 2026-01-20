@@ -17,7 +17,8 @@
 ## AI & Data
 - **AI Orchestration:** Vercel AI SDK (`ai` package)
 - **LLM Providers:** OpenAI, Google Gemini, Anthropic, Cerebras, Groq, XAI
-- **Local LLMs:** MLC Web-LLM, Ollama
+- **Local LLMs:** MediaPipe (LiteRT), MLC Web-LLM, Ollama
+- **On-Device Storage:** Browser Cache API (for large model persistence)
 - **Search Integrations:** Tavily, Exa
 - **Validation:** Zod
 
