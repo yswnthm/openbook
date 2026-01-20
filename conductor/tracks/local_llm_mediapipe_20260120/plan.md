@@ -22,15 +22,9 @@ This plan outlines the integration of client-side LLM inference using MediaPipe,
     - [ ] Ensure models are mapped to their respective LiteRT task file URLs.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Data Persistence & Model Management' (Protocol in workflow.md)
 
-## Phase 3: UI Integration
+## Phase 3: UI Integration [checkpoint: 69c6dce]
 - [x] Task: Update `AiModelPicker` with Gemma Models df75d04
-    - [ ] Add the predefined Gemma 3 models from the registry to the `ALL_MODELS` list in `ai-model-picker.tsx`.
-    - [ ] Style the items to indicate they are "Downloadable Local Models".
-- [x] Task: Enhance `ChatInput` & `ChatClient` Integration a914f1e
-    - [ ] Ensure `ChatClient` triggers the download flow when a predefined local model is selected.
-    - [ ] Verify that the progress bar correctly reflects both download and initialization phases.
-    - [ ] Handle error states (e.g., WebGPU not supported) with user-friendly toast messages.
-- [ ] Task: Conductor - User Manual Verification 'Phase 3: UI Integration' (Protocol in workflow.md)
+- [x] Task: Enhance `ChatInput` & `ChatClient` Integration 69c6dce
 
 ## Phase 4: Final Polishing & Verification
 - [ ] Task: Performance & Memory Optimization
