@@ -1,9 +1,9 @@
 # Implementation Plan - Offline Support & PWA
 
 ## Phase 1: PWA Foundations
-- [~] Task: Install and configure `next-pwa` (or equivalent service worker generator)
-    - [ ] Sub-task: Install dependencies and update `next.config.js`.
-    - [ ] Sub-task: Configure build exclusions to avoid caching large development files.
+- [x] Task: Install and configure `next-pwa` (or equivalent service worker generator) [a7c9696]
+    - [x] Sub-task: Install dependencies and update `next.config.js`.
+    - [x] Sub-task: Configure build exclusions to avoid caching large development files.
 - [ ] Task: Create Web App Manifest
     - [ ] Sub-task: Generate `manifest.json` with correct icons, colors, and display modes.
     - [ ] Sub-task: Add meta tags for PWA support (viewport, theme-color) in `layout.tsx`.
