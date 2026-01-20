@@ -437,6 +437,13 @@ const HomeContent = () => {
             }
 
             if (messageProps.role === 'user') {
+                toast.error('You are currently offline.', {
+                    description: 'Please switch to a local model or check your internet connection.',
+                });
+                return null;
+            }
+
+            if (messageProps.role === 'user') {
                 const userChatMessage: ChatMessage = {
                     id: crypto.randomUUID(),
                     role: 'user', // explicitly 'user'
