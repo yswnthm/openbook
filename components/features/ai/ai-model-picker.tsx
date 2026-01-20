@@ -12,9 +12,12 @@ import {
     BrainCircuit,
     Globe,
     Lock,
-    Command
+    Command,
+    CloudDownload
 } from 'lucide-react';
 import { serverLog } from '@/lib/client-logger';
+
+import { LOCAL_MODELS } from '@/lib/local-models';
 
 // Richer model definitions
 interface ModelDef {
@@ -24,14 +27,12 @@ interface ModelDef {
     provider: string;
     capabilities: string[];
     contextWindow: string; // e.g. "128k"
-    tier: 'premium' | 'free' | 'preview' | 'local' | 'ollama';
+    tier: 'premium' | 'free' | 'preview' | 'local' | 'ollama' | 'local-download';
     tags: string[]; // for search
 }
 
 const ALL_MODELS: ModelDef[] = [
-    // [REFERENCE] These 'value' fields are what you use in ChatClient.tsx to set the default model.
-    // Example: 'openai-gpt-5-mini', 'google-gemini-2-5-pro', etc.
-    // --- Premium / Paid ---
+    // ... (previous models)
     {
         value: 'openai-gpt-5-mini',
         label: 'GPT 5 Mini',
@@ -129,23 +130,7 @@ const ALL_MODELS: ModelDef[] = [
 
     // --- Free / Community ---
     {
-        value: 'neuman-gpt-oss-free', // Keeping this one as it wasn't in providers.ts mapping explicitly shown, or I missed it. Wait, I didn't see it in providers.ts earlier. Let me check the grep result or providers.ts again. Ah, I might have missed it. Let me double check providers.ts content from step 4.
-        // Step 4 providers.ts: No 'neuman-gpt-oss-free'. It was NOT in providers.ts.
-        // Ah, looking at Step 4 output, lines 43-66 do NOT contain 'neuman-gpt-oss-free'.
-        // However, 'ai-model-picker.tsx' has it at line 116.
-        // If it's not in providers.ts, it might not work. But I should rename it if I can infer the provider, which is Groq.
-        // I will assume it should be 'groq-gpt-oss-free' but I better stick to what I renamed in providers.ts.
-        // Wait, if it's not in providers.ts, then selecting it probably broke things before too?
-        // Or maybe it is mapped dynamically?
-        // Let's look at providers.ts again.
-        // It has 'neuman-groq-compound', 'neuman-kimi-k2', 'neuman-qwen-3', 'neuman-llama-4...'.
-        // It DOES NOT have 'neuman-gpt-oss-free'.
-        // This suggests 'neuman-gpt-oss-free' might be a typo in the picker or a missing entry in providers.
-        // I will leave it as 'neuman-gpt-oss-free' for now or rename to 'groq-gpt-oss-free' if I want to be consistent, but I should probably just leave it or rename it to something that looks like the others.
-        // Actually, looking at the previous providers.ts content provided in Step 47, I see `groq-llama-4...`.
-        // I'll rename it to `groq-gpt-oss-120b` to be consistent with others if I were adding it, but since I am REFACORING, I should be careful.
-        // If I change the value here, and it's not in providers.ts, it still won't work.
-        // I will optimistically rename it to `groq-gpt-oss-free` and note that it might be missing in providers.
+        value: 'neuman-gpt-oss-free',
         label: 'GPT OSS 120b',
         description: 'Large open source model hosted on Groq.',
         provider: 'Groq',
@@ -255,6 +240,17 @@ const ALL_MODELS: ModelDef[] = [
         tier: 'local',
         tags: ['local', 'phi', 'webgpu', 'offline']
     },
+    // --- Local Downloadable (MediaPipe) ---
+    ...LOCAL_MODELS.map(m => ({
+        value: m.id,
+        label: m.name,
+        description: m.description,
+        provider: m.provider,
+        capabilities: ['Local', 'Downloadable', 'Private'],
+        contextWindow: '8k',
+        tier: 'local-download' as const,
+        tags: ['local', 'mediapipe', 'download', m.provider.toLowerCase()]
+    })),
     // --- Ollama ---
     {
         value: 'ollama-gemma-3-270m',
@@ -316,6 +312,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
             preview: filteredModels.filter(m => m.tier === 'preview'),
             free: filteredModels.filter(m => m.tier === 'free'),
             local: filteredModels.filter(m => m.tier === 'local'),
+            'local-download': filteredModels.filter(m => m.tier === 'local-download'),
             ollama: filteredModels.filter(m => m.tier === 'ollama'),
         };
     }, [filteredModels]);
@@ -420,6 +417,11 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                             title = 'On-Device (WebGPU)';
                             Icon = Cpu;
                             colorClass = 'text-purple-500';
+                            break;
+                        case 'local-download':
+                            title = 'Downloadable (Offline)';
+                            Icon = CloudDownload;
+                            colorClass = 'text-cyan-500';
                             break;
                         case 'ollama':
                             title = 'Local (Ollama)';
