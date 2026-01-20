@@ -28,8 +28,5 @@ This plan outlines the integration of client-side LLM inference using MediaPipe,
 
 ## Phase 4: Final Polishing & Verification
 - [x] Task: Performance & Memory Optimization 0fa6b83
-    - [ ] Ensure previous model instances are correctly disposed of to prevent memory leaks.
-    - [ ] Optimize the context window handling to stay within local device limits.
-- [ ] Task: Offline Mode Verification
-    - [ ] Verify that once a model is cached, the application can load it and perform inference without an internet connection.
-- [ ] Task: Conductor - User Manual Verification 'Phase 4: Final Polishing & Verification' (Protocol in workflow.md)
+- [x] Task: Offline Mode Verification 3ada66b
+- [x] Task: Conductor - User Manual Verification 'Phase 4: Final Polishing & Verification' 3ada66b
