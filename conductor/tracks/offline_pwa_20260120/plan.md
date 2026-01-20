@@ -13,9 +13,9 @@
 - [x] Task: Implement `useOnlineStatus` hook [809e23d]
     - [x] Sub-task: Create a hook that listens to `window.addEventListener('online'/'offline')`.
     - [x] Sub-task: Add unit tests for the hook.
-- [~] Task: Create Offline Indicator Component
-    - [ ] Sub-task: Design a subtle UI component (e.g., status pill) to show when disconnected.
-    - [ ] Sub-task: Integrate the component into the main `Layout` or `Sidebar`.
+- [x] Task: Create Offline Indicator Component [3596e59]
+    - [x] Sub-task: Design a subtle UI component (e.g., status pill) to show when disconnected.
+    - [x] Sub-task: Integrate the component into the main `Layout` or `Sidebar`.
 - [ ] Task: Update Model Selection Logic
     - [ ] Sub-task: Modify the chat interface to check connection status before sending a message to a cloud provider.
     - [ ] Sub-task: Display an error toast/alert if sending to a cloud model while offline.
