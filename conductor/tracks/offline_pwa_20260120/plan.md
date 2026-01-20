@@ -22,10 +22,10 @@
 - [x] Task: Configure Service Worker for Model Weights [3497c23]
     - [x] Sub-task: Add specific runtime caching rules for the CDN domains used by MediaPipe/WebLLM (e.g., `storage.googleapis.com`, `huggingface.co`).
     - [x] Sub-task: Set appropriate cache expiration policies (long-term caching for models).
-- [ ] Task: Conductor - User Manual Verification 'Advanced Caching Strategy' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Advanced Caching Strategy' (Protocol in workflow.md)
 
-## Phase 4: Final Validation
-- [ ] Task: Comprehensive Offline Test
-    - [ ] Sub-task: Verify "Install App" flow on Desktop/Mobile.
-    - [ ] Sub-task: Perform a full user journey (Open App -> Load Local Model -> Chat -> Create Journal) with Wi-Fi disabled.
-- [ ] Task: Conductor - User Manual Verification 'Final Validation' (Protocol in workflow.md)
+## Phase 4: Final Validation [checkpoint: 2460f6b]
+- [x] Task: Comprehensive Offline Test [2460f6b]
+    - [x] Sub-task: Verify "Install App" flow on Desktop/Mobile.
+    - [x] Sub-task: Perform a full user journey (Open App -> Load Local Model -> Chat -> Create Journal) with Wi-Fi disabled.
+- [x] Task: Conductor - User Manual Verification 'Final Validation' (Protocol in workflow.md)
