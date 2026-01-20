@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 
+const withPWA = require("@ducanh2912/next-pwa").default({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  workboxOptions: {
+    exclude: [/\.map$/, /middleware-manifest\.json$/],
+  },
+});
+
 // SAFETY CONSTANT: Remove localStorage from global if it exists on server
 // This fixes issues where libraries (like nuqs) crash because they detect localStorage
 // but it's not a functional Storage object in the Node environment.
@@ -42,4 +50,4 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
 
-module.exports = withBundleAnalyzer(nextConfig);
+module.exports = withBundleAnalyzer(withPWA(nextConfig));
