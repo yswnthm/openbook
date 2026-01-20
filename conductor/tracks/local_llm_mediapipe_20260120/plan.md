@@ -27,7 +27,7 @@ This plan outlines the integration of client-side LLM inference using MediaPipe,
 - [x] Task: Enhance `ChatInput` & `ChatClient` Integration 69c6dce
 
 ## Phase 4: Final Polishing & Verification
-- [ ] Task: Performance & Memory Optimization
+- [x] Task: Performance & Memory Optimization 0fa6b83
     - [ ] Ensure previous model instances are correctly disposed of to prevent memory leaks.
     - [ ] Optimize the context window handling to stay within local device limits.
 - [ ] Task: Offline Mode Verification
