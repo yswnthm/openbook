@@ -371,7 +371,7 @@ const HomeContent = () => {
     // WebLLM Integration
     const { state: webLLMState, loadModel: loadWebLLMModel, generate: generateWebLLM, currentModel: currentWebLLMModel } = useWebLLM();
     // MediaPipe Integration
-    const { state: mediaPipeState, loadModel: loadMediaPipeModel, generate: generateMediaPipe } = useMediaPipeLLM();
+    const { state: mediaPipeState, loadModel: loadMediaPipeModel, generate: generateMediaPipe, restoreCustomModel } = useMediaPipeLLM();
 
     // Determine model types
     const isWebLLM = selectedModel.startsWith('local-') && selectedModel !== 'local-custom-file';
@@ -399,8 +399,18 @@ const HomeContent = () => {
                 serverLog(`[ChatClient] Auto-loading curated MediaPipe model: ${model.name}`);
                 loadMediaPipeModel(model.url);
             }
+        } else if (isCustomMediaPipe) {
+            // Try to restore custom model if not loaded
+            if (!mediaPipeState.isModelLoaded && !mediaPipeState.isLoading) {
+                serverLog(`[ChatClient] Attempting to restore custom MediaPipe model...`);
+                restoreCustomModel().then(success => {
+                    if (!success) {
+                        serverLog(`[ChatClient] Restore failed or no saved model.`);
+                    }
+                });
+            }
         }
-    }, [isWebLLM, isCuratedMediaPipe, selectedModel, loadWebLLMModel, loadMediaPipeModel]);
+    }, [isWebLLM, isCuratedMediaPipe, isCustomMediaPipe, selectedModel, loadWebLLMModel, loadMediaPipeModel, restoreCustomModel, mediaPipeState.isModelLoaded, mediaPipeState.isLoading]);
 
     // Show model loading progress in toast or UI
     useEffect(() => {
@@ -429,10 +439,16 @@ const HomeContent = () => {
 
                 if (isLocalModel) {
                     // Handle Local Logic
-                    // 1. Manually add user message to UI immediately
-                    // setMessages(prev => [...prev, userChatMessage]); // Actually useEffect syncs this from space, but for instant feedback:
-                    // Wait, useEffect syncs from currentSpace.messages which we just updated via addMessage.
-                    // But let's assume we want to trigger generation.
+                    
+                    // 1. Manually add user message to UI immediately so it's visible
+                    const uiUserMessage = {
+                        id: userChatMessage.id,
+                        role: 'user' as const,
+                        content: userChatMessage.content,
+                        createdAt: new Date(userChatMessage.timestamp)
+                    };
+                    
+                    setMessages(prev => [...prev, uiUserMessage]);
 
                     if (isMediaPipe) {
                         if (!mediaPipeState.isModelLoaded) {
@@ -440,7 +456,7 @@ const HomeContent = () => {
                             if (isCuratedMediaPipe) {
                                 toast.error(`Gemma model is still loading: ${mediaPipeState.text} (${Math.round(mediaPipeState.progress)}%)`);
                             } else {
-                                toast.error(`MediaPipe model is not loaded${errorMsg}. Please select a .task file.`);
+                                toast.error(`MediaPipe model is not loaded${errorMsg} (Model: ${selectedModel}). Please select a .task file.`);
                             }
                             return null;
                         }
