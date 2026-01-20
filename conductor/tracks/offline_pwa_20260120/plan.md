@@ -4,9 +4,9 @@
 - [x] Task: Install and configure `next-pwa` (or equivalent service worker generator) [a7c9696]
     - [x] Sub-task: Install dependencies and update `next.config.js`.
     - [x] Sub-task: Configure build exclusions to avoid caching large development files.
-- [ ] Task: Create Web App Manifest
-    - [ ] Sub-task: Generate `manifest.json` with correct icons, colors, and display modes.
-    - [ ] Sub-task: Add meta tags for PWA support (viewport, theme-color) in `layout.tsx`.
+- [x] Task: Create Web App Manifest [e7e2cdb]
+    - [x] Sub-task: Generate `manifest.json` with correct icons, colors, and display modes.
+    - [x] Sub-task: Add meta tags for PWA support (viewport, theme-color) in `layout.tsx`.
 - [ ] Task: Conductor - User Manual Verification 'PWA Foundations' (Protocol in workflow.md)
 
 ## Phase 2: Offline UX & State Management
