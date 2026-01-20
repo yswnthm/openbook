@@ -16,12 +16,12 @@
 - [x] Task: Conductor - User Manual Verification 'Offline UX & State Management' (Protocol in workflow.md)
 
 ## Phase 3: Advanced Caching Strategy
-- [ ] Task: Configure Service Worker for Static Assets
-    - [ ] Sub-task: Ensure all JS/CSS chunks are aggressively cached.
-    - [ ] Sub-task: Verify that fonts and SVGs (like `logo.svg`) are cached.
-- [ ] Task: Configure Service Worker for Model Weights
-    - [ ] Sub-task: Add specific runtime caching rules for the CDN domains used by MediaPipe/WebLLM (e.g., `storage.googleapis.com`, `huggingface.co`).
-    - [ ] Sub-task: Set appropriate cache expiration policies (long-term caching for models).
+- [x] Task: Configure Service Worker for Static Assets [3497c23]
+    - [x] Sub-task: Ensure all JS/CSS chunks are aggressively cached.
+    - [x] Sub-task: Verify that fonts and SVGs (like `logo.svg`) are cached.
+- [x] Task: Configure Service Worker for Model Weights [3497c23]
+    - [x] Sub-task: Add specific runtime caching rules for the CDN domains used by MediaPipe/WebLLM (e.g., `storage.googleapis.com`, `huggingface.co`).
+    - [x] Sub-task: Set appropriate cache expiration policies (long-term caching for models).
 - [ ] Task: Conductor - User Manual Verification 'Advanced Caching Strategy' (Protocol in workflow.md)
 
 ## Phase 4: Final Validation
