@@ -23,7 +23,7 @@ This plan outlines the integration of client-side LLM inference using MediaPipe,
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Data Persistence & Model Management' (Protocol in workflow.md)
 
 ## Phase 3: UI Integration
-- [ ] Task: Update `AiModelPicker` with Gemma Models
+- [x] Task: Update `AiModelPicker` with Gemma Models df75d04
     - [ ] Add the predefined Gemma 3 models from the registry to the `ALL_MODELS` list in `ai-model-picker.tsx`.
     - [ ] Style the items to indicate they are "Downloadable Local Models".
 - [ ] Task: Enhance `ChatInput` & `ChatClient` Integration
