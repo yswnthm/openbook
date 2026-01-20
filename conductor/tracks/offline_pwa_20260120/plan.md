@@ -1,6 +1,6 @@
 # Implementation Plan - Offline Support & PWA
 
-## Phase 1: PWA Foundations
+## Phase 1: PWA Foundations [checkpoint: f66bd7e]
 - [x] Task: Install and configure `next-pwa` (or equivalent service worker generator) [a7c9696]
     - [x] Sub-task: Install dependencies and update `next.config.js`.
     - [x] Sub-task: Configure build exclusions to avoid caching large development files.
