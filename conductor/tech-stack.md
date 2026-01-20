@@ -30,5 +30,6 @@
 ## Development & Deployment
 - **Linting:** ESLint
 - **Formatting:** Prettier
+- **PWA:** @ducanh2912/next-pwa (Workbox)
 - **Analytics:** Vercel Analytics, Vercel Speed Insights, PostHog
 - **Deployment:** Vercel

@@ -15,7 +15,7 @@ OpenBook is a first-principles learning platform designed to help students and e
 - **Multi-Model Intelligence:** Access to a variety of LLMs (OpenAI, Google, Anthropic, etc.) to get different perspectives on a single concept.
 - **Interactive Knowledge Interface:** A rich, streaming environment supporting LaTeX, code, and file attachments for a comprehensive learning experience.
 - **Research & Discovery:** Advanced search capabilities for both casual web inquiries and scholarly paper exploration.
-- **Privacy-First Offline Learning:** Ability to run LLMs directly in the browser (via WebGPU) for fully private and offline exploration.
+- **Privacy-First Offline PWA:** A fully installable Progressive Web App (PWA) capable of running LLMs directly in the browser (via WebGPU) for a seamless, private, and completely offline learning experience.
 - **Interactive Onboarding:** A guided, step-by-step introduction to help users quickly master the platform's advanced research and learning features.
 
 # Success Metrics
