@@ -7,7 +7,7 @@ This plan outlines the integration of client-side LLM inference using MediaPipe,
     - [ ] Create unit tests for `useMediaPipeLLM` to verify loading states and progress reporting.
     - [ ] Enhance `loadModel` to accept a URL (string) in addition to a `File`.
     - [ ] Implement `fetch` with progress tracking to report download percentage to the UI.
-- [ ] Task: Implement System Prompt Injection Logic
+- [x] Task: Implement System Prompt Injection Logic 9e517cb
     - [ ] Update `generate` function in `useMediaPipeLLM` to handle system prompts for LiteRT models.
     - [ ] Logic: Prepend system instructions to the user's prompt string: `(System Instruction: <SYSTEM_PROMPT>) User: <USER_PROMPT>`.
     - [ ] Verify with tests that the combined prompt is formatted correctly before being sent to the engine.
