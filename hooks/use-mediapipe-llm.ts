@@ -25,8 +25,12 @@ export const useMediaPipeLLM = () => {
         isModelLoaded: !!globalLlmInstance, // Initialize based on global state
     });
 
-    const loadModel = useCallback(async (file: File) => {
-        serverLog(`[useMediaPipeLLM] loadModel START. File: ${file.name}, Size: ${file.size}, Type: ${file.type}`);
+    const loadModel = useCallback(async (input: File | string) => {
+        const isUrl = typeof input === 'string';
+        const logName = isUrl ? input : input.name;
+        
+        serverLog(`[useMediaPipeLLM] loadModel START. Input: ${logName}, Type: ${isUrl ? 'URL' : 'File'}`);
+        
         try {
             setState({
                 isLoading: true,
@@ -41,13 +45,53 @@ export const useMediaPipeLLM = () => {
                 "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-genai/wasm"
             );
 
-            // The URL hack is required because LlmInference expects a URL or a modelPath, 
-            // but for local files we need to use a Blob URL.
-            serverLog(`[useMediaPipeLLM] FilesetResolver initialized. Creating Blob URL...`);
-            const url = URL.createObjectURL(file);
-            serverLog(`[useMediaPipeLLM] Blob URL created: ${url}`);
+            let modelUrl: string;
 
-            setState(prev => ({ ...prev, text: 'Loading model...' }));
+            if (isUrl) {
+                serverLog(`[useMediaPipeLLM] Fetching model from URL: ${input}`);
+                setState(prev => ({ ...prev, text: 'Downloading model...' }));
+
+                const response = await fetch(input as string);
+                if (!response.body) throw new Error("Failed to fetch model: Response body is empty");
+
+                const contentLength = response.headers.get('Content-Length');
+                const totalLength = contentLength ? parseInt(contentLength, 10) : 0;
+                const reader = response.body.getReader();
+                
+                let receivedLength = 0;
+                const chunks = [];
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    chunks.push(value);
+                    receivedLength += value.length;
+
+                    if (totalLength > 0) {
+                        const progress = Math.round((receivedLength / totalLength) * 100);
+                        // Only update state if progress changed significantly to avoid spamming renders
+                        setState(prev => {
+                            if (prev.progress !== progress) {
+                                return { ...prev, progress, text: `Downloading model... ${progress}%` };
+                            }
+                            return prev;
+                        });
+                    }
+                }
+
+                serverLog(`[useMediaPipeLLM] Download complete. Creating Blob...`);
+                const blob = new Blob(chunks);
+                modelUrl = URL.createObjectURL(blob);
+            } else {
+                // It's a File object
+                serverLog(`[useMediaPipeLLM] Creating Blob URL from File...`);
+                modelUrl = URL.createObjectURL(input as File);
+            }
+
+            serverLog(`[useMediaPipeLLM] Blob URL created: ${modelUrl}`);
+
+            setState(prev => ({ ...prev, text: 'Loading model into memory...', progress: 100 }));
 
             serverLog(`[useMediaPipeLLM] Creating LlmInference from options...`);
 
@@ -59,7 +103,7 @@ export const useMediaPipeLLM = () => {
 
             const llm = await LlmInference.createFromOptions(genaiFileset, {
                 baseOptions: {
-                    modelAssetPath: url,
+                    modelAssetPath: modelUrl,
                 },
             });
 
@@ -108,14 +152,18 @@ export const useMediaPipeLLM = () => {
             // we'll try a generic format or just pass the last user message for now.
             // Better yet, let's try to join them.
 
-            // Simple joining for now:
-            const prompt = messages.map(m => `${m.role}: ${m.content}`).join('\n') + '\nassistant: ';
+            // Construct prompt efficiently from full history
+            // We use a standard "Role: Content" format which works reasonably well for many base/instruct models
+            // Ideally, this should use the model's specific chat template (often stored in model metadata or tokenizer config)
+            // but for now, this generic format supports system prompts and multi-turn history.
+            const inputPrompt = messages.map(m => {
+                // Capitalize role for standard format (User, Assistant, System)
+                const roleName = m.role.charAt(0).toUpperCase() + m.role.slice(1);
+                return `${roleName}: ${m.content}`;
+            }).join('\n') + '\nAssistant: ';
 
-            // However, most .task files for MediaPipe are instructed models.
-            // Let's use the last message content as the prompt for simplicity in this MVP 
-            // unless we want to implement full chat templates.
-            const lastMessage = messages[messages.length - 1];
-            const inputPrompt = lastMessage.role === 'user' ? lastMessage.content : prompt;
+            // Log the prompt for debugging
+            serverLog(`[useMediaPipeLLM] Generated Prompt: ${inputPrompt.slice(0, 200)}...`);
 
             let fullText = "";
 
