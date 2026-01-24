@@ -2,23 +2,30 @@ const SENSITIVE_KEYS = [
     'password', 'token', 'secret', 'authorization', 'creditCard', 'ssn', 'key'
 ];
 
-function sanitizeData(data: any): any {
+function sanitizeData(data: any, visited = new WeakSet()): any {
     if (!data) return data;
-    if (typeof data === 'string') return data; // Could potentially scan strings too, but might be overkill
-
-    if (Array.isArray(data)) {
-        return data.map(item => sanitizeData(item));
-    }
+    if (typeof data === 'string') return data;
 
     if (typeof data === 'object') {
+        if (visited.has(data)) {
+            return '[Circular]';
+        }
+        visited.add(data);
+
+        // Handle Array
+        if (Array.isArray(data)) {
+            return data.map(item => sanitizeData(item, visited));
+        }
+
+        // Handle Object (use Object.keys to avoid checking prototype chain)
         const sanitized: any = {};
-        for (const key in data) {
+        Object.keys(data).forEach(key => {
             if (SENSITIVE_KEYS.some(sensitive => key.toLowerCase().includes(sensitive))) {
                 sanitized[key] = '[REDACTED]';
             } else {
-                sanitized[key] = sanitizeData(data[key]);
+                sanitized[key] = sanitizeData(data[key], visited);
             }
-        }
+        });
         return sanitized;
     }
 

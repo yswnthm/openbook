@@ -17,8 +17,24 @@ export async function POST(req: NextRequest) {
         const sanitizedMessage = message.slice(0, 1000).replace(/[\x00-\x1F\x7F]/g, '');
 
         // Print to server terminal with a distinctive prefix
+        // Print to server terminal with a distinctive prefix
         const timestamp = new Date().toISOString(); // UTC
-        console.log(`\x1b[36m[CLIENT-LOG] ${timestamp}\x1b[0m ${sanitizedMessage}`, data ? JSON.stringify(data).slice(0, 500) : '');
+
+        // Helper to strip control characters (ANSI codes, etc.)
+        const sanitizeControlChars = (str: string) => str.replace(/[\x00-\x1F\x7F]/g, '');
+
+        let safeData = '';
+        if (data) {
+            try {
+                const stringified = JSON.stringify(data);
+                // Sanitize the stringified data just in case it contained control chars
+                safeData = sanitizeControlChars(stringified).slice(0, 500);
+            } catch (e) {
+                safeData = '[Error serializing data]';
+            }
+        }
+
+        console.log(`\x1b[36m[CLIENT-LOG] ${timestamp}\x1b[0m ${sanitizedMessage}`, safeData);
 
         return NextResponse.json({ success: true });
     } catch (error) {

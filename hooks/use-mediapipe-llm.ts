@@ -9,6 +9,7 @@ export interface MediaPipeLLMState {
     text: string;
     error: string | null;
     isModelLoaded: boolean;
+    isGenerating: boolean;
 }
 
 // Module-level variables to persist instance across re-renders
@@ -39,6 +40,7 @@ export const useMediaPipeLLM = () => {
             text: '',
             error: null,
             isModelLoaded: initialLoaded,
+            isGenerating: false,
         };
     });
 
@@ -65,7 +67,7 @@ export const useMediaPipeLLM = () => {
             }
             abortControllerRef.current = new AbortController();
 
-            setState({ isLoading: true, progress: 0, text: 'Initializing MediaPipe...', error: null, isModelLoaded: false });
+            setState({ isLoading: true, progress: 0, text: 'Initializing MediaPipe...', error: null, isModelLoaded: false, isGenerating: false });
 
             serverLog(`[useMediaPipeLLM] Initializing FilesetResolver...`);
             const genaiFileset = await FilesetResolver.forGenAiTasks(
@@ -190,12 +192,12 @@ export const useMediaPipeLLM = () => {
             globalLlmInstance = llm;
             currentModelKey = modelKey;
 
-            setState({ isLoading: false, progress: 100, text: 'Ready', error: null, isModelLoaded: true });
+            setState({ isLoading: false, progress: 100, text: 'Ready', error: null, isModelLoaded: true, isGenerating: false });
         } catch (err: any) {
             if (err.name !== 'AbortError') {
                 // Check if we are still the relevant request before showing error
                 if (requestId === latestRequestIdRef.current) {
-                    setState({ isLoading: false, progress: 0, text: 'Error', error: err.message, isModelLoaded: false });
+                    setState({ isLoading: false, progress: 0, text: 'Error', error: err.message, isModelLoaded: false, isGenerating: false });
                 }
             }
         } finally {
@@ -232,7 +234,7 @@ export const useMediaPipeLLM = () => {
             }
             abortControllerRef.current = new AbortController();
 
-            setState({ isLoading: true, progress: 0, text: 'Restoring from cache...', error: null, isModelLoaded: false });
+            setState({ isLoading: true, progress: 0, text: 'Restoring from cache...', error: null, isModelLoaded: false, isGenerating: false });
 
             serverLog(`[useMediaPipeLLM] Getting blob from cache: ${key}`);
             const blob = await modelCache.get(key);
@@ -277,13 +279,13 @@ export const useMediaPipeLLM = () => {
             serverLog(`[useMediaPipeLLM] Engine created.`);
             globalLlmInstance = llm;
             currentModelKey = key;
-            setState({ isLoading: false, progress: 100, text: 'Ready', error: null, isModelLoaded: true });
+            setState({ isLoading: false, progress: 100, text: 'Ready', error: null, isModelLoaded: true, isGenerating: false });
             return true;
         } catch (e: any) {
             serverLog(`[useMediaPipeLLM] Restore Error: ${e.message}`);
 
             if (requestId === latestRequestIdRef.current) {
-                setState({ isLoading: false, progress: 0, text: 'Restore failed', error: e.message, isModelLoaded: false });
+                setState({ isLoading: false, progress: 0, text: 'Restore failed', error: e.message, isModelLoaded: false, isGenerating: false });
             }
             return false;
         } finally {
@@ -301,11 +303,12 @@ export const useMediaPipeLLM = () => {
         serverLog(`[useMediaPipeLLM] Generate called. globalLlmInstance exists? ${!!globalLlmInstance}`);
         if (!globalLlmInstance) {
             serverLog(`[useMediaPipeLLM] Error: Engine not initialized (globalLlmInstance is null). Resetting state.`);
-            setState(prev => ({ ...prev, isModelLoaded: false, error: 'Model lost, please reload' }));
+            setState(prev => ({ ...prev, isModelLoaded: false, error: 'Model lost, please reload', isGenerating: false }));
             throw new Error("MediaPipe Engine not initialized. Please re-select the model file.");
         }
 
         try {
+            setState(prev => ({ ...prev, isGenerating: true }));
             // Pass the conversation (User and Assistant) but exclude the System prompt
             const systemMessage = messages.find(m => m.role === 'system');
             const systemPrompt = systemMessage ? `(System Instruction: ${systemMessage.content}) ` : '';
@@ -337,6 +340,8 @@ export const useMediaPipeLLM = () => {
         } catch (e: any) {
             console.error("MediaPipe Generation error", e);
             throw e;
+        } finally {
+            setState(prev => ({ ...prev, isGenerating: false }));
         }
     }, []);
 

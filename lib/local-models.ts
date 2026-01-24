@@ -1,5 +1,5 @@
 /**
- * Registry of curated local LLM models (MediaPipe/LiteRT .task files).
+ * Registry of curated local LLM models (MediaPipe/LiteRT binary (.bin) files).
  */
 
 export interface LocalModelMetadata {

@@ -385,8 +385,8 @@ const HomeContent = () => {
     // Combined status
     const status = isLocalModel
         ? (isMediaPipe
-            ? (mediaPipeState.isLoading ? 'loading' : (mediaPipeState.isModelLoaded ? 'ready' : (chatStatus === 'streaming' ? 'streaming' : 'ready')))
-            : (webLLMState.isLoading ? 'loading' : (webLLMState.isModelLoaded ? 'ready' : (chatStatus === 'streaming' ? 'streaming' : 'ready')))
+            ? (mediaPipeState.isLoading ? 'loading' : (mediaPipeState.isModelLoaded ? ((mediaPipeState as any).isGenerating ? 'streaming' : 'ready') : (chatStatus === 'streaming' ? 'streaming' : 'ready')))
+            : (webLLMState.isLoading ? 'loading' : (webLLMState.isModelLoaded ? ((webLLMState as any).isGenerating ? 'streaming' : 'ready') : (chatStatus === 'streaming' ? 'streaming' : 'ready')))
         )
         : chatStatus;
 
