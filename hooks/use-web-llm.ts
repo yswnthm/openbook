@@ -27,7 +27,10 @@ export const useWebLLM = () => {
     });
     const [currentModel, setCurrentModel] = useState<string | null>(null);
 
+    const isCancelledRef = useRef(false);
+
     const initProgressCallback: InitProgressCallback = (report) => {
+        if (isCancelledRef.current) return;
         console.log(`[WebLLM] ${report.text} (${Math.round(report.progress * 100)}%)`);
         setState((prev) => ({
             ...prev,
@@ -49,6 +52,7 @@ export const useWebLLM = () => {
         }
 
         try {
+            isCancelledRef.current = false;
             setState({
                 isLoading: true,
                 progress: 0,
@@ -68,11 +72,18 @@ export const useWebLLM = () => {
                 const engine = await CreateMLCEngine(mlcModelId, {
                     initProgressCallback,
                 });
+                if (isCancelledRef.current) {
+                    // If cancelled during creation, we interact with engine to unload?
+                    // engine.unload(); // Verify if this exists or if we should just ignore.
+                    return;
+                }
                 engineRef.current = engine;
             } else {
                 engineRef.current.setInitProgressCallback(initProgressCallback);
                 await engineRef.current.reload(mlcModelId);
             }
+
+            if (isCancelledRef.current) return;
 
             setState((prev) => ({
                 ...prev,
@@ -82,6 +93,7 @@ export const useWebLLM = () => {
             }));
 
         } catch (err: any) {
+            if (isCancelledRef.current) return;
             console.error('WebLLM Load Error:', err);
             setState((prev) => ({
                 ...prev,
@@ -105,6 +117,8 @@ export const useWebLLM = () => {
 
         let fullText = "";
 
+        if (isCancelledRef.current) return;
+
         try {
             const completion = await engineRef.current.chat.completions.create({
                 messages: messages as any,
@@ -112,19 +126,34 @@ export const useWebLLM = () => {
             });
 
             for await (const chunk of completion) {
+                if (isCancelledRef.current) break;
                 const delta = chunk.choices[0]?.delta?.content || "";
                 if (delta) {
                     fullText += delta;
                     onUpdate(fullText, delta);
                 }
             }
-
-            onFinish(fullText);
+            if (!isCancelledRef.current) {
+                onFinish(fullText);
+            }
 
         } catch (e) {
+            if (isCancelledRef.current) return;
             console.error("Generation error", e);
             throw e;
         }
+    }, []);
+
+    const cancelLoad = useCallback(() => {
+        isCancelledRef.current = true;
+        setState(prev => ({
+            ...prev,
+            isLoading: false,
+            text: 'Cancelled',
+            progress: 0
+        }));
+        // If we had a way to abort engine creation, we would do it here.
+        // For now, we rely on the flag to ignore future updates.
     }, []);
 
     // Also support non-streaming for simple cases if needed, but streaming is better for chat.
@@ -133,6 +162,7 @@ export const useWebLLM = () => {
         state,
         loadModel,
         generate,
-        currentModel
+        currentModel,
+        cancelLoad
     };
 };

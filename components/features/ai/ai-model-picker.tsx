@@ -219,27 +219,7 @@ const ALL_MODELS: ModelDef[] = [
         tier: 'free',
         tags: ['groq', 'llama', 'free']
     },
-    // --- Local / WebLLM ---
-    {
-        value: 'local-phi-3-mini',
-        label: 'Phi-3 Mini (Local)',
-        description: 'Runs entirely in your browser using WebGPU.',
-        provider: 'Microsoft',
-        capabilities: ['Local', 'Private', 'Offline'],
-        contextWindow: '4k',
-        tier: 'local',
-        tags: ['local', 'phi', 'webgpu', 'offline']
-    },
-    {
-        value: 'local-phi-2',
-        label: 'Phi-2 (Local)',
-        description: 'Smaller local model for older devices.',
-        provider: 'Microsoft',
-        capabilities: ['Local', 'Private', 'Offline'],
-        contextWindow: '2k',
-        tier: 'local',
-        tags: ['local', 'phi', 'webgpu', 'offline']
-    },
+
     // --- Local Downloadable (MediaPipe) ---
     ...LOCAL_MODELS.map(m => ({
         value: m.id,

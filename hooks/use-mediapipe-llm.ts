@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { FilesetResolver, LlmInference } from '@mediapipe/tasks-genai';
 import { serverLog } from '@/lib/client-logger';
 import { modelCache } from '@/lib/utils/model-cache';
@@ -18,6 +18,7 @@ let currentModelKey: string | null = null;
 const LAST_CUSTOM_MODEL_KEY = 'media-pipe-last-custom-key';
 
 export const useMediaPipeLLM = () => {
+    const abortControllerRef = useRef<AbortController | null>(null);
     const [state, setState] = useState<MediaPipeLLMState>(() => {
         const initialLoaded = !!globalLlmInstance;
         return {
@@ -33,16 +34,22 @@ export const useMediaPipeLLM = () => {
         const isUrl = typeof input === 'string';
         const modelKey = isUrl ? input : `local-file-${input.name}-${input.size}`;
         const logName = isUrl ? input : input.name;
-        
+
         if (globalLlmInstance && currentModelKey === modelKey) {
             serverLog(`[useMediaPipeLLM] Model ${logName} already loaded. Skipping.`);
             if (!state.isModelLoaded) {
-                 setState(prev => ({ ...prev, isModelLoaded: true, text: 'Ready', progress: 100, isLoading: false }));
+                setState(prev => ({ ...prev, isModelLoaded: true, text: 'Ready', progress: 100, isLoading: false }));
             }
             return;
         }
 
         try {
+            // Abort previous request if any
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+            abortControllerRef.current = new AbortController();
+
             setState({ isLoading: true, progress: 0, text: 'Initializing MediaPipe...', error: null, isModelLoaded: false });
 
             serverLog(`[useMediaPipeLLM] Initializing FilesetResolver...`);
@@ -59,27 +66,41 @@ export const useMediaPipeLLM = () => {
                     modelUrl = URL.createObjectURL(cachedBlob);
                 } else {
                     setState(prev => ({ ...prev, text: 'Downloading model...' }));
-                    const response = await fetch(input as string);
-                    if (!response.body) throw new Error("Empty response body");
 
-                    const total = parseInt(response.headers.get('Content-Length') || '0', 10);
-                    const reader = response.body.getReader();
-                    let received = 0;
-                    const chunks = [];
+                    try {
+                        const response = await fetch(input as string, {
+                            signal: abortControllerRef.current.signal
+                        });
 
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        if (done) break;
-                        chunks.push(value);
-                        received += value.length;
-                        if (total > 0) {
-                            const progress = Math.round((received / total) * 100);
-                            setState(prev => prev.progress !== progress ? { ...prev, progress, text: `Downloading model... ${progress}%` } : prev);
+                        if (!response.body) throw new Error("Empty response body");
+
+                        const total = parseInt(response.headers.get('Content-Length') || '0', 10);
+                        const reader = response.body.getReader();
+                        let received = 0;
+                        const chunks = [];
+
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            if (done) break;
+                            chunks.push(value);
+                            received += value.length;
+                            if (total > 0) {
+                                const progress = Math.round((received / total) * 100);
+                                setState(prev => prev.progress !== progress ? { ...prev, progress, text: `Downloading model... ${progress}%` } : prev);
+                            }
                         }
+                        const blob = new Blob(chunks);
+                        modelCache.store(modelKey, blob).catch(console.error);
+                        modelUrl = URL.createObjectURL(blob);
+
+                    } catch (fetchErr: any) {
+                        if (fetchErr.name === 'AbortError') {
+                            serverLog(`[useMediaPipeLLM] Download cancelled.`);
+                            setState(prev => ({ ...prev, isLoading: false, text: 'Download cancelled', progress: 0 }));
+                            return;
+                        }
+                        throw fetchErr;
                     }
-                    const blob = new Blob(chunks);
-                    modelCache.store(modelKey, blob).catch(console.error);
-                    modelUrl = URL.createObjectURL(blob);
                 }
             } else {
                 localStorage.setItem(LAST_CUSTOM_MODEL_KEY, modelKey);
@@ -107,7 +128,11 @@ export const useMediaPipeLLM = () => {
 
             setState({ isLoading: false, progress: 100, text: 'Ready', error: null, isModelLoaded: true });
         } catch (err: any) {
-            setState({ isLoading: false, progress: 0, text: 'Error', error: err.message, isModelLoaded: false });
+            if (err.name !== 'AbortError') {
+                setState({ isLoading: false, progress: 0, text: 'Error', error: err.message, isModelLoaded: false });
+            }
+        } finally {
+            abortControllerRef.current = null;
         }
     }, [state.isModelLoaded]);
 
@@ -117,10 +142,10 @@ export const useMediaPipeLLM = () => {
 
         // If already loaded in memory, just sync state
         if (globalLlmInstance && currentModelKey === key) {
-             if (!state.isModelLoaded) {
-                 setState(prev => ({ ...prev, isModelLoaded: true, text: 'Ready', progress: 100, isLoading: false }));
-             }
-             return true;
+            if (!state.isModelLoaded) {
+                setState(prev => ({ ...prev, isModelLoaded: true, text: 'Ready', progress: 100, isLoading: false }));
+            }
+            return true;
         }
 
         const exists = await modelCache.exists(key);
@@ -128,15 +153,15 @@ export const useMediaPipeLLM = () => {
 
         try {
             setState({ isLoading: true, progress: 0, text: 'Restoring from cache...', error: null, isModelLoaded: false });
-            
+
             serverLog(`[useMediaPipeLLM] Getting blob from cache: ${key}`);
             const blob = await modelCache.get(key);
             if (!blob) throw new Error("Cache empty");
-            
+
             serverLog(`[useMediaPipeLLM] Blob retrieved. Size: ${blob.size} bytes`);
 
             const genaiFileset = await FilesetResolver.forGenAiTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-genai/wasm");
-            
+
             serverLog(`[useMediaPipeLLM] Creating LlmInference...`);
             if (globalLlmInstance) {
                 serverLog(`[useMediaPipeLLM] Disposing previous engine instance...`);
@@ -149,7 +174,7 @@ export const useMediaPipeLLM = () => {
             }
 
             const llm = await LlmInference.createFromOptions(genaiFileset, { baseOptions: { modelAssetPath: URL.createObjectURL(blob) } });
-            
+
             serverLog(`[useMediaPipeLLM] Engine created.`);
             globalLlmInstance = llm;
             currentModelKey = key;
@@ -202,5 +227,13 @@ export const useMediaPipeLLM = () => {
         }
     }, []);
 
-    return { state, loadModel, generate, restoreCustomModel };
+    const cancelLoad = useCallback(() => {
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+            abortControllerRef.current = null;
+            setState(prev => ({ ...prev, isLoading: false, text: 'Cancelled', progress: 0 }));
+        }
+    }, []);
+
+    return { state, loadModel, generate, restoreCustomModel, cancelLoad };
 };

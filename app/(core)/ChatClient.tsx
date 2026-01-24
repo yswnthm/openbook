@@ -371,9 +371,9 @@ const HomeContent = () => {
         useChat(chatOptions);
 
     // WebLLM Integration
-    const { state: webLLMState, loadModel: loadWebLLMModel, generate: generateWebLLM, currentModel: currentWebLLMModel } = useWebLLM();
+    const { state: webLLMState, loadModel: loadWebLLMModel, generate: generateWebLLM, currentModel: currentWebLLMModel, cancelLoad: cancelWebLLM } = useWebLLM();
     // MediaPipe Integration
-    const { state: mediaPipeState, loadModel: loadMediaPipeModel, generate: generateMediaPipe, restoreCustomModel } = useMediaPipeLLM();
+    const { state: mediaPipeState, loadModel: loadMediaPipeModel, generate: generateMediaPipe, restoreCustomModel, cancelLoad: cancelMediaPipe } = useMediaPipeLLM();
 
     // Determine model types
     const isWebLLM = selectedModel.startsWith('local-') && selectedModel !== 'local-custom-file';
@@ -428,7 +428,7 @@ const HomeContent = () => {
             // Check both the hook state AND the live navigator state to ensure we catch offline status immediately
             // navigator.onLine is the source of truth, isOnline is for UI reactivity
             const isActuallyOffline = !isOnline || (typeof navigator !== 'undefined' && !navigator.onLine);
-            
+
             if (isActuallyOffline && !isLocalModel) {
                 toast.error('You are currently offline.', {
                     description: 'Please switch to a local model or check your internet connection.',
@@ -452,7 +452,7 @@ const HomeContent = () => {
 
                 if (isLocalModel) {
                     // Handle Local Logic
-                    
+
                     // 1. Manually add user message to UI immediately so it's visible
                     const uiUserMessage = {
                         id: userChatMessage.id,
@@ -460,7 +460,7 @@ const HomeContent = () => {
                         content: userChatMessage.content,
                         createdAt: new Date(userChatMessage.timestamp)
                     };
-                    
+
                     setMessages(prev => [...prev, uiUserMessage]);
 
                     if (isMediaPipe) {
@@ -936,6 +936,13 @@ const HomeContent = () => {
                                     loadingModelId={isLocalModel && ((isMediaPipe && mediaPipeState.isLoading) || (!isMediaPipe && webLLMState.isLoading)) ? selectedModel : null}
                                     loadingProgress={isMediaPipe ? mediaPipeState.progress : webLLMState.progress}
                                     loadingText={isMediaPipe ? mediaPipeState.text : webLLMState.text}
+                                    onCancelLoading={isLocalModel && ((isMediaPipe && mediaPipeState.isLoading) || (!isMediaPipe && webLLMState.isLoading)) ? () => {
+                                        if (isMediaPipe) {
+                                            cancelMediaPipe && cancelMediaPipe();
+                                        } else {
+                                            cancelWebLLM && cancelWebLLM();
+                                        }
+                                    } : undefined}
                                 />
                             </div>
                         )}
@@ -1025,6 +1032,13 @@ const HomeContent = () => {
                                         loadingProgress={isMediaPipe ? mediaPipeState.progress : webLLMState.progress}
                                         loadingText={isMediaPipe ? mediaPipeState.text : webLLMState.text}
                                         pickerPlacement="top"
+                                        onCancelLoading={isLocalModel && ((isMediaPipe && mediaPipeState.isLoading) || (!isMediaPipe && webLLMState.isLoading)) ? () => {
+                                            if (isMediaPipe) {
+                                                cancelMediaPipe && cancelMediaPipe();
+                                            } else {
+                                                cancelWebLLM && cancelWebLLM();
+                                            }
+                                        } : undefined}
                                     />
                                 </div>
                             </div>
