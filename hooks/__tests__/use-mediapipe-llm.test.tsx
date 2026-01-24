@@ -11,10 +11,12 @@ import { FilesetResolver, LlmInference } from '@mediapipe/tasks-genai';
 // Mock modelCache
 const mockCacheGet = mock(() => Promise.resolve(null));
 const mockCacheStore = mock(() => Promise.resolve());
+const mockCacheExists = mock(() => Promise.resolve(false));
 mock.module('@/lib/utils/model-cache', () => ({
     modelCache: {
         get: mockCacheGet,
         store: mockCacheStore,
+        exists: mockCacheExists,
     }
 }));
 

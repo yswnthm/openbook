@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
         const sanitizedMessage = message.slice(0, 1000).replace(/[\x00-\x1F\x7F]/g, '');
 
         // Print to server terminal with a distinctive prefix
-        // Print to server terminal with a distinctive prefix
         const timestamp = new Date().toISOString(); // UTC
 
         // Helper to strip control characters (ANSI codes, etc.)

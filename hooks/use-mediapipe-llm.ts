@@ -49,7 +49,7 @@ export const useMediaPipeLLM = () => {
         const requestId = ++latestRequestIdRef.current;
 
         const isUrl = typeof input === 'string';
-        const modelKey = isUrl ? input : `local-file-${input.name}-${input.size}`;
+        const modelKey = isUrl ? input : `local-file-${input.name}-${input.size}-${input.lastModified}`;
         const logName = isUrl ? input : input.name;
 
         if (globalLlmInstance && currentModelKey === modelKey) {
@@ -129,7 +129,15 @@ export const useMediaPipeLLM = () => {
                         if (requestId !== latestRequestIdRef.current) return;
 
                         const blob = new Blob(chunks);
-                        modelCache.store(modelKey, blob).catch(console.error);
+                        modelCache.store(modelKey, blob).catch((err) => {
+                            serverLog(`[useMediaPipeLLM] Model cache store failed for ${modelKey}: ${err.message}`);
+                            // Non-blocking notification - model still loads but won't be cached
+                            if (typeof window !== 'undefined' && (window as any).toast) {
+                                (window as any).toast.warning('Model cache failed', {
+                                    description: 'Model loaded but could not be saved for offline use. Check storage quota.',
+                                });
+                            }
+                        });
                         modelUrl = URL.createObjectURL(blob);
 
                         if (currentBlobUrlRef.current) {
@@ -154,7 +162,12 @@ export const useMediaPipeLLM = () => {
                     }
                 }
             } else {
-                localStorage.setItem(LAST_CUSTOM_MODEL_KEY, modelKey);
+                try {
+                    localStorage.setItem(LAST_CUSTOM_MODEL_KEY, modelKey);
+                } catch (err: any) {
+                    // Handle QuotaExceededError (e.g., Safari private mode)
+                    serverLog(`[useMediaPipeLLM] localStorage.setItem failed: ${err.message}`);
+                }
                 const exists = await modelCache.exists(modelKey);
 
                 // Re-check request ID

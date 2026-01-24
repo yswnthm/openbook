@@ -376,7 +376,7 @@ const HomeContent = () => {
     const { state: mediaPipeState, loadModel: loadMediaPipeModel, generate: generateMediaPipe, restoreCustomModel, cancelLoad: cancelMediaPipe } = useMediaPipeLLM();
 
     // Determine model types
-    const isWebLLM = selectedModel.startsWith('local-') && selectedModel !== 'local-custom-file';
+    const isWebLLM = selectedModel.startsWith('local-') && selectedModel !== 'local-custom-file' && !isCuratedLocalModel(selectedModel);
     const isCuratedMediaPipe = isCuratedLocalModel(selectedModel);
     const isCustomMediaPipe = selectedModel === 'local-custom-file';
     const isMediaPipe = isCuratedMediaPipe || isCustomMediaPipe;
