@@ -1,6 +1,7 @@
 import { GeistSans } from 'geist/font/sans';
 import 'katex/dist/katex.min.css';
 import './globals.css';
+import { Providers } from './(config)/providers';
 
 import { Metadata, Viewport } from 'next';
 import { Syne, Instrument_Serif, League_Spartan } from 'next/font/google';
@@ -55,6 +56,7 @@ export const metadata: Metadata = {
         title: 'OpenBook',
         statusBarStyle: 'black-translucent',
     },
+    manifest: '/manifest.json',
 };
 
 export const viewport: Viewport = {
@@ -106,7 +108,9 @@ export default function RootLayout({
                         data-enabled="true"
                     />
                 )}
-                {children}
+                <Providers>
+                    {children}
+                </Providers>
             </body>
         </html>
     );

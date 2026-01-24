@@ -43,6 +43,9 @@ interface ChatInputProps {
     loadingText?: string;
     loadingModelId?: string | null;
     pickerPlacement?: 'top' | 'bottom';
+    onSelect?: (model: string, file?: File) => void;
+    onCancelLoading?: () => void;
+    onFileSelect?: (file: File, model: string) => void;
 }
 
 const BASE_COMMANDS: ChatCommand[] = [
@@ -97,6 +100,9 @@ export function ChatInput({
     loadingText,
     loadingModelId,
     pickerPlacement = 'bottom',
+    onSelect,
+    onCancelLoading,
+    onFileSelect,
 }: ChatInputProps) {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -177,10 +183,21 @@ export function ChatInput({
         textareaRef.current?.focus();
     };
 
-    const handleModelSelect = (model: string) => {
-        onModelChange(model);
+    const handleModelSelect = (model: string, file?: File) => {
+        if (onSelect) {
+            onSelect(model, file);
+        } else if (file) {
+            if (onFileSelect) {
+                onFileSelect(file, model);
+            } else {
+                console.warn('[ChatInput] File selected but no handler provided:', file.name);
+                toast.warning('File upload handler not available');
+                onModelChange(model);
+            }
+        } else {
+            onModelChange(model);
+        }
         closeMenu();
-        toast.success('Model changed');
     };
 
     const handleFrameworkSelect = (framework: StudyFramework) => {
@@ -230,9 +247,24 @@ export function ChatInput({
                                     {loadingText || 'Downloading model assets...'}
                                 </span>
                             </div>
-                            <span className="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 shrink-0 ml-2">
-                                {Math.round(loadingProgress || 0)}%
-                            </span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400 shrink-0">
+                                    {Math.round(loadingProgress || 0)}%
+                                </span>
+                                {onCancelLoading && (
+                                    <button
+                                        onClick={onCancelLoading}
+                                        className="p-1 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors"
+                                        title="Cancel download"
+                                        aria-label="Cancel download"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-500 hover:text-red-500">
+                                            <path d="M18 6 6 18" />
+                                            <path d="m6 6 12 12" />
+                                        </svg>
+                                    </button>
+                                )}
+                            </div>
                         </div>
                         <div className="h-1.5 w-full bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
                             <div

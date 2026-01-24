@@ -2,7 +2,7 @@
 
 import Header from "@/components/landing/header"
 import { SectionSeparator } from "@/components/ui/section-separator"
-import { Providers } from './(config)/providers'
+
 import CombinedFooter from "@/components/landing/CombinedFooter"
 import { HeroSection } from "@/components/landing/hero-section"
 import { FeaturesSection } from "@/components/landing/features-section"
@@ -17,7 +17,7 @@ import { LandingBackground } from "@/components/landing/landing-background"
 
 export default function LandingPage() {
     return (
-        <Providers>
+        <>
             <LandingBackground />
 
             <div className="min-h-screen text-foreground overflow-x-hidden selection:bg-primary/20">
@@ -53,6 +53,6 @@ export default function LandingPage() {
 
                 <CombinedFooter />
             </div>
-        </Providers>
+        </>
     )
 }

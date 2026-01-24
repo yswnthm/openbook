@@ -76,8 +76,7 @@ export const neuman = customProvider({
     'cerebras-qwen-3-235b': cerebras('qwen-3-235b-a22b-instruct-2507'),
 
     // WebLLM (Browser)
-    'local-phi-2': openai('local-phi-2'), // Placeholder for local model
-    'local-phi-3-mini': openai('local-phi-3-mini'), // Placeholder for local model
+
 
     // Ollama (Localhost)
     'ollama-llama-3': ollama('llama3'),

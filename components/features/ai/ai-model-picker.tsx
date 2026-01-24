@@ -12,8 +12,12 @@ import {
     BrainCircuit,
     Globe,
     Lock,
-    Command
+    Command,
+    CloudDownload
 } from 'lucide-react';
+import { serverLog } from '@/lib/client-logger';
+
+import { LOCAL_MODELS } from '@/lib/local-models';
 
 // Richer model definitions
 interface ModelDef {
@@ -23,14 +27,12 @@ interface ModelDef {
     provider: string;
     capabilities: string[];
     contextWindow: string; // e.g. "128k"
-    tier: 'premium' | 'free' | 'preview' | 'local' | 'ollama';
+    tier: 'premium' | 'free' | 'preview' | 'local' | 'ollama' | 'local-download';
     tags: string[]; // for search
 }
 
 const ALL_MODELS: ModelDef[] = [
-    // [REFERENCE] These 'value' fields are what you use in ChatClient.tsx to set the default model.
-    // Example: 'openai-gpt-5-mini', 'google-gemini-2-5-pro', etc.
-    // --- Premium / Paid ---
+    // ... (previous models)
     {
         value: 'openai-gpt-5-mini',
         label: 'GPT 5 Mini',
@@ -128,23 +130,7 @@ const ALL_MODELS: ModelDef[] = [
 
     // --- Free / Community ---
     {
-        value: 'neuman-gpt-oss-free', // Keeping this one as it wasn't in providers.ts mapping explicitly shown, or I missed it. Wait, I didn't see it in providers.ts earlier. Let me check the grep result or providers.ts again. Ah, I might have missed it. Let me double check providers.ts content from step 4.
-        // Step 4 providers.ts: No 'neuman-gpt-oss-free'. It was NOT in providers.ts.
-        // Ah, looking at Step 4 output, lines 43-66 do NOT contain 'neuman-gpt-oss-free'.
-        // However, 'ai-model-picker.tsx' has it at line 116.
-        // If it's not in providers.ts, it might not work. But I should rename it if I can infer the provider, which is Groq.
-        // I will assume it should be 'groq-gpt-oss-free' but I better stick to what I renamed in providers.ts.
-        // Wait, if it's not in providers.ts, then selecting it probably broke things before too?
-        // Or maybe it is mapped dynamically?
-        // Let's look at providers.ts again.
-        // It has 'neuman-groq-compound', 'neuman-kimi-k2', 'neuman-qwen-3', 'neuman-llama-4...'.
-        // It DOES NOT have 'neuman-gpt-oss-free'.
-        // This suggests 'neuman-gpt-oss-free' might be a typo in the picker or a missing entry in providers.
-        // I will leave it as 'neuman-gpt-oss-free' for now or rename to 'groq-gpt-oss-free' if I want to be consistent, but I should probably just leave it or rename it to something that looks like the others.
-        // Actually, looking at the previous providers.ts content provided in Step 47, I see `groq-llama-4...`.
-        // I'll rename it to `groq-gpt-oss-120b` to be consistent with others if I were adding it, but since I am REFACORING, I should be careful.
-        // If I change the value here, and it's not in providers.ts, it still won't work.
-        // I will optimistically rename it to `groq-gpt-oss-free` and note that it might be missing in providers.
+        value: 'neuman-gpt-oss-free',
         label: 'GPT OSS 120b',
         description: 'Large open source model hosted on Groq.',
         provider: 'Groq',
@@ -233,27 +219,18 @@ const ALL_MODELS: ModelDef[] = [
         tier: 'free',
         tags: ['groq', 'llama', 'free']
     },
-    // --- Local / WebLLM ---
-    {
-        value: 'local-phi-3-mini',
-        label: 'Phi-3 Mini (Local)',
-        description: 'Runs entirely in your browser using WebGPU.',
-        provider: 'Microsoft',
-        capabilities: ['Local', 'Private', 'Offline'],
-        contextWindow: '4k',
-        tier: 'local',
-        tags: ['local', 'phi', 'webgpu', 'offline']
-    },
-    {
-        value: 'local-phi-2',
-        label: 'Phi-2 (Local)',
-        description: 'Smaller local model for older devices.',
-        provider: 'Microsoft',
-        capabilities: ['Local', 'Private', 'Offline'],
-        contextWindow: '2k',
-        tier: 'local',
-        tags: ['local', 'phi', 'webgpu', 'offline']
-    },
+
+    // --- Local Downloadable (MediaPipe) ---
+    ...LOCAL_MODELS.map(m => ({
+        value: m.id,
+        label: m.name,
+        description: m.description,
+        provider: m.provider,
+        capabilities: ['Local', 'Downloadable', 'Private'],
+        contextWindow: '8k',
+        tier: 'local-download' as const,
+        tags: ['local', 'mediapipe', 'download', m.provider.toLowerCase()]
+    })),
     // --- Ollama ---
     {
         value: 'ollama-gemma-3-270m',
@@ -265,6 +242,16 @@ const ALL_MODELS: ModelDef[] = [
         tier: 'ollama',
         tags: ['ollama', 'local', 'gemma']
     },
+    {
+        value: 'local-custom-file',
+        label: 'Custom Model (File)',
+        description: 'Load a local .task file (MediaPipe).',
+        provider: 'Custom',
+        capabilities: ['Local', 'Custom'],
+        contextWindow: 'Unknown',
+        tier: 'local',
+        tags: ['local', 'custom', 'file']
+    },
 ];
 
 export const getModelLabel = (value: string) => {
@@ -273,7 +260,7 @@ export const getModelLabel = (value: string) => {
 
 interface AiModelPickerProps {
     selectedModel: string;
-    onSelect: (model: string) => void;
+    onSelect: (model: string, file?: File) => void;
     onClose: () => void;
     className?: string;
     loadingModelId?: string | null;
@@ -305,6 +292,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
             preview: filteredModels.filter(m => m.tier === 'preview'),
             free: filteredModels.filter(m => m.tier === 'free'),
             local: filteredModels.filter(m => m.tier === 'local'),
+            'local-download': filteredModels.filter(m => m.tier === 'local-download'),
             ollama: filteredModels.filter(m => m.tier === 'ollama'),
         };
     }, [filteredModels]);
@@ -410,6 +398,11 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                             Icon = Cpu;
                             colorClass = 'text-purple-500';
                             break;
+                        case 'local-download':
+                            title = 'Downloadable (Offline)';
+                            Icon = CloudDownload;
+                            colorClass = 'text-cyan-500';
+                            break;
                         case 'ollama':
                             title = 'Local (Ollama)';
                             Icon = Cpu;
@@ -429,7 +422,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                                         key={model.value}
                                         model={model}
                                         isSelected={model.value === selectedModel}
-                                        onSelect={() => onSelect(model.value)}
+                                        onSelect={(file) => onSelect(model.value, file)}
                                         isLoading={model.value === loadingModelId}
                                         progress={loadingProgress}
                                         loadingText={loadingText}
@@ -457,83 +450,113 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
     );
 }
 
-function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingText }: { model: ModelDef, isSelected: boolean, onSelect: () => void, isLoading?: boolean, progress?: number, loadingText?: string }) {
+function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingText }: { model: ModelDef, isSelected: boolean, onSelect: (file?: File) => void, isLoading?: boolean, progress?: number, loadingText?: string }) {
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+    const handleClick = () => {
+        if (model.value === 'local-custom-file') {
+            fileInputRef.current?.click();
+        } else {
+            onSelect();
+        }
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        serverLog(`[AiModelPicker] File input changed. File selected: ${file ? 'yes' : 'no'}`);
+        if (file) {
+            onSelect(file);
+        }
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
     return (
-        <button
-            onClick={onSelect}
-            className={`
-                w-full text-left relative group
-                p-3 rounded-xl transition-all duration-200
-                border
-                overflow-hidden
-                ${isSelected
-                    ? 'bg-blue-50/80 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
-                    : 'bg-transparent border-transparent hover:bg-neutral-100 dark:hover:bg-white/5'
-                }
-            `}
-        >
-            {isLoading && (
-                <div className="absolute inset-0 z-0 bg-blue-50/50 dark:bg-blue-900/10 pointer-events-none" />
-            )}
-
-            {/* Progress Bar background for loading state */}
-            {isLoading && (
-                <div
-                    className="absolute left-0 bottom-0 h-[2px] bg-blue-500 z-20 transition-all duration-300 ease-out"
-                    style={{ width: `${Math.max(5, progress || 0)}%` }}
-                />
-            )}
-
-            <div className="flex justify-between items-start gap-3 relative z-10">
-                {/* Icon / Avatar placeholder */}
-                <div className={`
-                    w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold shadow-sm
+        <>
+            <button
+                onClick={handleClick}
+                className={`
+                    w-full text-left relative group
+                    p-3 rounded-xl transition-all duration-200
+                    border
+                    overflow-hidden
                     ${isSelected
-                        ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                        : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400'
+                        ? 'bg-blue-50/80 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                        : 'bg-transparent border-transparent hover:bg-neutral-100 dark:hover:bg-white/5'
                     }
-                `}>
-                    {model.provider.substring(0, 1)}
-                </div>
+                `}
+            >
+                {isLoading && (
+                    <div className="absolute inset-0 z-0 bg-blue-50/50 dark:bg-blue-900/10 pointer-events-none" />
+                )}
 
-                <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-0.5">
-                        <span className={`text-sm font-semibold truncate pr-2 ${isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-neutral-900 dark:text-neutral-100'}`}>
-                            {model.label}
-                        </span>
-                        {isSelected && <Check className="w-4 h-4 text-blue-500" />}
-                        {isLoading && (
-                            <div className="flex flex-col items-end ml-auto">
-                                <div className="flex items-center gap-1.5">
-                                    <div className="w-3 h-3 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
-                                    <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 font-bold">
-                                        {Math.round(progress || 0)}%
-                                    </span>
+                {/* Progress Bar background for loading state */}
+                {isLoading && (
+                    <div
+                        className="absolute left-0 bottom-0 h-[2px] bg-blue-500 z-20 transition-all duration-300 ease-out"
+                        style={{ width: `${Math.max(5, progress || 0)}%` }}
+                    />
+                )}
+
+                <div className="flex justify-between items-start gap-3 relative z-10">
+                    {/* Icon / Avatar placeholder */}
+                    <div className={`
+                        w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold shadow-sm
+                        ${isSelected
+                            ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                            : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400'
+                        }
+                    `}>
+                        {model.provider.substring(0, 1)}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-0.5">
+                            <span className={`text-sm font-semibold truncate pr-2 ${isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-neutral-900 dark:text-neutral-100'}`}>
+                                {model.label}
+                            </span>
+                            {isSelected && <Check className="w-4 h-4 text-blue-500" />}
+                            {isLoading && (
+                                <div className="flex flex-col items-end ml-auto">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-3 h-3 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
+                                        <span className="text-[10px] font-mono text-blue-600 dark:text-blue-400 font-bold">
+                                            {Math.round(progress || 0)}%
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
+                        </div>
+
+                        {isLoading ? (
+                            <p className="text-xs text-blue-600 dark:text-blue-400 animate-pulse font-medium mb-1.5 truncate">
+                                {loadingText || 'Downloading model...'}
+                            </p>
+                        ) : (
+                            <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1 mb-1.5">
+                                {model.description}
+                            </p>
                         )}
-                    </div>
 
-                    {isLoading ? (
-                        <p className="text-xs text-blue-600 dark:text-blue-400 animate-pulse font-medium mb-1.5 truncate">
-                            {loadingText || 'Downloading model...'}
-                        </p>
-                    ) : (
-                        <p className="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1 mb-1.5">
-                            {model.description}
-                        </p>
-                    )}
-
-                    <div className="flex flex-wrap gap-1.5 items-center">
-                        <Badge>{model.provider}</Badge>
-                        <Badge variant="outline">{model.contextWindow}</Badge>
-                        {model.capabilities.map(cap => (
-                            <Badge key={cap} variant="secondary" className="opacity-80">{cap}</Badge>
-                        ))}
+                        <div className="flex flex-wrap gap-1.5 items-center">
+                            <Badge>{model.provider}</Badge>
+                            <Badge variant="outline">{model.contextWindow}</Badge>
+                            {model.capabilities.map(cap => (
+                                <Badge key={cap} variant="secondary" className="opacity-80">{cap}</Badge>
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
-        </button>
+            </button>
+            <input
+                type="file"
+                accept=".task, .bin"
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileChange}
+            />
+        </>
     );
 }
 

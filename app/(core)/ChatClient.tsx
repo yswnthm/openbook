@@ -1,5 +1,6 @@
 'use client';
 import 'katex/dist/katex.min.css';
+import { serverLog } from '@/lib/client-logger';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useChat, UseChatOptions, Message } from '@ai-sdk/react';
@@ -45,10 +46,12 @@ import { StudyModeBadge } from '@/components/features/study/study-mode-badge';
 import { StudyFramework } from '@/lib/types';
 import { getFrameworkDisplayName } from '@/lib/study-prompts';
 import { useWebLLM } from '@/hooks/use-web-llm';
-
+import { useMediaPipeLLM } from '@/hooks/use-mediapipe-llm';
+import { isLocalModel as isCuratedLocalModel, getLocalModelById } from '@/lib/local-models';
 
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { WidgetSection } from './_components/WidgetSection';
+import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 
 interface Attachment {
     name: string;
@@ -114,6 +117,7 @@ function throttle<T extends (...args: any[]) => void>(fn: T, wait: number) {
 
 const HomeContent = () => {
     const { isOpen: isSidebarOpen } = useSidebar();
+    const isOnline = useOnlineStatus();
     const { registerStep, isCompleted, startTutorial, steps } = useOnboarding();
     const [query] = useQueryState('query', parseAsString.withDefault(''));
     const [q] = useQueryState('q', parseAsString.withDefault(''));
@@ -367,23 +371,54 @@ const HomeContent = () => {
         useChat(chatOptions);
 
     // WebLLM Integration
-    const { state: webLLMState, loadModel: loadWebLLMModel, generate: generateWebLLM, currentModel: currentWebLLMModel } = useWebLLM();
+    const { state: webLLMState, loadModel: loadWebLLMModel, generate: generateWebLLM, currentModel: currentWebLLMModel, cancelLoad: cancelWebLLM } = useWebLLM();
+    // MediaPipe Integration
+    const { state: mediaPipeState, loadModel: loadMediaPipeModel, generate: generateMediaPipe, restoreCustomModel, cancelLoad: cancelMediaPipe } = useMediaPipeLLM();
 
-    // Determine if using local model
-    const isLocalModel = selectedModel.startsWith('local-');
+    // Determine model types
+    const isWebLLM = selectedModel.startsWith('local-') && selectedModel !== 'local-custom-file' && !isCuratedLocalModel(selectedModel);
+    const isCuratedMediaPipe = isCuratedLocalModel(selectedModel);
+    const isCustomMediaPipe = selectedModel === 'local-custom-file';
+    const isMediaPipe = isCuratedMediaPipe || isCustomMediaPipe;
+    const isLocalModel = isWebLLM || isMediaPipe;
 
     // Combined status
     const status = isLocalModel
-        ? (webLLMState.isLoading ? 'loading' : (webLLMState.isModelLoaded ? 'ready' : (chatStatus === 'streaming' ? 'streaming' : 'ready'))) // Simplify status mapping
+        ? (isMediaPipe
+            ? (mediaPipeState.isLoading ? 'loading' : (mediaPipeState.isModelLoaded ? ((mediaPipeState as any).isGenerating ? 'streaming' : 'ready') : (chatStatus === 'streaming' ? 'streaming' : 'ready')))
+            : (webLLMState.isLoading ? 'loading' : (webLLMState.isModelLoaded ? ((webLLMState as any).isGenerating ? 'streaming' : 'ready') : (chatStatus === 'streaming' ? 'streaming' : 'ready')))
+        )
         : chatStatus;
 
     // Load local model when selected
     useEffect(() => {
-        if (isLocalModel) {
+        if (isWebLLM) {
             const modelId = selectedModel.replace('local-', '');
             loadWebLLMModel(modelId);
+        } else if (isCuratedMediaPipe) {
+            const model = getLocalModelById(selectedModel);
+            if (model) {
+                serverLog(`[ChatClient] Auto-loading curated MediaPipe model: ${model.name}`);
+                loadMediaPipeModel(model.url);
+            }
+        } else if (isCustomMediaPipe) {
+            // Try to restore custom model if not loaded
+            if (!mediaPipeState.isModelLoaded && !mediaPipeState.isLoading) {
+                serverLog(`[ChatClient] Attempting to restore custom MediaPipe model...`);
+                restoreCustomModel()
+                    .then(success => {
+                        if (!success) {
+                            serverLog(`[ChatClient] Restore failed or no saved model.`);
+                            toast.error('Failed to restore custom model. Please select a file again.');
+                        }
+                    })
+                    .catch(err => {
+                        serverLog(`[ChatClient] Error restoring custom model:`, err);
+                        toast.error(`Error restoring custom model: ${err.message}`);
+                    });
+            }
         }
-    }, [isLocalModel, selectedModel, loadWebLLMModel]);
+    }, [isWebLLM, isCuratedMediaPipe, isCustomMediaPipe, selectedModel, loadWebLLMModel, loadMediaPipeModel, restoreCustomModel, mediaPipeState.isModelLoaded, mediaPipeState.isLoading]);
 
     // Show model loading progress in toast or UI
     useEffect(() => {
@@ -396,6 +431,17 @@ const HomeContent = () => {
     // Wrap append to persist user messages to current space
     const appendWithPersist = useCallback(
         async (messageProps: { role: 'user' | 'assistant' | 'system'; content: string }, options: any = {}): Promise<any> => {
+            // Check both the hook state AND the live navigator state to ensure we catch offline status immediately
+            // navigator.onLine is the source of truth, isOnline is for UI reactivity
+            const isActuallyOffline = !isOnline || (typeof navigator !== 'undefined' && !navigator.onLine);
+
+            if (isActuallyOffline && !isLocalModel) {
+                toast.error('You are currently offline.', {
+                    description: 'Please switch to a local model or check your internet connection.',
+                });
+                return null;
+            }
+
             if (messageProps.role === 'user') {
                 const userChatMessage: ChatMessage = {
                     id: crypto.randomUUID(),
@@ -412,12 +458,28 @@ const HomeContent = () => {
 
                 if (isLocalModel) {
                     // Handle Local Logic
-                    // 1. Manually add user message to UI immediately
-                    // setMessages(prev => [...prev, userChatMessage]); // Actually useEffect syncs this from space, but for instant feedback:
-                    // Wait, useEffect syncs from currentSpace.messages which we just updated via addMessage.
-                    // But let's assume we want to trigger generation.
 
-                    if (!webLLMState.isModelLoaded) {
+                    // 1. Manually add user message to UI immediately so it's visible
+                    const uiUserMessage = {
+                        id: userChatMessage.id,
+                        role: 'user' as const,
+                        content: userChatMessage.content,
+                        createdAt: new Date(userChatMessage.timestamp)
+                    };
+
+                    setMessages(prev => [...prev, uiUserMessage]);
+
+                    if (isMediaPipe) {
+                        if (!mediaPipeState.isModelLoaded) {
+                            const errorMsg = mediaPipeState.error ? `: ${mediaPipeState.error}` : '';
+                            if (isCuratedMediaPipe) {
+                                toast.error(`Gemma model is still loading: ${mediaPipeState.text} (${Math.round(mediaPipeState.progress)}%)`);
+                            } else {
+                                toast.error(`MediaPipe model is not loaded${errorMsg} (Model: ${selectedModel}). Please select a .task file.`);
+                            }
+                            return null;
+                        }
+                    } else if (!webLLMState.isModelLoaded) {
                         toast.error(`Model is still loading: ${webLLMState.text} (${Math.round(webLLMState.progress)}%)`);
                         return null;
                     }
@@ -429,10 +491,18 @@ const HomeContent = () => {
 
                         // We need to construct the full context for the model
                         // Get current history from currentSpace or messages
-                        const history = [...messages, userChatMessage].map(m => ({
+                        let history = [...messages, userChatMessage].map(m => ({
                             role: m.role,
                             content: m.content
                         }));
+
+                        // Prepend system prompt if available
+                        if (systemPrompt && systemPrompt.trim().length > 0) {
+                            history = [
+                                { role: 'system', content: systemPrompt },
+                                ...history
+                            ];
+                        }
 
                         // Start generation
                         // We won't add assistant message to space yet, only after completion or chunks?
@@ -446,46 +516,68 @@ const HomeContent = () => {
                         // We override 'status' variable in scope above! 
                         // But we need to update 'messages' state to show the streaming response.
 
-                        let currentText = '';
+                        if (isMediaPipe) {
+                            await generateMediaPipe(
+                                history,
+                                (text, delta) => {
+                                    setMessages(prev => {
+                                        const last = prev[prev.length - 1];
+                                        if (last && last.role === 'assistant' && last.id === assistantMsgId) {
+                                            return [...prev.slice(0, -1), { ...last, content: text }];
+                                        } else {
+                                            return [...prev, {
+                                                id: assistantMsgId,
+                                                role: 'assistant',
+                                                content: text,
+                                                createdAt: new Date(assistantMsgTimestamp)
+                                            }];
 
-                        await generateWebLLM(
-                            history,
-                            (text, delta) => {
-                                currentText = text;
-                                // Update UI messages with partial assistant response
-                                // We need to append or update the last message if it's assistant
-                                // But 'messages' state update here might clash with useEffect syncing from space.
-                                // Ideally we temporarily disable sync or validly update space?
-                                // Updating space on every token is too expensive (localStorage).
-                                // So we update 'messages' state directly for UI.
+                                        }
+                                    });
+                                },
+                                (finalText) => {
+                                    const assistantChatMessage: ChatMessage = {
+                                        id: assistantMsgId,
+                                        role: 'assistant',
+                                        content: finalText,
+                                        timestamp: assistantMsgTimestamp,
+                                        model: selectedModel,
+                                    };
+                                    spaceFunctionsRef.current.addMessage(assistantChatMessage);
+                                }
+                            );
+                        } else {
+                            // WebLLM Logic
+                            await generateWebLLM(
+                                history,
+                                (text, delta) => {
+                                    setMessages(prev => {
+                                        const last = prev[prev.length - 1];
+                                        if (last && last.role === 'assistant' && last.id === assistantMsgId) {
+                                            return [...prev.slice(0, -1), { ...last, content: text }];
+                                        } else {
+                                            return [...prev, {
+                                                id: assistantMsgId,
+                                                role: 'assistant',
+                                                content: text,
+                                                createdAt: new Date(assistantMsgTimestamp)
+                                            }];
 
-                                setMessages(prev => {
-                                    const last = prev[prev.length - 1];
-                                    if (last && last.role === 'assistant' && last.id === assistantMsgId) {
-                                        return [...prev.slice(0, -1), { ...last, content: text }];
-                                    } else {
-                                        return [...prev, {
-                                            id: assistantMsgId,
-                                            role: 'assistant',
-                                            content: text,
-                                            timestamp: assistantMsgTimestamp
-                                        }];
-                                    }
-                                });
-                            },
-                            (finalText) => {
-                                // On finish, save to space
-                                const assistantChatMessage: ChatMessage = {
-                                    id: assistantMsgId,
-                                    role: 'assistant',
-                                    content: finalText,
-                                    timestamp: assistantMsgTimestamp,
-                                    model: selectedModel,
-                                };
-                                spaceFunctionsRef.current.addMessage(assistantChatMessage);
-                                // transform status back to ready (implicitly handled by derived status)
-                            }
-                        );
+                                        }
+                                    });
+                                },
+                                (finalText) => {
+                                    const assistantChatMessage: ChatMessage = {
+                                        id: assistantMsgId,
+                                        role: 'assistant',
+                                        content: finalText,
+                                        timestamp: assistantMsgTimestamp,
+                                        model: selectedModel,
+                                    };
+                                    spaceFunctionsRef.current.addMessage(assistantChatMessage);
+                                }
+                            );
+                        }
 
                         return null; // Return null as we handled it
 
@@ -505,7 +597,7 @@ const HomeContent = () => {
                 return result;
             }
         },
-        [append],
+        [append, isLocalModel, isMediaPipe, selectedModel, webLLMState, mediaPipeState, generateWebLLM, generateMediaPipe, isOnline, messages, systemPrompt],
     ); // Remove addMessage dependency since we're using the ref
 
     const isFrameworkSwitchingRef = useRef(false);
@@ -760,10 +852,17 @@ const HomeContent = () => {
 
     // Define the model change handler
     const handleModelChange = useCallback(
-        (model: string) => {
+        (model: string, file?: File) => {
+            serverLog(`[ChatClient] handleModelChange: ${model}`, file?.name);
             setSelectedModel(model);
+            if (model === 'local-custom-file' && file) {
+                serverLog(`[ChatClient] Triggering loadMediaPipeModel...`);
+                loadMediaPipeModel(file);
+            } else if (model === 'local-custom-file' && !file) {
+                serverLog(`[ChatClient] Selected local-custom-file but no file provided`);
+            }
         },
-        [setSelectedModel],
+        [setSelectedModel, loadMediaPipeModel],
     );
 
 
@@ -839,6 +938,17 @@ const HomeContent = () => {
                                     currentSpaceId={currentSpaceId}
                                     onCompactSpace={handleCompactSpace}
                                     pickerPlacement="bottom" // Explicitly bottom for centered input
+                                    onSelect={handleModelChange}
+                                    loadingModelId={isLocalModel && ((isMediaPipe && mediaPipeState.isLoading) || (!isMediaPipe && webLLMState.isLoading)) ? selectedModel : null}
+                                    loadingProgress={isMediaPipe ? mediaPipeState.progress : webLLMState.progress}
+                                    loadingText={isMediaPipe ? mediaPipeState.text : webLLMState.text}
+                                    onCancelLoading={isLocalModel && ((isMediaPipe && mediaPipeState.isLoading) || (!isMediaPipe && webLLMState.isLoading)) ? () => {
+                                        if (isMediaPipe) {
+                                            cancelMediaPipe && cancelMediaPipe();
+                                        } else {
+                                            cancelWebLLM && cancelWebLLM();
+                                        }
+                                    } : undefined}
                                 />
                             </div>
                         )}
@@ -923,13 +1033,18 @@ const HomeContent = () => {
                                         onAttachmentsChange={setAttachments}
                                         fileInputRef={fileInputRef}
                                         status={status}
-                                        onFrameworkSelect={handleFrameworkSelect}
-                                        currentSpaceId={currentSpaceId}
-                                        onCompactSpace={handleCompactSpace}
-                                        loadingProgress={webLLMState.progress}
-                                        loadingText={webLLMState.text}
-                                        loadingModelId={webLLMState.isLoading ? `local-${currentWebLLMModel}` : null}
+                                        onSelect={handleModelChange}
+                                        loadingModelId={isLocalModel && ((isMediaPipe && mediaPipeState.isLoading) || (!isMediaPipe && webLLMState.isLoading)) ? selectedModel : null}
+                                        loadingProgress={isMediaPipe ? mediaPipeState.progress : webLLMState.progress}
+                                        loadingText={isMediaPipe ? mediaPipeState.text : webLLMState.text}
                                         pickerPlacement="top"
+                                        onCancelLoading={isLocalModel && ((isMediaPipe && mediaPipeState.isLoading) || (!isMediaPipe && webLLMState.isLoading)) ? () => {
+                                            if (isMediaPipe) {
+                                                cancelMediaPipe && cancelMediaPipe();
+                                            } else {
+                                                cancelWebLLM && cancelWebLLM();
+                                            }
+                                        } : undefined}
                                     />
                                 </div>
                             </div>
