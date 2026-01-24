@@ -26,7 +26,7 @@ export const LOCAL_MODELS: LocalModelMetadata[] = [
         id: 'gemma-2-2b-it-gpu-int8',
         name: 'Gemma 2 2B (Instruct)',
         description: 'Newer Gemma 2 model. Higher quality reasoning in a small footprint.',
-        url: 'https://storage.googleapis.com/mediapipe-assets/gemma2-2b-it-gpu-int8.bin', // Placeholder URL
+        url: 'https://storage.googleapis.com/mediapipe-assets/gemma-2-2b-it-gpu-int8.bin',
         size: '1.6 GB',
         provider: 'Google',
         params: '2B'

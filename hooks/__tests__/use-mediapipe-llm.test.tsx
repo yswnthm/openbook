@@ -1,7 +1,7 @@
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
 try {
     GlobalRegistrator.register();
-} catch {}
+} catch { }
 
 import { expect, test, describe, afterEach, mock, beforeEach } from 'bun:test';
 import { renderHook, act, waitFor } from '@testing-library/react';
@@ -80,7 +80,7 @@ describe('useMediaPipeLLM', () => {
         });
 
         expect(mockCacheGet).toHaveBeenCalledWith(modelUrl);
-        expect(mockFetch).not.toHaveBeenCalledWith(modelUrl); // Should NOT fetch
+        expect(mockFetch).not.toHaveBeenCalled(); // Should NOT fetch
         expect(result.current.state.isModelLoaded).toBe(true);
     });
 });

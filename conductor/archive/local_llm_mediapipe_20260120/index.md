@@ -1,4 +1,4 @@
-# Track local_llm_mediapipe_20260120 Context
+# Local LLM MediaPipe Context
 
 - [Specification](./spec.md)
 - [Implementation Plan](./plan.md)

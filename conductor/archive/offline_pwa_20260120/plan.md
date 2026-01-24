@@ -7,7 +7,7 @@
 - [x] Task: Create Web App Manifest [e7e2cdb]
     - [x] Sub-task: Generate `manifest.json` with correct icons, colors, and display modes.
     - [x] Sub-task: Add meta tags for PWA support (viewport, theme-color) in `layout.tsx`.
-- [ ] Task: Conductor - User Manual Verification 'PWA Foundations' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'PWA Foundations' (Protocol in workflow.md)
 
 ## Phase 2: Offline UX & State Management [checkpoint: c264cc0]
 - [x] Task: Implement `useOnlineStatus` hook [809e23d]
@@ -15,7 +15,7 @@
 - [x] Task: Update Model Selection Logic [c264cc0]
 - [x] Task: Conductor - User Manual Verification 'Offline UX & State Management' (Protocol in workflow.md)
 
-## Phase 3: Advanced Caching Strategy
+## Phase 3: Advanced Caching Strategy [checkpoint: 3497c23]
 - [x] Task: Configure Service Worker for Static Assets [3497c23]
     - [x] Sub-task: Ensure all JS/CSS chunks are aggressively cached.
     - [x] Sub-task: Verify that fonts and SVGs (like `logo.svg`) are cached.

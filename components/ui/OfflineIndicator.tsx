@@ -12,6 +12,8 @@ export function OfflineIndicator({ className }: { className?: string }) {
 
     return (
         <div
+            role="status"
+            aria-live="polite"
             className={cn(
                 "fixed bottom-4 left-4 z-50 flex items-center gap-2 rounded-full bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground shadow-lg animate-in fade-in slide-in-from-bottom-2",
                 className

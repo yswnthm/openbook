@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeAll, mock } from 'bun:test';
+import { describe, test, expect, beforeAll, afterAll, mock } from 'bun:test';
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
 import { render } from '@testing-library/react';
 import React from 'react';
@@ -13,6 +13,10 @@ mock.module('@/hooks/useOnlineStatus', () => ({
 describe('OfflineIndicator', () => {
   beforeAll(() => {
     GlobalRegistrator.register();
+  });
+
+  afterAll(() => {
+    GlobalRegistrator.unregister();
   });
 
   test('should not render when online', () => {

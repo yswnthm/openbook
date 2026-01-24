@@ -45,6 +45,7 @@ interface ChatInputProps {
     pickerPlacement?: 'top' | 'bottom';
     onSelect?: (model: string, file?: File) => void;
     onCancelLoading?: () => void;
+    onFileSelect?: (file: File, model: string) => void;
 }
 
 const BASE_COMMANDS: ChatCommand[] = [
@@ -101,6 +102,7 @@ export function ChatInput({
     pickerPlacement = 'bottom',
     onSelect,
     onCancelLoading,
+    onFileSelect,
 }: ChatInputProps) {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -184,6 +186,14 @@ export function ChatInput({
     const handleModelSelect = (model: string, file?: File) => {
         if (onSelect) {
             onSelect(model, file);
+        } else if (file) {
+            if (onFileSelect) {
+                onFileSelect(file, model);
+            } else {
+                console.warn('[ChatInput] File selected but no handler provided:', file.name);
+                toast.warning('File upload handler not available');
+                onModelChange(model);
+            }
         } else {
             onModelChange(model);
         }

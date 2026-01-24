@@ -405,11 +405,17 @@ const HomeContent = () => {
             // Try to restore custom model if not loaded
             if (!mediaPipeState.isModelLoaded && !mediaPipeState.isLoading) {
                 serverLog(`[ChatClient] Attempting to restore custom MediaPipe model...`);
-                restoreCustomModel().then(success => {
-                    if (!success) {
-                        serverLog(`[ChatClient] Restore failed or no saved model.`);
-                    }
-                });
+                restoreCustomModel()
+                    .then(success => {
+                        if (!success) {
+                            serverLog(`[ChatClient] Restore failed or no saved model.`);
+                            toast.error('Failed to restore custom model. Please select a file again.');
+                        }
+                    })
+                    .catch(err => {
+                        serverLog(`[ChatClient] Error restoring custom model:`, err);
+                        toast.error(`Error restoring custom model: ${err.message}`);
+                    });
             }
         }
     }, [isWebLLM, isCuratedMediaPipe, isCustomMediaPipe, selectedModel, loadWebLLMModel, loadMediaPipeModel, restoreCustomModel, mediaPipeState.isModelLoaded, mediaPipeState.isLoading]);
@@ -523,8 +529,9 @@ const HomeContent = () => {
                                                 id: assistantMsgId,
                                                 role: 'assistant',
                                                 content: text,
-                                                timestamp: assistantMsgTimestamp
+                                                createdAt: new Date(assistantMsgTimestamp)
                                             }];
+
                                         }
                                     });
                                 },
@@ -541,11 +548,9 @@ const HomeContent = () => {
                             );
                         } else {
                             // WebLLM Logic
-                            let currentText = '';
                             await generateWebLLM(
                                 history,
                                 (text, delta) => {
-                                    currentText = text;
                                     setMessages(prev => {
                                         const last = prev[prev.length - 1];
                                         if (last && last.role === 'assistant' && last.id === assistantMsgId) {
@@ -555,8 +560,9 @@ const HomeContent = () => {
                                                 id: assistantMsgId,
                                                 role: 'assistant',
                                                 content: text,
-                                                timestamp: assistantMsgTimestamp
+                                                createdAt: new Date(assistantMsgTimestamp)
                                             }];
+
                                         }
                                     });
                                 },
@@ -591,7 +597,7 @@ const HomeContent = () => {
                 return result;
             }
         },
-        [append, isLocalModel, isMediaPipe, selectedModel, webLLMState, mediaPipeState, generateWebLLM, generateMediaPipe, isOnline],
+        [append, isLocalModel, isMediaPipe, selectedModel, webLLMState, mediaPipeState, generateWebLLM, generateMediaPipe, isOnline, messages, systemPrompt],
     ); // Remove addMessage dependency since we're using the ref
 
     const isFrameworkSwitchingRef = useRef(false);

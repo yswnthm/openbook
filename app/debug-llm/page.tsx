@@ -35,11 +35,11 @@ export default function DebugLLMPage() {
 
         try {
             await generate(
-                messages, 
+                messages,
                 (text, delta) => {
-                   // Real-time update
-                   setGeneratedOutput(text);
-                }, 
+                    // Real-time update
+                    setGeneratedOutput(text);
+                },
                 (final) => {
                     addToLog('Generation complete.');
                 }
@@ -59,9 +59,9 @@ export default function DebugLLMPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Model URL</label>
+                        <label htmlFor="modelUrl" className="text-sm font-medium">Model URL</label>
                         <div className="flex gap-2">
-                            <Input value={url} onChange={e => setUrl(e.target.value)} />
+                            <Input id="modelUrl" value={url} onChange={e => setUrl(e.target.value)} />
                             <Button onClick={handleLoad} disabled={state.isLoading}>
                                 {state.isLoading ? 'Loading...' : 'Load URL'}
                             </Button>
@@ -69,15 +69,20 @@ export default function DebugLLMPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium">Local File Upload</label>
-                        <Input 
-                            type="file" 
-                            accept=".bin,.task" 
+                        <label htmlFor="localFile" className="text-sm font-medium">Local File Upload</label>
+                        <Input
+                            id="localFile"
+                            type="file"
+                            accept=".bin,.task"
                             onChange={async (e) => {
                                 const file = e.target.files?.[0];
                                 if (file) {
                                     addToLog(`Loading local file: ${file.name}`);
-                                    await loadModel(file);
+                                    try {
+                                        await loadModel(file);
+                                    } catch (e: any) {
+                                        addToLog(`Error loading file: ${e.message}`);
+                                    }
                                 }
                             }}
                             disabled={state.isLoading}
@@ -96,19 +101,22 @@ export default function DebugLLMPage() {
                     </div>
 
                     <div className="space-y-2 border-t pt-4">
-                        <label className="text-sm font-medium">System Prompt Injection Test</label>
-                        <Input 
-                            value={systemPrompt} 
-                            onChange={e => setSystemPrompt(e.target.value)} 
+                        <label htmlFor="systemPrompt" className="text-sm font-medium">System Prompt Injection Test</label>
+                        <Input
+                            id="systemPrompt"
+                            value={systemPrompt}
+                            onChange={e => setSystemPrompt(e.target.value)}
                             placeholder="System Prompt"
                         />
-                        <Input 
-                            value={userPrompt} 
-                            onChange={e => setUserPrompt(e.target.value)} 
+                        <label htmlFor="userPrompt" className="sr-only">User Prompt</label>
+                        <Input
+                            id="userPrompt"
+                            value={userPrompt}
+                            onChange={e => setUserPrompt(e.target.value)}
                             placeholder="User Prompt"
                         />
-                        <Button 
-                            onClick={handleGenerate} 
+                        <Button
+                            onClick={handleGenerate}
                             disabled={!state.isModelLoaded}
                             variant="secondary"
                         >
@@ -117,15 +125,15 @@ export default function DebugLLMPage() {
                     </div>
 
                     <div className="space-y-2 border-t pt-4">
-                        <label className="text-sm font-medium">Output</label>
-                        <div className="bg-muted p-4 rounded-md whitespace-pre-wrap font-mono text-xs h-32 overflow-auto">
+                        <label htmlFor="output" className="text-sm font-medium">Output</label>
+                        <div id="output" className="bg-muted p-4 rounded-md whitespace-pre-wrap font-mono text-xs h-32 overflow-auto">
                             {generatedOutput}
                         </div>
                     </div>
 
                     <div className="space-y-2 border-t pt-4">
-                        <label className="text-sm font-medium">Debug Log</label>
-                        <div className="bg-black text-white p-4 rounded-md whitespace-pre-wrap font-mono text-xs h-32 overflow-auto">
+                        <label htmlFor="debugLog" className="text-sm font-medium">Debug Log</label>
+                        <div id="debugLog" className="bg-black text-white p-4 rounded-md whitespace-pre-wrap font-mono text-xs h-32 overflow-auto">
                             {debugLog.map((l, i) => <div key={i}>{l}</div>)}
                         </div>
                     </div>

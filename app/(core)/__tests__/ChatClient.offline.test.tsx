@@ -1,7 +1,7 @@
 import { GlobalRegistrator } from '@happy-dom/global-registrator';
 try {
     GlobalRegistrator.register();
-} catch {}
+} catch { }
 
 import { expect, test, describe, afterEach, mock, jest } from 'bun:test';
 import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';
@@ -17,24 +17,25 @@ mock.module('@/hooks/useOnlineStatus', () => ({
 // 2. Spy on toast
 const toastErrorSpy = jest.fn();
 mock.module('sonner', () => ({
-    toast: { 
-        error: toastErrorSpy, 
-        info: () => {} 
+    toast: {
+        error: toastErrorSpy,
+        info: () => { }
     },
 }));
 
 // 3. Mock useChat to spy on append
 const appendSpy = jest.fn().mockResolvedValue(null);
+const mediaPipeGenerateSpy = jest.fn();
 mock.module('@ai-sdk/react', () => ({
     useChat: () => ({
         messages: [],
         input: 'test message',
-        setInput: () => {},
+        setInput: () => { },
         append: appendSpy,
-        handleSubmit: () => {},
-        setMessages: () => {},
-        reload: () => {},
-        stop: () => {},
+        handleSubmit: () => { },
+        setMessages: () => { },
+        reload: () => { },
+        stop: () => { },
         status: 'ready',
         error: null,
     }),
@@ -42,8 +43,8 @@ mock.module('@ai-sdk/react', () => ({
 
 // 4. Other necessary mocks to prevent crashes
 mock.module('nuqs', () => ({
-    useQueryState: () => ['', () => {}],
-    parseAsString: { withDefault: () => {} },
+    useQueryState: () => ['', () => { }],
+    parseAsString: { withDefault: () => { } },
 }));
 
 mock.module('next-themes', () => ({
@@ -66,10 +67,10 @@ mock.module('@/contexts/SpacesContext', () => ({
     useSpaces: () => ({
         currentSpace: { messages: [] },
         currentSpaceId: '123',
-        switchSpace: () => {},
-        addMessage: () => {},
-        createSpace: () => {},
-        markSpaceContextReset: () => {},
+        switchSpace: () => { },
+        addMessage: () => { },
+        createSpace: () => { },
+        markSpaceContextReset: () => { },
     }),
 }));
 
@@ -80,16 +81,16 @@ mock.module('@/contexts/SettingsContext', () => ({
 mock.module('@/contexts/StudyModeContext', () => ({
     useStudyMode: () => ({
         getStudyModeForSpace: () => null,
-        setStudyMode: () => {},
+        setStudyMode: () => { },
     }),
 }));
 
 mock.module('@/contexts/OnboardingContext', () => ({
     OnboardingProvider: ({ children }: any) => <div>{children}</div>,
     useOnboarding: () => ({
-        registerStep: () => {},
+        registerStep: () => { },
         isCompleted: true,
-        startTutorial: () => {},
+        startTutorial: () => { },
         steps: [],
     }),
 }));
@@ -97,22 +98,26 @@ mock.module('@/contexts/OnboardingContext', () => ({
 mock.module('@/hooks/use-web-llm', () => ({
     useWebLLM: () => ({
         state: { isLoading: false, isModelLoaded: false },
-        loadModel: () => {},
-        generate: () => {},
+        loadModel: () => { },
+        generate: () => { },
     }),
 }));
 
 mock.module('@/hooks/use-mediapipe-llm', () => ({
     useMediaPipeLLM: () => ({
-        state: { isLoading: false, isModelLoaded: false },
-        loadModel: () => {},
-        generate: () => {},
+        state: { isLoading: false, isModelLoaded: true },
+        loadModel: () => { },
+        generate: mediaPipeGenerateSpy,
     }),
 }));
 
 mock.module('@/lib/local-models', () => ({
-    isLocalModel: () => false,
-    getLocalModelById: () => null,
+    isLocalModel: (modelId: string) => {
+        // Allow dynamic check against the current selected model or argument
+        // If the modelId passed is the local one, return true
+        return modelId === 'local-gemma-2b' || modelId === mockSelectedModel && modelId.startsWith('local-');
+    },
+    getLocalModelById: (id: string) => id === 'local-gemma-2b' ? { id, name: 'Gemma 2B', url: 'test-url' } : null,
 }));
 
 mock.module('next/link', () => ({
@@ -160,26 +165,27 @@ describe('ChatClient Offline Behavior', () => {
         // Expectation:
         // 1. Toast error should be called
         // 2. useChat.append should NOT be called
-        
+
         // Waiting for potential async effects
         await waitFor(() => {
-             // This is expected to PASS now
-             expect(toastErrorSpy).toHaveBeenCalledWith(expect.stringContaining('offline'), expect.anything());
-             expect(appendSpy).not.toHaveBeenCalled();
+            // This is expected to PASS now
+            expect(toastErrorSpy).toHaveBeenCalledWith(expect.stringContaining('offline'), expect.anything());
+            expect(appendSpy).not.toHaveBeenCalled();
         });
     });
 
     test('should ALLOW local model requests when offline', async () => {
         // Set model to local
         mockSelectedModel = 'local-gemma-2b';
-        
+
         // Re-import to ensure we get a fresh component/hook state if possible, 
         // but react-testing-library render should pick up the new mock return value on next render.
         const { default: ChatClient } = await import('../ChatClient');
-        
+
         // Reset spies
         toastErrorSpy.mockClear();
         appendSpy.mockClear();
+        mediaPipeGenerateSpy.mockClear();
 
         const { getByTestId, unmount } = render(<ChatClient />);
 
@@ -187,11 +193,14 @@ describe('ChatClient Offline Behavior', () => {
         fireEvent.click(submitBtn);
 
         await waitFor(() => {
-             // Should NOT show offline error
-             // We check that we didn't get the specific offline message
-             expect(toastErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining('offline'), expect.anything());
+            // Should NOT show offline error
+            // We check that we didn't get the specific offline message
+            expect(toastErrorSpy).not.toHaveBeenCalledWith(expect.stringContaining('offline'), expect.anything());
+
+            // Assert that generate WAS called (request proceeded locally)
+            expect(mediaPipeGenerateSpy).toHaveBeenCalled();
         });
-        
+
         unmount();
     });
 });

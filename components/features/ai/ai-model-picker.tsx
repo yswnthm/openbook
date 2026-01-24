@@ -463,9 +463,12 @@ function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingTe
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        serverLog(`[AiModelPicker] File input changed. Selected: ${file?.name}`);
+        serverLog(`[AiModelPicker] File input changed. File selected: ${file ? 'yes' : 'no'}`);
         if (file) {
             onSelect(file);
+        }
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
         }
     };
 
