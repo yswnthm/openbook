@@ -13,14 +13,19 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, error: 'Invalid message format' }, { status: 400 });
         }
 
+        // Shared constant for control character regex using Unicode escapes
+        const CONTROL_CHARS = /[\u0000-\u001F\u007F]/g;
+
+        // Helper to strip control characters (ANSI codes, etc.)
+        const sanitizeControlChars = (str: string) => str.replace(CONTROL_CHARS, '');
+
         // Sanitize message: limit length and strip control characters
-        const sanitizedMessage = message.slice(0, 1000).replace(/[\x00-\x1F\x7F]/g, '');
+        const sanitizedMessage = sanitizeControlChars(message.slice(0, 1000));
 
         // Print to server terminal with a distinctive prefix
         const timestamp = new Date().toISOString(); // UTC
 
-        // Helper to strip control characters (ANSI codes, etc.)
-        const sanitizeControlChars = (str: string) => str.replace(/[\x00-\x1F\x7F]/g, '');
+
 
         let safeData = '';
         if (data) {

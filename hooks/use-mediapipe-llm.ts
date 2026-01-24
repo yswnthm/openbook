@@ -174,7 +174,15 @@ export const useMediaPipeLLM = () => {
                 if (requestId !== latestRequestIdRef.current) return;
 
                 if (!exists) {
-                    modelCache.store(modelKey, input as File).catch(console.error);
+                    modelCache.store(modelKey, input as File).catch((err) => {
+                        serverLog(`[useMediaPipeLLM] Model cache store failed for ${modelKey}: ${err.message}`);
+                        // Non-blocking notification - model still loads but won't be cached
+                        if (typeof window !== 'undefined' && (window as any).toast) {
+                            (window as any).toast.warning('Model cache failed', {
+                                description: 'Model loaded but could not be saved for offline use. Check storage quota.',
+                            });
+                        }
+                    });
                 }
                 modelUrl = URL.createObjectURL(input as File);
                 if (currentBlobUrlRef.current) {
