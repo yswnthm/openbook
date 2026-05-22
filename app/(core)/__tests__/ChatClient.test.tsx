@@ -36,7 +36,7 @@ mock.module('sonner', () => ({
 }));
 
 mock.module('@/hooks/use-local-storage', () => ({
-    useLocalStorage: () => ['openai-gpt-5-mini', () => {}],
+    useLocalStorage: () => ['openai-gpt-5-4-mini', () => {}],
 }));
 
 mock.module('@/contexts/SidebarContext', () => ({

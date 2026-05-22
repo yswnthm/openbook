@@ -5,7 +5,7 @@ import { neuman } from '@/app/api/lib/ai/providers';
 describe('AI Model Registry and Provider Validation', () => {
     test('isModelId correctly identifies valid and invalid IDs', () => {
         expect(isModelId('google-default')).toBe(true);
-        expect(isModelId('openai-gpt-5-mini')).toBe(true);
+        expect(isModelId('openai-gpt-5-4-mini')).toBe(true);
         expect(isModelId('invalid-model-id-123')).toBe(false);
         expect(isModelId(null)).toBe(false);
         expect(isModelId(undefined)).toBe(false);
@@ -43,17 +43,17 @@ describe('AI Model Registry and Provider Validation', () => {
             // GOOGLE_GENERATIVE_AI_API_KEY is missing
         };
 
-        const gpt5Missing = getMissingProviderKeys('openai-gpt-5-mini', mockEnv);
+        const gpt5Missing = getMissingProviderKeys('openai-gpt-5-4-mini', mockEnv);
         expect(gpt5Missing).toEqual([]);
 
-        const geminiMissing = getMissingProviderKeys('google-gemini-2-5-pro', mockEnv);
+        const geminiMissing = getMissingProviderKeys('google-gemini-3-1-pro', mockEnv);
         expect(geminiMissing).toEqual(['GOOGLE_GENERATIVE_AI_API_KEY']);
 
         // Check with getMissingApiKey using actual process.env
         const originalOpenaiKey = process.env.OPENAI_API_KEY;
         try {
             delete process.env.OPENAI_API_KEY;
-            const missing = getMissingApiKey('openai-gpt-5-mini');
+            const missing = getMissingApiKey('openai-gpt-5-4-mini');
             expect(missing).toBe('OPENAI_API_KEY');
         } finally {
             process.env.OPENAI_API_KEY = originalOpenaiKey;
