@@ -17,7 +17,7 @@ interface ToolInvocationListViewProps {
     message: ChatMessage;
 }
 
-const ToolInvocationListView: React.FC<ToolInvocationListViewProps> = ({ toolInvocations, message }) => {
+const ToolInvocationListView: React.FC<ToolInvocationListViewProps> = ({ toolInvocations, message: _message }) => {
     if (!toolInvocations || toolInvocations.length === 0) {
         return null;
     }

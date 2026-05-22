@@ -1,20 +1,25 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-try {
-  GlobalRegistrator.register();
-} catch {}
-
-import { expect, test, describe, afterEach, mock, beforeEach } from "bun:test";
+/* eslint-disable @next/next/no-img-element, jsx-a11y/alt-text */
+import { expect, test, describe, afterEach, mock } from "bun:test";
 import { render, cleanup, waitFor } from "@testing-library/react";
 import React from "react";
 import { OnboardingProvider, useOnboarding } from "@/contexts/OnboardingContext";
 
 // Mocks
-mock.module('next/image', () => ({
-  default: (props: any) => <img {...props} />
+mock.module('@/contexts/SettingsContext', () => ({
+  useSettings: () => ({
+    systemPrompt: '',
+    setSystemPrompt: () => {}
+  })
 }));
-
 mock.module('next/navigation', () => ({
-  useRouter: () => ({ push: mock(() => {}) }),
+  useRouter: () => ({
+    push: () => {},
+    replace: () => {},
+    prefetch: () => {},
+    back: () => {},
+    forward: () => {},
+    refresh: () => {}
+  }),
   usePathname: () => '/'
 }));
 
@@ -44,23 +49,14 @@ mock.module('@/hooks/useJournal', () => ({
   })
 }));
 
-// Mock SidebarFooter to avoid deep rendering issues
-mock.module('../SidebarFooter', () => ({
-  SidebarFooter: () => <div data-testid="sidebar-footer">SidebarFooter</div>
-}));
-
 // Mock SidebarNotebook
 mock.module('../SidebarNotebook', () => ({
   default: () => <div>SidebarNotebook</div>
 }));
 
-// Mock SearchModal and SettingsPanel
+// Mock SearchModal
 mock.module('@/components/features/search/search-modal', () => ({
   SearchModal: () => <div>SearchModal</div>
-}));
-
-mock.module('@/components/features/settings/settings-panel', () => ({
-  SettingsPanel: ({ children }: { children: React.ReactNode }) => <div>{children}</div>
 }));
 
 afterEach(cleanup);

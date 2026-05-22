@@ -140,7 +140,6 @@ export async function executeReasonSearch(
 
   // Execute searches
   const searchResults: SearchResult[] = [];
-  let searchIndex = 0;
 
   for (const step of stepIds.searchSteps) {
     // Send running annotation for this search step
@@ -235,8 +234,6 @@ export async function executeReasonSearch(
         overwrite: true,
       },
     });
-
-    searchIndex++;
   }
 
   // Perform analyses

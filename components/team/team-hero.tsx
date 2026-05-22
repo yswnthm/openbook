@@ -39,6 +39,7 @@ export function TeamHero() {
   return (
     <section
       id="hero"
+      data-testid="team-hero"
       className="flex items-center justify-center px-8 md:px-16 lg:px-24 min-h-[85vh]"
     >
       <div className="max-w-6xl mx-auto">
@@ -65,7 +66,7 @@ export function TeamHero() {
               <h1
                 className="text-2xl sm:text-3xl md:text-6xl lg:text-7xl mb-1 md:mb-3 font-bold leading-none font-league-spartan"
               >
-                hi, i'm yswnth.
+                hi, i&apos;m yswnth.
               </h1>
             </div>
 

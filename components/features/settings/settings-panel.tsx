@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { useSettings } from '@/contexts/SettingsContext';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+
 import { getGroupConfig } from '@/app/(config)/actions';
 import { toast } from 'sonner';
 

@@ -6,13 +6,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { type Block, BlockType } from '@/lib/types';
 import {
     GripVertical,
-    Plus,
     Trash2,
     Copy,
-    MoveVertical,
     Check,
-    ArrowUp,
-    ArrowDown,
     Type,
     Heading1,
     Heading2,
@@ -22,10 +18,7 @@ import {
     Quote,
     Minus,
     ChevronRight,
-    Edit2,
-    Cpu,
     Repeat,
-    Square,
 } from 'lucide-react';
 
 interface EditorContentProps {
@@ -49,12 +42,8 @@ export default function EditorContent({
 }: EditorContentProps) {
     const blockRefs = useRef<Record<string, HTMLDivElement | null>>({});
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
-    const [selectedBlocks, setSelectedBlocks] = useState<string[]>([]);
     const [submenu, setSubmenu] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const toggleSelection = (id: string) => {
-        setSelectedBlocks((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
-    };
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -66,7 +55,7 @@ export default function EditorContent({
         };
 
         // Handle keyboard shortcuts
-        const handleKeyDown = (e: KeyboardEvent) => {
+        const handleKeyDown = (_e: KeyboardEvent) => {
             // Add any keyboard shortcuts here if needed in the future
         };
 
@@ -76,7 +65,7 @@ export default function EditorContent({
             document.removeEventListener('mousedown', handleClickOutside);
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [blocks, selectedBlocks]);
+    }, [blocks]);
 
     useEffect(() => {
         // Focus on the block that has isFocused set to true
@@ -144,7 +133,7 @@ export default function EditorContent({
         }
     };
 
-    const renderBlock = (block: Block, index: number) => {
+    const renderBlock = (block: Block, _index: number) => {
         const commonProps = {
             id: `block-${block.id}`,
             key: block.id,
@@ -170,7 +159,7 @@ export default function EditorContent({
                 {/* Add a menu indicator at the beginning of each block */}
                 {/* Add a menu indicator at the beginning of each block */}
                 <div
-                    className={`absolute -left-10 top-1/2 transform -translate-y-1/2 transition-opacity duration-200 flex items-center justify-end ${selectedBlocks.includes(block.id) || activeMenu === block.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                    className={`absolute -left-10 top-1/2 transform -translate-y-1/2 transition-opacity duration-200 flex items-center justify-end ${activeMenu === block.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
                         }`}
                 >
                     <button

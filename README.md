@@ -42,8 +42,7 @@ OpenBook is a modern web application built with Next.js that offers powerful AI-
 
 ### Prerequisites
 
-- Node.js 18.x or higher
-- npm (recommended package manager)
+- Bun 1.x or higher
 
 ### Installation
 
@@ -55,7 +54,7 @@ OpenBook is a modern web application built with Next.js that offers powerful AI-
 
 2. Install dependencies:
    ```bash
-   npm install
+   bun install
    ```
 
 3. Set up environment variables:
@@ -66,7 +65,7 @@ OpenBook is a modern web application built with Next.js that offers powerful AI-
 
 4. Start the development server:
    ```bash
-   npm run dev
+   bun run dev
    ```
 
 The application will be available at http://localhost:3000.

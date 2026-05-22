@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { CreateMLCEngine, MLCEngine, InitProgressCallback } from '@mlc-ai/web-llm';
 
 export interface WebLLMState {

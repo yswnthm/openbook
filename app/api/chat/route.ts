@@ -14,54 +14,88 @@ import {
     createDataStreamResponse,
     generateObject,
     NoSuchToolError,
-    extractReasoningMiddleware,
 } from 'ai';
 import { z } from 'zod';
 import { debugLog } from '@/lib/logger';
+import { NextRequest, NextResponse } from 'next/server';
+import { ChatRequestSchema } from '@/lib/api/chat-schema';
+import { isAuthenticated } from '@/lib/auth';
 
 // Shared tools and services
 import { academicSearchTool } from '../lib/ai/tools/academic-search';
 import { executeReasonSearch } from '../lib/ai/tools/reason-search-advanced';
 import { neuman, getProviderOptions, getTemperature, getMaxSteps } from '../lib/ai/providers';
+import { getMissingApiKey } from '@/lib/ai/model-registry';
 
-const middleware = extractReasoningMiddleware({
-    tagName: 'think',
-});
+export async function POST(req: NextRequest) {
+    // 1. Safely parse JSON and validate request body schema
+    const body = await req.json().catch(() => null);
+    if (!body) {
+        return NextResponse.json(
+            { error: 'invalid_request', message: 'Request body must be a valid JSON object.' },
+            { status: 400 }
+        );
+    }
 
-export async function POST(req: Request) {
-    const { messages, model, group, user_id, timezone, systemPrompt } = await req.json();
+    const parsed = ChatRequestSchema.safeParse(body);
+    if (!parsed.success) {
+        return NextResponse.json(
+            { error: 'invalid_request', message: parsed.error.errors[0].message },
+            { status: 400 }
+        );
+    }
 
-    // Ensure activeTools is always an array to avoid spread operator errors later
+    const { messages, model, group, timezone, systemPrompt } = parsed.data;
+
+    // 2. Validate provider key presence
+    const missingKey = getMissingApiKey(model);
+    if (missingKey) {
+        return NextResponse.json(
+            { error: 'provider_unavailable', message: `Model provider is unavailable because the API key ${missingKey} is not configured on the server.` },
+            { status: 400 }
+        );
+    }
+
+    // 3. Ensure activeTools is always an array to avoid spread operator errors later
     let activeTools: readonly any[] = [];
     let instructions: string | undefined;
     try {
         ({ tools: activeTools = [], instructions } = await getGroupConfig(group));
     } catch (error: unknown) {
         debugLog('Error fetching group config:', error);
-        return new Response(JSON.stringify({ error: 'Failed to load group configuration' }), {
-            status: 500,
-        });
+        return NextResponse.json(
+            { error: 'server_error', message: 'Failed to load group configuration' },
+            { status: 500 }
+        );
     }
 
-    // Override instructions if systemPrompt is provided (User setting)
+    // 4. Handle custom systemPrompt according to authentication policy
+    const authenticated = isAuthenticated(req);
     if (systemPrompt && systemPrompt.trim().length > 0) {
-        // debugLog('Using custom system prompt:', systemPrompt);
-        instructions = systemPrompt;
+        if (authenticated) {
+            // Authenticated developer override: fully replace base instructions
+            instructions = systemPrompt;
+        } else {
+            // Anonymous override protection: append user rules to the safety-critical base instructions
+            const baseInstructions = instructions || '';
+            instructions = `${baseInstructions}\n\n### User Custom Guidelines:\n${systemPrompt}`;
+        }
     }
 
+    // 5. Metadata-only safe logging (no raw message content logged to production paths)
+    const totalChars = messages.reduce((sum, msg) => sum + (msg.content?.length || 0), 0);
     debugLog('--------------------------------');
-    debugLog('Messages received:', JSON.stringify(messages, null, 2));
-    debugLog('Messages count:', messages.length);
-    debugLog('--------------------------------');
+    debugLog('Messages count:', messages.length, 'Total characters:', totalChars);
     debugLog('Running with model: ', model.trim());
     debugLog('Group: ', group);
     debugLog('Timezone: ', timezone);
+    debugLog('--------------------------------');
 
     return createDataStreamResponse({
         execute: async (dataStream: any) => {
             const result = streamText({
                 model: neuman.languageModel(model),
-                messages: convertToCoreMessages(messages),
+                messages: convertToCoreMessages(messages as any),
                 temperature: getTemperature(model),
                 maxSteps: getMaxSteps(),
                 experimental_activeTools: [...activeTools],
@@ -80,17 +114,13 @@ export async function POST(req: Request) {
                             return await executeReasonSearch(topic, depth, dataStream);
                         },
                     }),
-                    // The code interpreter below **does not execute code for real** – it only simulates
-                    // execution and returns a descriptive message. This is purely for demonstration
-                    // purposes and to avoid the security risks of arbitrary code execution.
-                    code_interpreter: tool({
-                        description: 'Execute Python code for calculations, data analysis, and computations.',
+                    // Simulated python code execution helper
+                    simulated_code_interpreter: tool({
+                        description: 'Simulate Python code execution for calculations, data analysis, and computations (no real sandboxed execution).',
                         parameters: z.object({
-                            code: z.string().describe('The Python code to execute'),
+                            code: z.string().describe('The Python code to simulate'),
                         }),
                         execute: async ({ code }: { code: string }) => {
-                            // This is a placeholder - in production you'd want a proper sandboxed code execution environment
-                            // For now, we'll return a descriptive message about what the code would do
                             return {
                                 success: true,
                                 message: `Code execution simulation: ${code.slice(0, 100)}${code.length > 100 ? '...' : ''}`,
@@ -104,7 +134,7 @@ export async function POST(req: Request) {
                             timezone: z.string().optional().describe('Timezone identifier (e.g., "America/New_York", "UTC")'),
                             format: z.string().optional().describe('Date format preference'),
                         }),
-                        execute: async ({ timezone: tz, format }: { timezone?: string; format?: string }) => {
+                        execute: async ({ timezone: tz, format: _format }: { timezone?: string; format?: string }) => {
                             const now = new Date();
                             const userTimezone = tz || timezone || 'UTC';
 
@@ -129,7 +159,7 @@ export async function POST(req: Request) {
                                     iso: now.toISOString(),
                                     timestamp: now.getTime(),
                                 };
-                            } catch (error) {
+                            } catch {
                                 // Fallback to UTC if timezone is invalid
                                 const utcFormat = new Intl.DateTimeFormat('en-US', {
                                     weekday: 'long',

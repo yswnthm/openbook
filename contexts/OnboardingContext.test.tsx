@@ -1,8 +1,3 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-try {
-  GlobalRegistrator.register();
-} catch {}
-
 import { expect, test, describe } from "bun:test";
 import { renderHook } from "@testing-library/react";
 import { OnboardingProvider, useOnboarding } from "./OnboardingContext";
@@ -21,7 +16,7 @@ describe("OnboardingContext", () => {
     });
 
     test("should provide initial state", () => {
-        const wrapper = ({ children }) => (
+        const wrapper = ({ children }: { children: React.ReactNode }) => (
             React.createElement(OnboardingProvider, null, children)
         );
         const { result } = renderHook(() => useOnboarding(), { wrapper });
@@ -32,7 +27,7 @@ describe("OnboardingContext", () => {
     });
 
     test("should allow registering steps", () => {
-        const wrapper = ({ children }) => (
+        const wrapper = ({ children }: { children: React.ReactNode }) => (
             React.createElement(OnboardingProvider, null, children)
         );
         const { result } = renderHook(() => useOnboarding(), { wrapper });
@@ -53,7 +48,7 @@ describe("OnboardingContext", () => {
     });
 
     test("should sort steps by order", () => {
-        const wrapper = ({ children }) => (
+        const wrapper = ({ children }: { children: React.ReactNode }) => (
             React.createElement(OnboardingProvider, null, children)
         );
         const { result } = renderHook(() => useOnboarding(), { wrapper });

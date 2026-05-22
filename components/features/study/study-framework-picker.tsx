@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { StudyFramework } from '@/lib/types';
 import { getFrameworkDisplayName, getFrameworkDescription, getFrameworkIcon } from '@/lib/study-prompts';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface StudyFrameworkPickerProps {
     onSelect: (framework: StudyFramework) => void;

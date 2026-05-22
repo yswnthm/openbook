@@ -11,7 +11,7 @@ interface TopBarProps {
     hideSidebarTrigger?: boolean;
 }
 
-export function TopBar({ children, actions, className, hideSidebarTrigger = false }: TopBarProps) {
+export function TopBar({ children, actions, className, hideSidebarTrigger: _hideSidebarTrigger = false }: TopBarProps) {
     return (
         <header
             className={cn(

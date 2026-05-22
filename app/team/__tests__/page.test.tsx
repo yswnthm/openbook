@@ -1,20 +1,9 @@
-import { GlobalRegistrator } from '@happy-dom/global-registrator';
-try {
-  GlobalRegistrator.register();
-} catch (e) {
-  // console.error(e);
-}
-
 import { expect, test, describe, afterEach, mock } from 'bun:test';
 import { render, screen, cleanup } from '@testing-library/react';
 import TeamPage from '../page';
 import React from 'react';
 
 // Mock components
-mock.module('@/components/team/team-hero', () => ({
-  TeamHero: () => <div data-testid="team-hero">TeamHero</div>
-}));
-
 mock.module('@/components/landing', () => ({
   CombinedFooter: () => <div data-testid="footer">Footer</div>,
   Header: () => <div data-testid="header">Header</div>,

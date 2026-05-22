@@ -1,5 +1,4 @@
 import AnimateInView from "./animate-in-view"
-import { StyledText } from "./styled-text"
 import { AnimatedHeading } from "./animated-heading"
 
 interface SectionHeadingProps {

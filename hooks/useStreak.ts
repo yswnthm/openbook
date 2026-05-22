@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { STREAK_COUNT_KEY, STREAK_LAST_VISIT_KEY } from '@/lib/streakKeys';
 
 /**
@@ -14,13 +14,13 @@ import { STREAK_COUNT_KEY, STREAK_LAST_VISIT_KEY } from '@/lib/streakKeys';
 export function useStreak(): number {
 
     // Helper to normalise a date to midnight for day-level comparison
-    const normalise = (d: Date) => {
+    const normalise = useCallback((d: Date) => {
         const copy = new Date(d);
         copy.setHours(0, 0, 0, 0);
         return copy.getTime();
-    };
+    }, []);
 
-    const calculateStreak = (): number => {
+    const calculateStreak = useCallback((): number => {
         if (typeof window === 'undefined') return 1;
 
         const today = new Date();
@@ -66,7 +66,7 @@ export function useStreak(): number {
         localStorage.setItem(STREAK_LAST_VISIT_KEY, today.toISOString());
 
         return newCount;
-    };
+    }, [normalise]);
 
     const [streak, setStreak] = useState<number>(() => calculateStreak());
 
@@ -77,7 +77,7 @@ export function useStreak(): number {
             setStreak(calculateStreak());
         }, 60 * 1000); // check each minute
         return () => clearInterval(interval);
-    }, []);
+    }, [calculateStreak]);
 
     return streak;
 } 

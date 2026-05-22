@@ -49,7 +49,8 @@ export const StudyModeProvider = ({ children }: { children: ReactNode }) => {
     const setStudyMode = React.useCallback((framework: StudyFramework | null, spaceId: string) => {
         setStudyModes((prev) => {
             if (framework === null) {
-                const { [spaceId]: removed, ...rest } = prev;
+                const rest = { ...prev };
+                delete rest[spaceId];
                 return rest;
             }
 
@@ -91,7 +92,8 @@ export const StudyModeProvider = ({ children }: { children: ReactNode }) => {
 
     const clearStudyMode = React.useCallback((spaceId: string) => {
         setStudyModes((prev) => {
-            const { [spaceId]: removed, ...rest } = prev;
+            const rest = { ...prev };
+            delete rest[spaceId];
             return rest;
         });
     }, []);

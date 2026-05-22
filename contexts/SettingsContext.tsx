@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext } from 'react';
 import { useLocalStorage } from '@/hooks/use-local-storage';
 
 interface SettingsContextType {

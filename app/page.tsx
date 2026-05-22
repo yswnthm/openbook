@@ -7,7 +7,6 @@ import CombinedFooter from "@/components/landing/CombinedFooter"
 import { HeroSection } from "@/components/landing/hero-section"
 import { FeaturesSection } from "@/components/landing/features-section"
 import { InterfacePreviewSection } from "@/components/landing/interface-preview-section"
-import { ProductivitySection } from "@/components/landing/productivity-section"
 
 import { TestimonialsSection } from "@/components/landing/testimonials-section"
 import { CTASection } from "@/components/landing/cta-section"

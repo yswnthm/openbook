@@ -34,13 +34,13 @@ interface MessagesProps {
     input: string;
     setInput: (value: string) => void;
     setIsEditingMessage: (value: boolean) => void;
-    setEditingMessageIndex: (value: number) => void;
+    setEditingMessageIndex: (index: number) => void;
     setMessages: (messages: any[]) => void;
-    append: (message: any, options?: any) => Promise<string | null | undefined>;
     reload: () => Promise<string | null | undefined>;
+    append: (message: any, options?: any) => Promise<string | null | undefined>;
 
     status: string;
-    error: any; // Add error from useChat
+    error: any;
     selectedModel?: string;
 }
 
@@ -60,8 +60,8 @@ const Messages: React.FC<MessagesProps> = ({
     setIsEditingMessage,
     setEditingMessageIndex,
     setMessages,
-    append,
     reload,
+    append,
 
     status,
     error,
@@ -88,7 +88,7 @@ const Messages: React.FC<MessagesProps> = ({
     const estimatedStreamDuration = 15000; // Estimated 15 seconds for complete generation
 
     // Add state for typing animation
-    const [useTypingAnimation, setUseTypingAnimation] = useState<boolean>(true);
+    const [useTypingAnimation] = useState<boolean>(true);
     const [typingCompleted, setTypingCompleted] = useState<boolean>(false);
 
     // Add token counting for progress indicator
@@ -163,13 +163,6 @@ const Messages: React.FC<MessagesProps> = ({
         const activeReasoningSections = Object.entries(reasoningTimings).filter(([_, timing]) => !timing.endTime);
         if (activeReasoningSections.length > 0) {
             const reasoningTimer = setInterval(() => {
-                const now = Date.now();
-                const updatedTimes: Record<string, number> = {};
-
-                activeReasoningSections.forEach(([key, timing]) => {
-                    updatedTimes[key] = (now - timing.startTime) / 1000;
-                });
-
                 // Update reasoning timings if needed
                 // Note: This is a simplified version - the original had more complex logic
             }, 500); // Reduced from 100ms to 500ms
@@ -517,7 +510,6 @@ const Messages: React.FC<MessagesProps> = ({
                             setMessages={setMessages}
                             append={append}
                             reload={reload}
-
                         />
 
                         {/* Render typing animation for this message if needed */}

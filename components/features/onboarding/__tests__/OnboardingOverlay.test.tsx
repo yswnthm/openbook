@@ -1,23 +1,11 @@
-// @bun-test-dom happy-dom
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-try {
-  GlobalRegistrator.register();
-} catch {}
-
-import { expect, test, describe, beforeEach, afterEach } from "bun:test";
+import { expect, test, describe } from "bun:test";
 import { render, waitFor, act } from "@testing-library/react";
 import { OnboardingOverlay } from "../OnboardingOverlay";
 import { OnboardingProvider, useOnboarding } from "@/contexts/OnboardingContext";
 import React from "react";
 
-// Mock ResizeObserver
-global.ResizeObserver = class ResizeObserver {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-};
 
-const TestWrapper = ({ children }) => {
+const TestWrapper = ({ children }: { children: React.ReactNode }) => {
     return React.createElement(OnboardingProvider, null, children);
 };
 

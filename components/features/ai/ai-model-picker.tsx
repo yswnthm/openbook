@@ -1,19 +1,19 @@
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
     Search,
     Check,
     Sparkles,
     Zap,
     Cpu,
-    Code,
     BrainCircuit,
     Globe,
-    Lock,
     Command
 } from 'lucide-react';
+
+import { MODEL_REGISTRY, isModelId, getModelDefinition } from '@/lib/ai/model-registry';
 
 // Richer model definitions
 interface ModelDef {
@@ -27,247 +27,23 @@ interface ModelDef {
     tags: string[]; // for search
 }
 
-const ALL_MODELS: ModelDef[] = [
-    // [REFERENCE] These 'value' fields are what you use in ChatClient.tsx to set the default model.
-    // Example: 'openai-gpt-5-mini', 'google-gemini-2-5-pro', etc.
-    // --- Premium / Paid ---
-    {
-        value: 'openai-gpt-5-mini',
-        label: 'GPT 5 Mini',
-        description: 'Balanced performance for everyday tasks.',
-        provider: 'OpenAI',
-        capabilities: ['Fast', 'Reasoning'],
-        contextWindow: '128k',
-        tier: 'premium',
-        tags: ['openai', 'gpt', 'smart', 'fast']
-    },
-
-    {
-        value: 'openai-gpt-5-nano',
-        label: 'GPT 5 Nano',
-        description: 'Extremely fast and cost-effective.',
-        provider: 'OpenAI',
-        capabilities: ['Ultra Fast'],
-        contextWindow: '128k',
-        tier: 'premium',
-        tags: ['openai', 'speed']
-    },
-    {
-        value: 'google-gemini-2-5-pro',
-        label: 'Gemini 2.5 Pro',
-        description: 'Google\'s best model for large context and reasoning.',
-        provider: 'Google',
-        capabilities: ['2M Context', 'Reasoning'],
-        contextWindow: '2M',
-        tier: 'premium',
-        tags: ['google', 'gemini', 'long context']
-    },
-    {
-        value: 'google-gemini-2-5-flash',
-        label: 'Gemini 2.5 Flash',
-        description: 'Low latency, high throughput.',
-        provider: 'Google',
-        capabilities: ['Fast', '1M Context'],
-        contextWindow: '1M',
-        tier: 'premium',
-        tags: ['google', 'gemini', 'speed']
-    },
-    // --- Preview ---
-    {
-        value: 'google-gemini-3-flash',
-        label: 'Gemini 3 Flash',
-        description: 'Preview of the next generation multimodal model.',
-        provider: 'Google',
-        capabilities: ['Preview', 'Multimodal'],
-        contextWindow: '1M',
-        tier: 'preview',
-        tags: ['google', 'gemini', 'new']
-    },
-
-    // --- Cerebras ---
-    {
-        value: 'cerebras-llama-3-3-70b',
-        label: 'Llama 3.3 70B (Cerebras)',
-        description: 'Super fast inference on Wafer-Scale Engine.',
-        provider: 'Cerebras',
-        capabilities: ['Fast', 'Reasoning'],
-        contextWindow: '128k',
-        tier: 'premium',
-        tags: ['cerebras', 'llama', 'fast']
-    },
-    {
-        value: 'cerebras-gpt-oss-120b',
-        label: 'GPT-OSS 120B',
-        description: 'Large scale open model.',
-        provider: 'Cerebras',
-        capabilities: ['Large', 'Fast'],
-        contextWindow: '8k',
-        tier: 'premium',
-        tags: ['cerebras', 'gpt', 'oss']
-    },
-    {
-        value: 'cerebras-qwen-3-32b',
-        label: 'Qwen 3 32B',
-        description: 'Efficient Qwen model on Cerebras.',
-        provider: 'Cerebras',
-        capabilities: ['Efficient', 'Fast'],
-        contextWindow: '32k',
-        tier: 'premium',
-        tags: ['cerebras', 'qwen', 'fast']
-    },
-    {
-        value: 'cerebras-qwen-3-235b',
-        label: 'Qwen 3 235B',
-        description: 'Massive Qwen model for complex tasks.',
-        provider: 'Cerebras',
-        capabilities: ['Massive', 'Reasoning'],
-        contextWindow: '32k',
-        tier: 'premium',
-        tags: ['cerebras', 'qwen', 'massive']
-    },
-
-    // --- Free / Community ---
-    {
-        value: 'neuman-gpt-oss-free', // Keeping this one as it wasn't in providers.ts mapping explicitly shown, or I missed it. Wait, I didn't see it in providers.ts earlier. Let me check the grep result or providers.ts again. Ah, I might have missed it. Let me double check providers.ts content from step 4.
-        // Step 4 providers.ts: No 'neuman-gpt-oss-free'. It was NOT in providers.ts.
-        // Ah, looking at Step 4 output, lines 43-66 do NOT contain 'neuman-gpt-oss-free'.
-        // However, 'ai-model-picker.tsx' has it at line 116.
-        // If it's not in providers.ts, it might not work. But I should rename it if I can infer the provider, which is Groq.
-        // I will assume it should be 'groq-gpt-oss-free' but I better stick to what I renamed in providers.ts.
-        // Wait, if it's not in providers.ts, then selecting it probably broke things before too?
-        // Or maybe it is mapped dynamically?
-        // Let's look at providers.ts again.
-        // It has 'neuman-groq-compound', 'neuman-kimi-k2', 'neuman-qwen-3', 'neuman-llama-4...'.
-        // It DOES NOT have 'neuman-gpt-oss-free'.
-        // This suggests 'neuman-gpt-oss-free' might be a typo in the picker or a missing entry in providers.
-        // I will leave it as 'neuman-gpt-oss-free' for now or rename to 'groq-gpt-oss-free' if I want to be consistent, but I should probably just leave it or rename it to something that looks like the others.
-        // Actually, looking at the previous providers.ts content provided in Step 47, I see `groq-llama-4...`.
-        // I'll rename it to `groq-gpt-oss-120b` to be consistent with others if I were adding it, but since I am REFACORING, I should be careful.
-        // If I change the value here, and it's not in providers.ts, it still won't work.
-        // I will optimistically rename it to `groq-gpt-oss-free` and note that it might be missing in providers.
-        label: 'GPT OSS 120b',
-        description: 'Large open source model hosted on Groq.',
-        provider: 'Groq',
-        capabilities: ['Fast', 'Free'],
-        contextWindow: '8k',
-        tier: 'free',
-        tags: ['groq', 'oss', 'free']
-    },
-    {
-        value: 'google-gemma-3n',
-        label: 'Gemma 3n',
-        description: 'Efficient open model from Google.',
-        provider: 'Google',
-        capabilities: ['Efficient', 'Free'],
-        contextWindow: '8k',
-        tier: 'free',
-        tags: ['google', 'gemma', 'free']
-    },
-    {
-        value: 'google-gemma-3-27b',
-        label: 'Gemma 3 27b',
-        description: 'Larger variant of Gemma 3.',
-        provider: 'Google',
-        capabilities: ['Balanced', 'Free'],
-        contextWindow: '8k',
-        tier: 'free',
-        tags: ['google', 'gemma', 'free']
-    },
-    {
-        value: 'hf-apriel-15b',
-        label: 'Apriel 1.6 15b',
-        description: 'Experimental thinker model.',
-        provider: 'Hugging Face',
-        capabilities: ['Experimental'],
-        contextWindow: '16k',
-        tier: 'free',
-        tags: ['hf', 'free']
-    },
-    {
-        value: 'hf-olmo-32b',
-        label: 'Olmo 3.1 32B',
-        description: 'Fully open model by AllenAI.',
-        provider: 'Hugging Face',
-        capabilities: ['Open Science'],
-        contextWindow: '16k',
-        tier: 'free',
-        tags: ['hf', 'allenai', 'free']
-    },
-    {
-        value: 'groq-compound',
-        label: 'Groq Compound',
-        description: 'Compound AI system running on Groq LPU.',
-        provider: 'Groq',
-        capabilities: ['Compound'],
-        contextWindow: '8k',
-        tier: 'free',
-        tags: ['groq', 'free']
-    },
-    {
-        value: 'moonshot-kimi-k2',
-        label: 'Kimi K2 0905',
-        description: 'Moonshot AI model.',
-        provider: 'Groq',
-        capabilities: ['Reasoning', 'Free'],
-        contextWindow: '32k',
-        tier: 'free',
-        tags: ['groq', 'moonshot', 'free']
-    },
-    {
-        value: 'groq-qwen-3',
-        label: 'Qwen 3 32B',
-        description: 'General purpose Qwen model.',
-        provider: 'Groq',
-        capabilities: ['General', 'Free'],
-        contextWindow: '32k',
-        tier: 'free',
-        tags: ['groq', 'qwen', 'free']
-    },
-    {
-        value: 'groq-llama-4-maverick-17b-128e-instruct',
-        label: 'Llama 4 Maverick',
-        description: 'Latest Llama 4 fine-tune.',
-        provider: 'Groq',
-        capabilities: ['New', 'Free'],
-        contextWindow: '8k',
-        tier: 'free',
-        tags: ['groq', 'llama', 'free']
-    },
-    // --- Local / WebLLM ---
-    {
-        value: 'local-phi-3-mini',
-        label: 'Phi-3 Mini (Local)',
-        description: 'Runs entirely in your browser using WebGPU.',
-        provider: 'Microsoft',
-        capabilities: ['Local', 'Private', 'Offline'],
-        contextWindow: '4k',
-        tier: 'local',
-        tags: ['local', 'phi', 'webgpu', 'offline']
-    },
-    {
-        value: 'local-phi-2',
-        label: 'Phi-2 (Local)',
-        description: 'Smaller local model for older devices.',
-        provider: 'Microsoft',
-        capabilities: ['Local', 'Private', 'Offline'],
-        contextWindow: '2k',
-        tier: 'local',
-        tags: ['local', 'phi', 'webgpu', 'offline']
-    },
-    // --- Ollama ---
-    {
-        value: 'ollama-gemma-3-270m',
-        label: 'Gemma 3 270M (Local)',
-        description: 'Runs locally via Ollama.',
-        provider: 'Google',
-        capabilities: ['Local', 'Ollama'],
-        contextWindow: '8k',
-        tier: 'ollama',
-        tags: ['ollama', 'local', 'gemma']
-    },
-];
+const ALL_MODELS: ModelDef[] = Object.entries(MODEL_REGISTRY)
+    .filter(([_, def]) => def.enabledInPicker)
+    .map(([value, def]) => ({
+        value,
+        label: def.label,
+        description: def.description,
+        provider: def.providerLabel,
+        capabilities: [...def.capabilities],
+        contextWindow: def.contextWindow,
+        tier: def.tier,
+        tags: [...def.tags],
+    }));
 
 export const getModelLabel = (value: string) => {
+    if (isModelId(value)) {
+        return getModelDefinition(value).label;
+    }
     return value;
 };
 
@@ -284,6 +60,26 @@ interface AiModelPickerProps {
 
 export function AiModelPicker({ selectedModel, onSelect, onClose, className = '', loadingModelId, loadingProgress, loadingText, placement = 'top' }: AiModelPickerProps) {
     const [searchQuery, setSearchQuery] = useState('');
+    const [availability, setAvailability] = useState<Record<string, boolean>>({});
+
+    // Fetch model availability on mount
+    useEffect(() => {
+        let active = true;
+        fetch('/api/ai/models')
+            .then((res) => {
+                if (!res.ok) throw new Error('Failed to fetch availability');
+                return res.json();
+            })
+            .then((data) => {
+                if (active) setAvailability(data);
+            })
+            .catch((err) => {
+                console.error('Failed to fetch model availability:', err);
+            });
+        return () => {
+            active = false;
+        };
+    }, []);
 
     // Filter models based on search
     const filteredModels = useMemo(() => {
@@ -433,6 +229,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                                         isLoading={model.value === loadingModelId}
                                         progress={loadingProgress}
                                         loadingText={loadingText}
+                                        isUnavailable={availability[model.value] === false}
                                     />
                                 ))}
                             </div>
@@ -443,7 +240,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
                 {filteredModels.length === 0 && (
                     <div className="p-8 text-center text-neutral-500">
                         <Command className="w-8 h-8 mx-auto mb-2 opacity-20" />
-                        <p className="text-sm">No models found matching "{searchQuery}"</p>
+                        <p className="text-sm">No models found matching &quot;{searchQuery}&quot;</p>
                     </div>
                 )}
             </div>
@@ -457,10 +254,27 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
     );
 }
 
-function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingText }: { model: ModelDef, isSelected: boolean, onSelect: () => void, isLoading?: boolean, progress?: number, loadingText?: string }) {
+function ModelItem({
+    model,
+    isSelected,
+    onSelect,
+    isLoading,
+    progress,
+    loadingText,
+    isUnavailable
+}: {
+    model: ModelDef;
+    isSelected: boolean;
+    onSelect: () => void;
+    isLoading?: boolean;
+    progress?: number;
+    loadingText?: string;
+    isUnavailable?: boolean;
+}) {
     return (
         <button
-            onClick={onSelect}
+            onClick={isUnavailable ? undefined : onSelect}
+            disabled={isUnavailable}
             className={`
                 w-full text-left relative group
                 p-3 rounded-xl transition-all duration-200
@@ -470,6 +284,7 @@ function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingTe
                     ? 'bg-blue-50/80 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
                     : 'bg-transparent border-transparent hover:bg-neutral-100 dark:hover:bg-white/5'
                 }
+                ${isUnavailable ? 'opacity-40 cursor-not-allowed' : ''}
             `}
         >
             {isLoading && (
@@ -527,6 +342,11 @@ function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingTe
                     <div className="flex flex-wrap gap-1.5 items-center">
                         <Badge>{model.provider}</Badge>
                         <Badge variant="outline">{model.contextWindow}</Badge>
+                        {isUnavailable && (
+                            <Badge variant="destructive" className="font-semibold animate-pulse">
+                                Unavailable
+                            </Badge>
+                        )}
                         {model.capabilities.map(cap => (
                             <Badge key={cap} variant="secondary" className="opacity-80">{cap}</Badge>
                         ))}
@@ -537,11 +357,12 @@ function ModelItem({ model, isSelected, onSelect, isLoading, progress, loadingTe
     );
 }
 
-function Badge({ children, variant = 'default', className = '' }: { children: React.ReactNode, variant?: 'default' | 'outline' | 'secondary', className?: string }) {
+function Badge({ children, variant = 'default', className = '' }: { children: React.ReactNode, variant?: 'default' | 'outline' | 'secondary' | 'destructive', className?: string }) {
     const variants = {
         default: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 border-transparent',
         outline: 'bg-transparent border-neutral-200 dark:border-neutral-700 text-neutral-500',
-        secondary: 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 border-transparent'
+        secondary: 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 border-transparent',
+        destructive: 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-transparent'
     };
 
     return (

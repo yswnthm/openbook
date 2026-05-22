@@ -4,7 +4,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { STREAK_COUNT_KEY, STREAK_LAST_VISIT_KEY } from '@/lib/streakKeys';
 
-export const StreakTester: React.FC = () => {
+const StreakTester: React.FC = () => {
     const setStreak = (days: number) => {
         // Set the streak count
         localStorage.setItem(STREAK_COUNT_KEY, days.toString());
@@ -67,3 +67,4 @@ export const StreakTester: React.FC = () => {
     );
 };
 
+export default StreakTester;

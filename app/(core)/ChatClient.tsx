@@ -1,40 +1,20 @@
 'use client';
 import 'katex/dist/katex.min.css';
 
-import { AnimatePresence, motion } from 'framer-motion';
 import { useChat, UseChatOptions, Message } from '@ai-sdk/react';
-import { Info } from '@phosphor-icons/react';
 import { parseAsString, useQueryState } from 'nuqs';
-import { useTheme } from 'next-themes';
 import { toast } from 'sonner';
-import {
-    Moon,
-    Plus,
-    Sun,
-    Search,
-    ChevronDown,
-    Settings,
-    MessageSquare,
-    Flag,
-    HelpCircle,
-    LogOut,
-    Menu,
-    X,
-} from 'lucide-react';
-import Link from 'next/link';
-import React, { memo, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { TopBar } from '@/components/layout/top-bar';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { Button } from '@/components/ui/button';
 import { InstallPrompt } from '@/components/modals/InstallPrompt';
 import { useLocalStorage } from '@/hooks/use-local-storage';
 import { cn, getUserId, SearchGroupId } from '@/lib/utils';
-import { SIDEBAR_STATE_KEY, SELECTED_MODEL_KEY } from '@/lib/storageKeys';
+import { SELECTED_MODEL_KEY } from '@/lib/storageKeys';
+import { DEFAULT_MODEL_ID } from '@/lib/ai/model-registry';
 import { useSidebar } from '@/contexts/SidebarContext';
 
 import Messages from '@/components/features/spaces/chat/messages';
-import { Input } from '@/components/ui/input';
 
 
 import { useSpaces, type ChatMessage } from '@/contexts/SpacesContext'; // Adjusted path, assuming ChatMessage is exported from index of SpacesContext
@@ -58,7 +38,6 @@ interface Attachment {
 }
 
 const SIDEBAR_WIDTH = 256; // 64 * 4 = 256px
-const SIDEBAR_WIDTH_SM = 240; // Smaller width for smaller screens
 
 // Lightweight debounce and throttle utilities (no external deps)
 function debounce<T extends (...args: any[]) => void>(fn: T, wait: number) {
@@ -173,10 +152,8 @@ const HomeContent = () => {
     // Study mode context
     const { getStudyModeForSpace, setStudyMode } = useStudyMode();
     const { systemPrompt } = useSettings();
-    // Set GPT-5 Mini as the default model
-    // [EDIT HERE] To change the default model, replace 'openai-gpt-5-mini' with another model ID from ai-model-picker.tsx
-    // Example: 'openai-gpt-5-1' or 'deepseek-free'
-    const [selectedModel, setSelectedModel] = useLocalStorage(SELECTED_MODEL_KEY, 'google-default');
+    // Set default model from the model registry
+    const [selectedModel, setSelectedModel] = useLocalStorage<string>(SELECTED_MODEL_KEY, DEFAULT_MODEL_ID);
 
     // One-time migration: move previously saved model from the legacy key
     useEffect(() => {
@@ -209,7 +186,6 @@ const HomeContent = () => {
     const [editingMessageIndex, setEditingMessageIndex] = useState(-1);
     const [attachments, setAttachments] = useState<Attachment[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const inputRef = useRef<HTMLTextAreaElement>(null);
     const initializedRef = useRef(false);
     const [selectedGroup, setSelectedGroup] = useState<SearchGroupId>('chat');
     const [hasSubmitted, setHasSubmitted] = React.useState(false);
@@ -363,7 +339,7 @@ const HomeContent = () => {
         };
     }, [selectedModel, selectedGroup, userId, currentStudyMode, systemPrompt]);
 
-    const { input, messages, setInput, append, handleSubmit, setMessages, reload, stop, status: chatStatus, error } =
+    const { input, messages, setInput, append, setMessages, reload, stop, status: chatStatus, error } =
         useChat(chatOptions);
 
     // WebLLM Integration
@@ -446,12 +422,9 @@ const HomeContent = () => {
                         // We override 'status' variable in scope above! 
                         // But we need to update 'messages' state to show the streaming response.
 
-                        let currentText = '';
-
                         await generateWebLLM(
                             history,
-                            (text, delta) => {
-                                currentText = text;
+                            (text, _delta) => {
                                 // Update UI messages with partial assistant response
                                 // We need to append or update the last message if it's assistant
                                 // But 'messages' state update here might clash with useEffect syncing from space.
@@ -505,7 +478,7 @@ const HomeContent = () => {
                 return result;
             }
         },
-        [append],
+        [append, isLocalModel, webLLMState.isModelLoaded, webLLMState.text, webLLMState.progress, messages, generateWebLLM, setMessages, selectedModel],
     ); // Remove addMessage dependency since we're using the ref
 
     const isFrameworkSwitchingRef = useRef(false);
@@ -567,7 +540,6 @@ const HomeContent = () => {
                 );
                 // Keep messages visible in UI but don't send them to LLM context
                 // The messages will be shown but useChat will start with empty context
-                const sortedMessages = [...currentSpace.messages].sort((a, b) => a.timestamp - b.timestamp);
                 setMessages([]); // Clear LLM context
                 // Note: We still show messages in the UI through the Messages component which uses currentSpace.messages
             } else {
@@ -741,37 +713,6 @@ const HomeContent = () => {
             (throttledResizeHandler as any).cancel?.();
         };
     }, []);
-
-    const AboutButton = () => {
-        return (
-            <Link href="https://x.com/GoOpenBook">
-                <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full w-8 h-8 bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all"
-                >
-                    <Info className="h-5 w-5 text-neutral-600 dark:text-neutral-400" />
-                </Button>
-            </Link>
-        );
-    };
-
-
-
-    // Define the model change handler
-    const handleModelChange = useCallback(
-        (model: string) => {
-            setSelectedModel(model);
-        },
-        [setSelectedModel],
-    );
-
-
-
-    // Helper function to determine if content is being processed/loaded
-    const isProcessing = useMemo(() => {
-        return status !== 'ready';
-    }, [status]);
 
     return (
         <div className="flex flex-col !font-sans items-center min-h-screen bg-background text-foreground transition-all duration-500">

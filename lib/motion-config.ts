@@ -8,7 +8,7 @@
  */
 export interface AnimationConfig {
     transition: {
-        ease: number[];
+        ease: any;
         duration: number;
     };
     spring: {
@@ -38,7 +38,7 @@ export interface AnimationConfig {
 export const animationConfig: AnimationConfig = {
     // Standard transition preset
     transition: {
-        ease: [0.25, 0.1, 0.25, 1], // Cubic bezier curve
+        ease: [0.25, 0.1, 0.25, 1] as const, // Cubic bezier curve
         duration: 0.3, // 300ms duration
     },
 
@@ -73,7 +73,7 @@ export const animationConfig: AnimationConfig = {
 /**
  * Panel expansion/collapse animation variants
  */
-const panelVariants = {
+export const panelVariants = {
     open: {
         height: 'auto',
         opacity: 1,
@@ -101,7 +101,7 @@ const panelVariants = {
 /**
  * Modal animation variants
  */
-const modalVariants = {
+export const modalVariants = {
     initial: { opacity: 0, scale: 0.95, y: 10 },
     animate: { opacity: 1, scale: 1, y: 0 },
     exit: { opacity: 0, scale: 0.98, y: 10 },

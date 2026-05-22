@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import SlashCommandMenu from './slash-command-menu';
 import EditorContent from './editor-content';
 import EmptyState from './empty-state';
@@ -119,7 +119,6 @@ export default function Editor({ initialBlocks, onBlocksChange, title, onTitleCh
             // Only handle arrow up if at the start of the text
             const selection = window.getSelection();
             const range = selection?.getRangeAt(0);
-            const container = range?.startContainer;
             const offset = range?.startOffset;
 
             if (offset === 0 && blockIndex > 0) {

@@ -11,7 +11,6 @@ import {
     Pin,
     PinOff,
     RefreshCw,
-    Clock,
     ChevronLeft,
     MessageSquare,
 } from 'lucide-react';
@@ -19,12 +18,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Notebook } from '@/lib/types';
 import { useNotebooks } from '@/contexts/NotebookContext';
-import { useSpaces, Space } from '@/contexts/SpacesContext';
+import { useSpaces } from '@/contexts/SpacesContext';
 import { useJournal } from '@/hooks/useJournal';
 import { useRouter } from 'next/navigation';
 import { ConversationNameDisplay } from '@/components/features/spaces/loading/name-loading';
-import { format } from 'date-fns';
-import { useMotion, useHoverAnimation, useElementTransition } from '@/hooks/useMotion';
+import { useHoverAnimation, useElementTransition } from '@/hooks/useMotion';
 
 interface SidebarNotebookProps {
     notebook: Notebook;
@@ -33,7 +31,7 @@ interface SidebarNotebookProps {
 }
 
 export default function SidebarNotebook({ notebook, currentPageType, currentPageId }: SidebarNotebookProps) {
-    const { toggleNotebookExpansion, renameNotebook, deleteNotebook, notebooks } = useNotebooks();
+    const { toggleNotebookExpansion, renameNotebook, deleteNotebook } = useNotebooks();
     const {
         spaces,
         currentSpaceId,
@@ -46,7 +44,6 @@ export default function SidebarNotebook({ notebook, currentPageType, currentPage
     } = useSpaces();
     const { createEntry, entries, deleteEntry, updateEntry } = useJournal();
     const router = useRouter();
-    const { settings, prefersReducedMotion } = useMotion();
     const hoverAnimation = useHoverAnimation();
     const elementTransition = useElementTransition();
 

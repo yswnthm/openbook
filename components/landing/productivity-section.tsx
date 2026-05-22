@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils"
 import { Mic, Plus, Users, Check } from "lucide-react"
 import { motion } from "framer-motion"
-import { ReactNode } from "react"
+import Image from "next/image"
 
 // --- Component: BentoCard ---
 // Matching the structure from features-section.tsx
@@ -212,7 +212,7 @@ function SyncVisual() {
             ].map((avatar, i) => (
                 <div key={i} className={cn("absolute w-10 h-10 rounded-full border border-border bg-card flex items-center justify-center overflow-hidden shadow-md", avatar.style)}>
                     {avatar.img ? (
-                        <img src={avatar.img} alt="" className="w-full h-full object-cover" />
+                        <Image src={avatar.img} alt="" width={40} height={40} className="w-full h-full object-cover" />
                     ) : (
                         <span className="text-[10px] font-medium text-muted-foreground">{avatar.char}</span>
                     )}

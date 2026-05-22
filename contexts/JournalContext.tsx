@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { JournalEntry, Block } from '@/lib/types';
+import { JournalEntry } from '@/lib/types';
 import { useUser } from './UserContext';
 import { useLimitModal } from './LimitModalContext';
 import { JOURNAL_ENTRIES_KEY } from '@/lib/storageKeys';

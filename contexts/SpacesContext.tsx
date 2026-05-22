@@ -78,7 +78,7 @@ export const SpacesProvider = ({ children }: { children: ReactNode }) => {
     const [currentSpaceId, setCurrentSpaceId] = React.useState<string>('');
     const { premium } = useUser();
     const { showLimitModal } = useLimitModal();
-    const { notebooks, currentNotebookId } = useNotebooks();
+    const { notebooks } = useNotebooks();
     const pendingSpaceCreation = React.useRef<string | null>(null);
 
     // Load from localStorage and initialize default space
@@ -331,8 +331,6 @@ export const SpacesProvider = ({ children }: { children: ReactNode }) => {
             // Find the notebook safely - use current notebooks state passed as parameter
             const currentNotebooks = notebooks; // Capture current notebooks at call time
             const defaultNotebook = currentNotebooks.length > 0 ? currentNotebooks[0] : undefined;
-            // Find the space we're deleting (with latest state)
-            const spaceToDelete = prevSpaces.find((s) => s.id === id);
             // Limit check removed to allow deleting 'Untitled' spaces
             // If the deleted space is NOT the current space, we just return the filtered result
             if (currentSpaceId !== id) {

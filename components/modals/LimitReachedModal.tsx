@@ -2,8 +2,7 @@
 
 import { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Crown } from 'lucide-react';
-import { useUser } from '@/contexts/UserContext';
+import { X } from 'lucide-react';
 
 interface LimitReachedModalProps {
     isOpen: boolean;
@@ -13,7 +12,6 @@ interface LimitReachedModalProps {
 }
 
 export const LimitReachedModal = ({ isOpen, onClose, message, limitType }: LimitReachedModalProps) => {
-    const { setPremium } = useUser();
     const modalRef = useRef<HTMLDivElement>(null);
     const previousFocusRef = useRef<HTMLElement | null>(null);
 
@@ -96,10 +94,7 @@ export const LimitReachedModal = ({ isOpen, onClose, message, limitType }: Limit
         }
     };
 
-    const handleEnablePremium = () => {
-        setPremium(true);
-        onClose();
-    };
+
 
     // Define IDs for accessibility
     const modalTitleId = 'limit-reached-modal-title';

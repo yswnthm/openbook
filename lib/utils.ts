@@ -1,8 +1,6 @@
 // lib/utils.ts
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Globe, Book, YoutubeIcon, TelescopeIcon } from 'lucide-react';
-import { ChatsCircle, Code, Memory, XLogo } from '@phosphor-icons/react'; // Error consistently points near here
 import { USER_ID_KEY } from './storageKeys';
 
 export function cn(...inputs: ClassValue[]) {
@@ -40,23 +38,4 @@ export function getUserId(): string {
     return userId;
 }
 
-export type SearchGroupId = 'chat' | 'active-recall';
-
-const searchGroups = [
-    {
-        id: 'chat' as const,
-        name: 'Chat',
-        description: 'Talk to the model directly.',
-        icon: ChatsCircle, // <--- Icon from @phosphor-icons/react used directly
-        show: true,
-    },
-    {
-        id: 'active-recall' as const,
-        name: 'Active Recall',
-        description: 'Test your knowledge with adaptive quizzes',
-        icon: Memory, // <--- Icon from @phosphor-icons/react used directly
-        show: false,
-    },
-] as const;
-
-type SearchGroup = (typeof searchGroups)[number];
+export type SearchGroupId = 'chat' | 'active-recall' | 'web' | 'extreme';

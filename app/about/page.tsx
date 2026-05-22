@@ -4,7 +4,7 @@ import { CombinedFooter, Header, LandingBackground, PageHero } from "@/component
 import AnimateInView from "@/components/landing/animate-in-view"
 import { Button } from "@/components/ui/button"
 import { SectionSeparator } from "@/components/ui/section-separator"
-import { ArrowRight, Github, Mail, Globe } from "lucide-react"
+import { Github, Mail, Globe } from "lucide-react"
 import Link from "next/link"
 import { Providers } from "@/app/(config)/providers"
 
@@ -35,7 +35,7 @@ export default function AboutPage() {
                                 </h2>
                                 <div className="h-1 w-20 bg-primary/50 rounded-full" />
                                 <p className="text-lg text-muted-foreground leading-relaxed">
-                                    OpenBook is an AI-powered reading platform that manages your library, so you don't have to.
+                                    OpenBook is an AI-powered reading platform that manages your library, so you don&apos;t have to.
                                     We help busy readers unlock knowledge, prioritize important content, summarize books and articles,
                                     complete reading goals, and even chat with their reading material.
                                 </p>
@@ -47,10 +47,10 @@ export default function AboutPage() {
                             <AnimateInView delay={0.3} className="bg-muted/30 border border-border/50 rounded-2xl p-8 backdrop-blur-sm">
                                 <h3 className="text-2xl font-bold mb-4">Why We Started</h3>
                                 <p className="text-muted-foreground mb-6">
-                                    Reading hasn't meaningfully evolved in decades. Despite countless new apps, none actually solve the real problem: helping you finish what you intend to read and extract valuable insights.
+                                    Reading hasn&apos;t meaningfully evolved in decades. Despite countless new apps, none actually solve the real problem: helping you finish what you intend to read and extract valuable insights.
                                 </p>
                                 <p className="text-muted-foreground font-medium">
-                                    We realized the real solution isn't just a new interface — it's AI acting like a true assistant inside your reading experience.
+                                    We realized the real solution isn&apos;t just a new interface — it&apos;s AI acting like a true assistant inside your reading experience.
                                 </p>
                             </AnimateInView>
                         </div>

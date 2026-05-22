@@ -30,8 +30,15 @@ export const serverEnv = createEnv({
         SMITHERY_API_KEY: z.string().min(1).optional(),
         PROXY_IMAGE_ALLOWED_HOSTS: z.string().optional(),
         PROXY_IMAGE_SIZE_LIMIT: z.string().optional(),
+        OPENAI_API_KEY: z.string().min(1).optional(),
+        GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1).optional(),
+        OPENROUTER_API_KEY: z.string().min(1).optional(),
+        HF_TOKEN: z.string().min(1).optional(),
+        UPSTASH_REDIS_REST_URL: z.string().min(1).optional(),
+        UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
     },
     experimental__runtimeEnv: {
         NEXT_PUBLIC_MAPBOX_TOKEN: process.env.NEXT_PUBLIC_MAPBOX_TOKEN,
     },
+    isServer: typeof window === 'undefined' || process.env.NODE_ENV === 'test',
 });

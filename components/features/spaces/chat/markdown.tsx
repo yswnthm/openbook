@@ -346,7 +346,7 @@ const MarkdownRendererComponent: React.FC<MarkdownRendererProps> = ({ content })
         let domain = '';
         try {
             domain = new URL(href).hostname;
-        } catch (error) {
+        } catch {
             // If URL is invalid or relative, skip rendering preview
             return null;
         }

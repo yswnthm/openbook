@@ -1,73 +1,36 @@
 import { FlatCompat } from "@eslint/eslintrc";
 import { fileURLToPath } from "url";
-import { resolve } from "path";
-import tseslint from '@typescript-eslint/eslint-plugin';
-import tsparser from '@typescript-eslint/parser';
+import path from "path";
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals"),
   {
     ignores: [
       ".next/**/*",
-      "out/**/*", 
+      "out/**/*",
       "node_modules/**/*",
-      "terminal-chat/**/*"
-    ]
+      "terminal-chat/**/*",
+    ],
   },
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
-    files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
-    settings: {
-      next: {
-        rootDir: '.',
-      },
-    },
     rules: {
-      // Disable specific rules that might cause issues
-      '@next/next/no-html-link-for-pages': 'off',
-      // Allow img elements instead of requiring next/image
-      '@next/next/no-img-element': 'off',
-      // Disable the unescaped entities rule
-      'react/no-unescaped-entities': 'off',
-      // Set hook dependencies to warning
-      'react-hooks/exhaustive-deps': 'warn',
-      // Disable alt-text rule for JSX components (icons don't need alt text)
-      'jsx-a11y/alt-text': 'off',
-      // Allow anonymous default exports for config files
-      'import/no-anonymous-default-export': ['warn', {
-        allowArray: true,
-        allowArrowFunction: false,
-        allowAnonymousClass: false,
-        allowAnonymousFunction: false,
-        allowCallExpression: true,
-        allowNew: false,
-        allowLiteral: false,
-        allowObject: true
-      }]
+      // Re-enabling rules to fix violations as per task instructions
+      "@next/next/no-html-link-for-pages": "error",
+      "@next/next/no-img-element": "error",
+      "react/no-unescaped-entities": "error",
+      "react-hooks/exhaustive-deps": "error",
+      "jsx-a11y/alt-text": "error",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
     },
   },
-  {
-    files: ["**/*.ts", "**/*.tsx"],
-    languageOptions: {
-      parser: tsparser,
-      parserOptions: {
-        project: ["./tsconfig.json"],
-        tsconfigRootDir: __dirname,
-      },
-    },
-    plugins: {
-      '@typescript-eslint': tseslint,
-    },
-    rules: {
-      // Allow explicit any in type definitions
-      '@typescript-eslint/no-explicit-any': 'off',
-    },
-  }
 ];
 
-export default eslintConfig; 
+export default eslintConfig;

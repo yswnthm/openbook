@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useOnboarding } from '@/contexts/OnboardingContext';
 
 export function OnboardingOverlay() {
-    const { isVisible, activeStep, steps, skipTutorial } = useOnboarding();
+    const { isVisible, activeStep, steps } = useOnboarding();
     const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
 
     // Effect to update rect when step changes or resize happens

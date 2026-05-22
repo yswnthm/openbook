@@ -27,17 +27,11 @@ const nextConfig = {
   outputFileTracingExcludes: {
     '*': ['terminal-chat/**']
   },
-  // Force production build to proceed even with errors
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
 };
 
 // Use CommonJS export to avoid MODULE_TYPELESS_PACKAGE_JSON warning
 // Enable bundle analysis when ANALYZE environment variable is set
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });

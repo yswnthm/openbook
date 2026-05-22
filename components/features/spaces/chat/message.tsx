@@ -1,12 +1,12 @@
 import React, { useState, useCallback, memo } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import { AlignLeft, ArrowRight, ChevronLeft, ChevronRight, Copy, Download, X, Edit } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Copy, Download, X, Edit } from 'lucide-react';
 import { TextUIPart, ReasoningUIPart, ToolInvocationUIPart, SourceUIPart } from '@ai-sdk/ui-utils';
+import Image from 'next/image';
 
 // Define MessagePart type
 type MessagePart = TextUIPart | ReasoningUIPart | ToolInvocationUIPart | SourceUIPart;
@@ -51,7 +51,7 @@ const Message: React.FC<MessageProps> = ({
     messages,
     setMessages,
     append,
-    reload,
+    reload: _reload,
 
 }) => {
     // Move handlers inside the component
@@ -121,24 +121,6 @@ const Message: React.FC<MessageProps> = ({
     );
 
 
-
-    const handleRegenerate = useCallback(async () => {
-        if (status !== 'ready') {
-            toast.error('Please wait for the current response to complete!');
-            return;
-        }
-
-        const lastUserMessage = messages.findLast((m) => m.role === 'user');
-        if (!lastUserMessage) return;
-
-        // Remove the last assistant message
-        const newMessages = messages.slice(0, -1);
-        setMessages(newMessages);
-
-
-        // Resubmit the last user message
-        await reload();
-    }, [status, messages, setMessages, reload]);
 
     if (message.role === 'user') {
         return (
@@ -275,8 +257,8 @@ const AttachmentsBadge = ({ attachments }: { attachments: any[] }) => {
                             }}
                             className="flex items-center gap-1.5 max-w-xs rounded-full pl-1 pr-3 py-1 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
                         >
-                            <div className="h-6 w-6 rounded-full overflow-hidden shrink-0">
-                                <img src={attachment.url} alt={fileName} className="h-full w-full object-cover" />
+                            <div className="h-6 w-6 rounded-full overflow-hidden shrink-0 relative">
+                                <Image src={attachment.url} alt={fileName} fill className="object-cover" unoptimized />
                             </div>
                             <span className="text-xs font-medium text-neutral-700 dark:text-neutral-300 truncate">
                                 {truncatedName}
@@ -328,10 +310,13 @@ const AttachmentsBadge = ({ attachments }: { attachments: any[] }) => {
 
                         <div className="flex-1 p-4 overflow-auto flex items-center justify-center">
                             <div className="relative max-w-full max-h-[60vh]">
-                                <img
+                                <Image
                                     src={imageAttachments[selectedIndex].url}
                                     alt={imageAttachments[selectedIndex].name || `Image ${selectedIndex + 1}`}
+                                    width={800}
+                                    height={600}
                                     className="max-w-full max-h-[60vh] object-contain rounded-md"
+                                    unoptimized
                                 />
 
                                 {imageAttachments.length > 1 && (
@@ -377,10 +362,12 @@ const AttachmentsBadge = ({ attachments }: { attachments: any[] }) => {
                                                 : 'opacity-70 hover:opacity-100'
                                                 }`}
                                         >
-                                            <img
+                                            <Image
                                                 src={attachment.url}
                                                 alt={attachment.name || `Thumbnail ${idx + 1}`}
-                                                className="h-full w-full object-cover"
+                                                fill
+                                                className="object-cover"
+                                                unoptimized
                                             />
                                         </button>
                                     ))}

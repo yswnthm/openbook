@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getStudyFrameworkPrompt } from '@/lib/study-prompts';
 import { StudyFramework } from '@/lib/types';
+import { DEFAULT_MODEL_ID } from '@/lib/ai/model-registry';
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { messages, model = 'google-default' } = body;
+        const { messages, model = DEFAULT_MODEL_ID } = body;
 
         // Get the Active Recall system prompt
         const systemPrompt = getStudyFrameworkPrompt(StudyFramework.ActiveRecall);

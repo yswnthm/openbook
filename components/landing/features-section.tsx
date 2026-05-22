@@ -1,13 +1,11 @@
 "use client"
 
-import { Brain, Search, Sparkles, BookOpen, Share2, Zap } from "lucide-react"
-import AnimateInView from "./animate-in-view"
+import { Brain, Search, Sparkles, BookOpen, Share2 } from "lucide-react"
 import SectionHeading from "./section-heading"
 import { motion } from "framer-motion"
 import LottieAnimation from "@/components/ui/lottie-animation"
 import { ChatCompactConfirmation } from "@/components/features/chat/chat-compact-confirmation"
 import { useIsSafari } from "@/hooks/use-is-safari"
-import { useState } from "react"
 
 // --- Component: BentoCard ---
 interface BentoCardProps {
@@ -52,8 +50,6 @@ function BentoCard({ title, description, className = "", children, delay = 0 }: 
 
 // 1. Chat Mode Visual
 function ChatFeatureVisual() {
-  const [showCompact, setShowCompact] = useState(true)
-
   return (
     <div className="relative w-full h-[250px] md:h-[300px] bg-background/40 rounded-xl border border-border/30 overflow-hidden flex flex-col shadow-sm">
       {/* Mock Header */}
@@ -108,7 +104,7 @@ function JournalFeatureVisual() {
   return (
     <div className="w-full h-full min-h-[200px] relative bg-background/40 rounded-xl border border-border/30 p-4 shadow-sm flex flex-col">
       <div className="flex items-center justify-between mb-4 border-b border-border/20 pb-2">
-        <div className="text-xs font-medium text-muted-foreground">Today's Entry</div>
+        <div className="text-xs font-medium text-muted-foreground">Today&apos;s Entry</div>
         <BookOpen className="w-4 h-4 text-muted-foreground" />
       </div>
       <div className="space-y-2">

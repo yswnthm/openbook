@@ -1,6 +1,5 @@
 "use client"
 
-import { motion } from "framer-motion"
 import AnimateInView from "./animate-in-view"
 
 interface PageHeroProps {

@@ -1,11 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { ChevronDown, Menu, X, Github, MessageCircleIcon } from "lucide-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 import Image from "next/image"

@@ -1,9 +1,4 @@
-import { GlobalRegistrator } from '@happy-dom/global-registrator';
-try {
-    GlobalRegistrator.register();
-} catch {}
-
-import { expect, test, describe, afterEach, mock, beforeEach } from 'bun:test';
+import { expect, test, describe, afterEach, mock } from 'bun:test';
 import { render, cleanup, waitFor } from '@testing-library/react';
 import React from 'react';
 import { OnboardingProvider, useOnboarding } from '@/contexts/OnboardingContext';

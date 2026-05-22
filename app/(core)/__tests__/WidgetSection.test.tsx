@@ -1,10 +1,5 @@
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-try {
-  GlobalRegistrator.register();
-} catch {}
-
 import { expect, test, describe, afterEach, mock } from "bun:test";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, cleanup } from "@testing-library/react";
 import { WidgetSection } from "../_components/WidgetSection";
 import React from "react";
 

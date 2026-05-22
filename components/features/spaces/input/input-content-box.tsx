@@ -30,7 +30,7 @@ interface ChatInputProps {
     onStop: () => void;
     selectedModel: string;
     onModelChange: (model: string) => void;
-    selectedGroup: SearchGroupId;
+    selectedGroup?: SearchGroupId;
     onGroupChange: (group: SearchGroupId) => void;
     attachments: ChatAttachment[];
     onAttachmentsChange: (attachments: ChatAttachment[]) => void;
@@ -84,7 +84,6 @@ export function ChatInput({
     onStop,
     selectedModel,
     onModelChange,
-    selectedGroup,
     onGroupChange,
     attachments,
     onAttachmentsChange,
@@ -207,7 +206,7 @@ export function ChatInput({
             // Compact the current conversation
             await onCompactSpace(currentSpaceId);
             toast.success('Conversation compacted successfully');
-        } catch (error) {
+        } catch {
             toast.error('Failed to compact conversation');
         }
         closeMenu();
@@ -365,6 +364,3 @@ export function ChatInput({
         </div>
     );
 }
-
-
-// @coderabbitai input component is not working can you please check whole codebase for that, and find issue (/ command is not work and showing menu and enter/send is not working)

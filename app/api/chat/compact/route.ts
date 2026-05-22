@@ -1,6 +1,7 @@
 import { generateObject } from 'ai';
 import { openai } from '@ai-sdk/openai';
-import { z } from 'zod';
+import { CompactRequestSchema } from '@/lib/api/chat-schema';
+import { NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
@@ -9,18 +10,28 @@ const CompactResponseSchema = z.object({
     title: z.string().describe('A descriptive title for the new workspace based on the conversation topic'),
 });
 
+// Import z for schema definition
+import { z } from 'zod';
+
 export async function POST(request: Request) {
     try {
-        const { messages } = await request.json();
-
-        if (!messages || !Array.isArray(messages) || messages.length === 0) {
-            return new Response('No messages provided', { status: 400 });
+        const body = await request.json().catch(() => null);
+        if (!body) {
+            return NextResponse.json(
+                { error: 'invalid_request', message: 'Request body must be a valid JSON object.' },
+                { status: 400 }
+            );
         }
 
-        // Limit the number of messages to prevent performance issues
-        if (messages.length > 100) {
-            return new Response('Too many messages. Maximum 100 messages allowed.', { status: 400 });
+        const parsed = CompactRequestSchema.safeParse(body);
+        if (!parsed.success) {
+            return NextResponse.json(
+                { error: 'invalid_request', message: parsed.error.errors[0].message },
+                { status: 400 }
+            );
         }
+
+        const { messages } = parsed.data;
 
         // Format messages for summarization
         const conversationText = messages
@@ -46,9 +57,12 @@ Please provide both a detailed summary and a descriptive title for continuing th
             schema: CompactResponseSchema,
         });
 
-        return Response.json(object);
-    } catch (error) {
+        return NextResponse.json(object);
+    } catch (error: any) {
         console.error('Error compacting conversation:', error);
-        return new Response('Failed to compact conversation', { status: 500 });
+        return NextResponse.json(
+            { error: 'server_error', message: 'Failed to compact conversation' },
+            { status: 500 }
+        );
     }
-} 
+}

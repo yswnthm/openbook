@@ -51,7 +51,7 @@ const MarkdownRenderer = React.memo(({ content }: { content: string }) => {
 
     // Define custom renderer with proper types
     const renderer = {
-        code(code: string, language?: string) {
+        code(code: string, _language?: string) {
             return (
                 <pre key={generateKey()} className="bg-neutral-200 dark:bg-neutral-800 p-2 rounded-md overflow-x-auto my-3">
                     <code className="text-neutral-800 dark:text-neutral-300 text-xs">{code}</code>

@@ -1,16 +1,10 @@
-// @bun-test-dom happy-dom
-import { GlobalRegistrator } from "@happy-dom/global-registrator";
-try {
-  GlobalRegistrator.register();
-} catch {}
-
 import { expect, test, describe } from "bun:test";
-import { render, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { TooltipCard } from "../TooltipCard";
 import { OnboardingProvider, useOnboarding } from "@/contexts/OnboardingContext";
 import React from "react";
 
-const TestWrapper = ({ children }) => {
+const TestWrapper = ({ children }: { children: React.ReactNode }) => {
     return React.createElement(OnboardingProvider, null, children);
 };
 

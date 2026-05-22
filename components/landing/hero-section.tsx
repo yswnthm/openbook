@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { ChevronRight } from "lucide-react"
 import Link from "next/link"
-import { motion } from "framer-motion"
+import Image from "next/image"
 import AnimateInView from "./animate-in-view"
 
 export function HeroSection() {
@@ -62,9 +62,11 @@ export function HeroSection() {
 
       {/* Graph Overlay */}
       <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] pointer-events-none opacity-20 dark:opacity-40 hidden lg:block z-0">
-        <img
+        <Image
           src="/screenshots/graph69.png"
           alt="Graph Overlay"
+          width={800}
+          height={800}
           className="w-full h-full object-contain"
         />
       </div>

@@ -7,37 +7,21 @@ import {
     ChevronRight,
     Search,
     PenLine,
-    ChevronDown,
     MessageSquare,
-    LogOut,
-    FolderPlus,
     Trash2,
-    Edit2,
-    MoreHorizontal,
-    X,
-    Pin,
-    PinOff,
-    RefreshCw,
-    Clock,
-    AppWindowMac,
     Plus,
-    Settings,
 } from 'lucide-react';
 import Image from 'next/image';
-import { useSpaces, Space as SpaceType } from '@/contexts/SpacesContext';
+import { useSpaces } from '@/contexts/SpacesContext';
 import { useNotebooks } from '@/contexts/NotebookContext';
 import { useRouter, usePathname } from 'next/navigation';
 
 import { useJournal } from '@/hooks/useJournal';
 import { cn } from '@/lib/utils';
 import { clearAllStorageData } from '@/lib/storageKeys';
-import { ConversationMetadata } from '@/components/features/spaces/conversation-metadata';
-import { ConversationNameDisplay, NameLoading } from '@/components/features/spaces/loading/name-loading';
-import { format } from 'date-fns';
 import SidebarNotebook from '@/components/layout/SidebarNotebook';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SearchModal } from '@/components/features/search/search-modal';
-import { SettingsPanel } from '@/components/features/settings/settings-panel';
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { SidebarFooter } from './SidebarFooter';
 
@@ -85,8 +69,8 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     } | null>(null);
     const [showClearStorageConfirm, setShowClearStorageConfirm] = useState(false);
     const { notebooks, createNotebook, currentNotebookId } = useNotebooks();
-    const { entries, deleteEntry, createEntry } = useJournal();
-    const { spaces, switchSpace, deleteSpace, currentSpaceId, createSpace } = useSpaces();
+    const { deleteEntry, createEntry } = useJournal();
+    const { deleteSpace, createSpace } = useSpaces();
     const router = useRouter();
     const pathname = usePathname();
 
@@ -111,11 +95,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             setInitialExpansionDone(true);
         }
     }, [currentPageType, initialExpansionDone]);
-
-    // Add a state to track newly created items
-    const [editingJournalId, setEditingJournalId] = useState<string | null>(null);
-    const [editingJournalTitle, setEditingJournalTitle] = useState('');
-    const [editingSpaceId, setEditingSpaceId] = useState<string | null>(null);
 
     // Add useEffect for keyboard shortcut near the other useEffect hooks
     useEffect(() => {
@@ -161,8 +140,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         const newEntry = createEntry(defaultTitle, targetNotebookId);
 
         if (newEntry) {
-            setEditingJournalId(newEntry.id);
-            setEditingJournalTitle(defaultTitle);
             router.push(`/journal/${newEntry.id}`);
         } else {
             console.error('[Sidebar] Failed to create journal entry');
@@ -186,7 +163,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         const newSpaceId = createSpace(defaultTitle, targetNotebookId);
 
         if (newSpaceId) {
-            setEditingSpaceId(newSpaceId);
             // We don't have a space name state at this level to set easily like journal title, 
             // but the space will be created with default title "Untitled"
             router.push(`/space/${newSpaceId}`);

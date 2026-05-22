@@ -1,15 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getUserId } from '@/lib/auth';
+import { getRateLimiter } from '@/lib/api/rate-limiter';
 
 export const config = {
     matcher: ['/api/:path*'],
 };
 
-// Simple in-memory rate limiting store
-// In production, use Redis/KV store for distributed rate limiting
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+const rateLimiter = getRateLimiter();
 
-const WINDOW = 60; // seconds
-const LIMIT = 60; // requests per window
+// Rate limit configurations
+const LIMITS = {
+    chat: { limit: 10, window: 60 },
+    compact: { limit: 5, window: 60 },
+    default: { limit: 60, window: 60 },
+};
 
 function getClientIP(request: NextRequest): string {
     const forwarded = request.headers.get('x-forwarded-for');
@@ -54,48 +58,40 @@ export default async function middleware(request: NextRequest) {
     const userAgent = request.headers.get('user-agent') || 'unknown';
     const path = request.nextUrl.pathname;
 
-    // Rate limiting logic
-    const key = `ratelimit:${ip}`;
-    const now = Date.now();
-    const windowStart = Math.floor(now / (WINDOW * 1000)) * (WINDOW * 1000);
-
-    let rateLimitData = rateLimitStore.get(key);
-
-    // Reset if we're in a new window
-    if (!rateLimitData || rateLimitData.resetTime !== windowStart) {
-        rateLimitData = { count: 0, resetTime: windowStart };
+    // Determine rate limit group based on path
+    let limitGroup: 'chat' | 'compact' | 'default' = 'default';
+    if (path.startsWith('/api/chat/compact')) {
+        limitGroup = 'compact';
+    } else if (path.startsWith('/api/chat') || path.startsWith('/api/study/')) {
+        limitGroup = 'chat';
     }
 
-    rateLimitData.count++;
-    rateLimitStore.set(key, rateLimitData);
+    const { limit, window } = LIMITS[limitGroup];
 
-    // Clean up old entries periodically
-    if (Math.random() < 0.01) {
-        // 1% chance to clean up
-        const cutoff = now - WINDOW * 2 * 1000; // Keep 2 windows worth
-        for (const [k, v] of rateLimitStore.entries()) {
-            if (v.resetTime < cutoff) {
-                rateLimitStore.delete(k);
-            }
-        }
-    }
+    // Determine rate limit key
+    const userId = getUserId(request);
+    const key = userId 
+        ? `user:${userId}:${limitGroup}` 
+        : `ip:${ip}:${limitGroup}`;
 
-    const remaining = Math.max(0, LIMIT - rateLimitData.count);
+    // Call the rate limiter
+    const rateLimitResult = await rateLimiter.isLimitExceeded(key, limit, window);
+    const remaining = rateLimitResult.remaining;
 
     // Check if rate limit exceeded
-    if (rateLimitData.count > LIMIT) {
+    if (!rateLimitResult.success) {
         const duration = Date.now() - startTime;
         logRequest(ip, userAgent, path, 429, duration, remaining);
 
         return NextResponse.json(
-            { error: 'Too many requests' },
+            { error: 'Too many requests', message: `Rate limit exceeded for group ${limitGroup}.` },
             {
                 status: 429,
                 headers: {
-                    'X-RateLimit-Limit': LIMIT.toString(),
+                    'X-RateLimit-Limit': limit.toString(),
                     'X-RateLimit-Remaining': '0',
-                    'X-RateLimit-Reset': ((windowStart + WINDOW * 1000) / 1000).toString(),
-                    'Retry-After': WINDOW.toString(),
+                    'X-RateLimit-Reset': rateLimitResult.reset.toString(),
+                    'Retry-After': window.toString(),
                 },
             },
         );
@@ -105,9 +101,9 @@ export default async function middleware(request: NextRequest) {
     const response = await NextResponse.next();
 
     // Add rate limit headers to response
-    response.headers.set('X-RateLimit-Limit', LIMIT.toString());
+    response.headers.set('X-RateLimit-Limit', limit.toString());
     response.headers.set('X-RateLimit-Remaining', remaining.toString());
-    response.headers.set('X-RateLimit-Reset', ((windowStart + WINDOW * 1000) / 1000).toString());
+    response.headers.set('X-RateLimit-Reset', rateLimitResult.reset.toString());
 
     // Log the request
     const duration = Date.now() - startTime;

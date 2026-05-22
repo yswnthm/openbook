@@ -1,19 +1,8 @@
-import { GlobalRegistrator } from '@happy-dom/global-registrator';
-try {
-  GlobalRegistrator.register();
-} catch (e) {
-  // console.error(e);
-}
-
-import { expect, test, describe, afterEach, mock } from 'bun:test';
+/* eslint-disable @next/next/no-img-element, jsx-a11y/alt-text */
+import { expect, test, describe, afterEach } from 'bun:test';
 import { render, screen, cleanup } from '@testing-library/react';
 import { TeamHero } from '../team-hero';
 import React from 'react';
-
-// Mock Next.js Image
-mock.module('next/image', () => ({
-  default: ({ fill, priority, ...props }: any) => <img {...props} />,
-}));
 
 afterEach(cleanup);
 
