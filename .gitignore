@@ -16,3 +16,4 @@ trash/
 .DS_Store
 .env*.local
 conductor/setup_state.json
+.env*
