@@ -36,6 +36,8 @@ export const serverEnv = createEnv({
         HF_TOKEN: z.string().min(1).optional(),
         UPSTASH_REDIS_REST_URL: z.string().min(1).optional(),
         UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
+        KV_REST_API_URL: z.string().min(1).optional(),
+        KV_REST_API_TOKEN: z.string().min(1).optional(),
     },
     experimental__runtimeEnv: {
         NEXT_PUBLIC_MAPBOX_TOKEN: process.env.NEXT_PUBLIC_MAPBOX_TOKEN,
