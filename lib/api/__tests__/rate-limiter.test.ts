@@ -30,7 +30,7 @@ describe('UpstashRedisRateLimiter', () => {
 
     test('calls Upstash pipeline and returns correct limits on success', async () => {
         const limiter = new UpstashRedisRateLimiter(mockUrl, mockToken);
-        
+
         // Mock global fetch
         const originalFetch = global.fetch;
         global.fetch = mock(async (url, init) => {
@@ -40,7 +40,7 @@ describe('UpstashRedisRateLimiter', () => {
                         { result: 1 }, // INCR response: current count is 1
                         { result: 59 }, // TTL response: remaining time is 59s
                     ]),
-                    { status: 200 }
+                    { status: 200 },
                 );
             }
             return new Response('Not Found', { status: 404 });
@@ -58,7 +58,7 @@ describe('UpstashRedisRateLimiter', () => {
 
     test('sets expiration if key is new (TTL is -1)', async () => {
         const limiter = new UpstashRedisRateLimiter(mockUrl, mockToken);
-        
+
         let expireCalled = false;
         const originalFetch = global.fetch;
         global.fetch = mock(async (url, init) => {
@@ -69,7 +69,7 @@ describe('UpstashRedisRateLimiter', () => {
                         { result: 1 }, // INCR
                         { result: -1 }, // TTL is -1 (no expire set yet)
                     ]),
-                    { status: 200 }
+                    { status: 200 },
                 );
             } else if (urlStr.includes('/EXPIRE/')) {
                 expireCalled = true;
@@ -90,7 +90,7 @@ describe('UpstashRedisRateLimiter', () => {
 
     test('falls back to MemoryRateLimiter when Upstash connection fails', async () => {
         const limiter = new UpstashRedisRateLimiter(mockUrl, mockToken);
-        
+
         const originalFetch = global.fetch;
         global.fetch = mock(async () => {
             throw new Error('Network error connecting to Upstash');

@@ -3,7 +3,6 @@
 
 import { SearchGroupId } from '@/lib/utils';
 
-
 const groupTools = {
     chat: [] as const,
     web: [] as const,

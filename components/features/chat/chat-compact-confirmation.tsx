@@ -14,7 +14,7 @@ export function ChatCompactConfirmation({
     onConfirm,
     onCancel,
     className = '',
-    autoFocus = true
+    autoFocus = true,
 }: ChatCompactConfirmationProps) {
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -56,7 +56,7 @@ export function ChatCompactConfirmation({
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{
                 duration: 0.2,
-                ease: [0.4, 0.0, 0.2, 1]
+                ease: [0.4, 0.0, 0.2, 1],
             }}
         >
             <div className="p-2">
@@ -64,7 +64,8 @@ export function ChatCompactConfirmation({
                     Compact conversation?
                 </div>
                 <p className="mb-2 text-[9px] text-neutral-600 dark:text-neutral-400">
-                    This will summarize the conversation, create a new workspace, and reset the LLM context here while keeping messages visible.
+                    This will summarize the conversation, create a new workspace, and reset the LLM context here while
+                    keeping messages visible.
                 </p>
 
                 <div className="flex space-x-1.5 mb-1.5">
@@ -102,7 +103,9 @@ export function ChatCompactConfirmation({
                     <div className="text-[9px] text-neutral-500 dark:text-neutral-400 flex items-center justify-between">
                         <span>Choose action</span>
                         <span className="flex items-center gap-1">
-                            <span className="bg-neutral-100/40 dark:bg-neutral-700/40 px-0.5 py-0.5 rounded font-mono text-[8px]">esc</span>
+                            <span className="bg-neutral-100/40 dark:bg-neutral-700/40 px-0.5 py-0.5 rounded font-mono text-[8px]">
+                                esc
+                            </span>
                             <span>close</span>
                         </span>
                     </div>
@@ -110,4 +113,4 @@ export function ChatCompactConfirmation({
             </div>
         </motion.div>
     );
-} 
+}

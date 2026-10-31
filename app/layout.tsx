@@ -38,9 +38,7 @@ export const metadata: Metadata = {
     },
     keywords: ['OpenBook', 'openbook', 'Open Book', 'AI Integrated Book'],
     icons: {
-        icon: [
-            { url: '/logo.svg', type: 'image/svg+xml' },
-        ],
+        icon: [{ url: '/logo.svg', type: 'image/svg+xml' }],
         apple: [{ url: '/logo.svg', type: 'image/svg+xml' }],
         other: [
             {
@@ -90,15 +88,13 @@ const leagueSpartan = League_Spartan({
     display: 'swap',
 });
 
-export default function RootLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en" suppressHydrationWarning>
-            <body className={`${GeistSans.variable} ${syne.variable} ${instrumentSerif.variable} ${leagueSpartan.variable} font-sans antialiased`}>
-                {process.env.NODE_ENV === "development" && (
+            <body
+                className={`${GeistSans.variable} ${syne.variable} ${instrumentSerif.variable} ${leagueSpartan.variable} font-sans antialiased`}
+            >
+                {process.env.NODE_ENV === 'development' && (
                     <Script
                         src="//unpkg.com/react-grab/dist/index.global.js"
                         crossOrigin="anonymous"

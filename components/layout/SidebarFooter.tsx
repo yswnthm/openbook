@@ -39,7 +39,10 @@ export const SidebarFooter: React.FC<SidebarFooterProps> = ({ onClearStorage }) 
                 </button>
                 {/* Settings Button (Wraps the button with the SettingsPanel Trigger) */}
                 <SettingsPanel>
-                    <button id="sidebar-settings-trigger" className="flex items-center gap-2 w-full text-left px-2 py-1.5 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded">
+                    <button
+                        id="sidebar-settings-trigger"
+                        className="flex items-center gap-2 w-full text-left px-2 py-1.5 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded"
+                    >
                         <Settings className="h-4 w-4 text-neutral-400" />
                         <span>Settings</span>
                     </button>

@@ -12,7 +12,6 @@ import { STREAK_COUNT_KEY, STREAK_LAST_VISIT_KEY } from '@/lib/streakKeys';
  * The hook returns the current streak value (number).
  */
 export function useStreak(): number {
-
     // Helper to normalise a date to midnight for day-level comparison
     const normalise = useCallback((d: Date) => {
         const copy = new Date(d);
@@ -29,14 +28,14 @@ export function useStreak(): number {
         const storedCountRaw = localStorage.getItem(STREAK_COUNT_KEY) || '0';
         const parsedCount = parseInt(storedCountRaw, 10);
         const storedCount = isNaN(parsedCount) ? 0 : parsedCount;
-        
+
         // If stored count is invalid/corrupted, reset it
         if (storedCount <= 0 || isNaN(parsedCount)) {
             localStorage.setItem(STREAK_COUNT_KEY, '1');
             localStorage.setItem(STREAK_LAST_VISIT_KEY, today.toISOString());
             return 1;
         }
-        
+
         const storedDateString = localStorage.getItem(STREAK_LAST_VISIT_KEY);
 
         if (!storedDateString) {
@@ -80,4 +79,4 @@ export function useStreak(): number {
     }, [calculateStreak]);
 
     return streak;
-} 
+}

@@ -351,7 +351,7 @@ export default function SidebarNotebook({ notebook, currentPageType, currentPage
                                                         style={{
                                                             color:
                                                                 currentPageType === 'journal' &&
-                                                                    currentPageId === entry.id
+                                                                currentPageId === entry.id
                                                                     ? 'var(--tw-color-emerald-600)'
                                                                     : 'var(--tw-color-neutral-600)',
                                                         }}
@@ -385,8 +385,6 @@ export default function SidebarNotebook({ notebook, currentPageType, currentPage
                                                     </div>
                                                 )}
                                             </div>
-
-
                                         </div>
                                     ))}
                                 </div>
@@ -460,8 +458,9 @@ export default function SidebarNotebook({ notebook, currentPageType, currentPage
                                                         className="w-full text-left px-4 py-1.5 text-sm flex items-center"
                                                         style={{
                                                             color:
-                                                                (currentPageType === 'space' && currentPageId === space.id) ||
-                                                                    (currentPageType === '' && currentSpaceId === space.id)
+                                                                (currentPageType === 'space' &&
+                                                                    currentPageId === space.id) ||
+                                                                (currentPageType === '' && currentSpaceId === space.id)
                                                                     ? 'var(--tw-color-emerald-600)'
                                                                     : 'var(--tw-color-neutral-600)',
                                                         }}
@@ -527,8 +526,6 @@ export default function SidebarNotebook({ notebook, currentPageType, currentPage
                                                     </div>
                                                 )}
                                             </div>
-
-
                                         </div>
                                     ))}
                                 </div>

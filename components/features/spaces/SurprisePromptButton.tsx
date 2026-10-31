@@ -29,4 +29,3 @@ export const SurprisePromptButton: React.FC<SurprisePromptButtonProps> = ({ onPr
         </Button>
     );
 };
-

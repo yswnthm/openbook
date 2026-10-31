@@ -134,9 +134,7 @@ export function SettingsPanel({ open, onOpenChange, children }: SettingsPanelPro
                     <Button variant="outline" onClick={() => setIsOpen(false)}>
                         Cancel
                     </Button>
-                    <Button onClick={handleSave}>
-                        Save Changes
-                    </Button>
+                    <Button onClick={handleSave}>Save Changes</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

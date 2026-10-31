@@ -2,16 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import {
-    Search,
-    Check,
-    Sparkles,
-    Zap,
-    Cpu,
-    BrainCircuit,
-    Globe,
-    Command
-} from 'lucide-react';
+import { Search, Check, Sparkles, Zap, Cpu, BrainCircuit, Globe, Command } from 'lucide-react';
 
 import { MODEL_REGISTRY, isModelId, getModelDefinition } from '@/lib/ai/model-registry';
 
@@ -58,7 +49,16 @@ interface AiModelPickerProps {
     placement?: 'top' | 'bottom';
 }
 
-export function AiModelPicker({ selectedModel, onSelect, onClose, className = '', loadingModelId, loadingProgress, loadingText, placement = 'top' }: AiModelPickerProps) {
+export function AiModelPicker({
+    selectedModel,
+    onSelect,
+    onClose,
+    className = '',
+    loadingModelId,
+    loadingProgress,
+    loadingText,
+    placement = 'top',
+}: AiModelPickerProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [availability, setAvailability] = useState<Record<string, boolean>>({});
 
@@ -86,22 +86,23 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
         const query = searchQuery.toLowerCase();
         if (!query) return ALL_MODELS;
 
-        return ALL_MODELS.filter(m =>
-            m.label.toLowerCase().includes(query) ||
-            m.description.toLowerCase().includes(query) ||
-            m.provider.toLowerCase().includes(query) ||
-            m.tags.some(t => t.toLowerCase().includes(query))
+        return ALL_MODELS.filter(
+            (m) =>
+                m.label.toLowerCase().includes(query) ||
+                m.description.toLowerCase().includes(query) ||
+                m.provider.toLowerCase().includes(query) ||
+                m.tags.some((t) => t.toLowerCase().includes(query)),
         );
     }, [searchQuery]);
 
     // Group models by tier
     const groupedModels = useMemo(() => {
         return {
-            premium: filteredModels.filter(m => m.tier === 'premium'),
-            preview: filteredModels.filter(m => m.tier === 'preview'),
-            free: filteredModels.filter(m => m.tier === 'free'),
-            local: filteredModels.filter(m => m.tier === 'local'),
-            ollama: filteredModels.filter(m => m.tier === 'ollama'),
+            premium: filteredModels.filter((m) => m.tier === 'premium'),
+            preview: filteredModels.filter((m) => m.tier === 'preview'),
+            free: filteredModels.filter((m) => m.tier === 'free'),
+            local: filteredModels.filter((m) => m.tier === 'local'),
+            ollama: filteredModels.filter((m) => m.tier === 'ollama'),
         };
     }, [filteredModels]);
 
@@ -126,9 +127,7 @@ export function AiModelPicker({ selectedModel, onSelect, onClose, className = ''
     }, []);
 
     // Determine position based on placement prop
-    const positionClasses = placement === 'top'
-        ? 'bottom-12 origin-bottom'
-        : 'top-full mt-2 origin-top';
+    const positionClasses = placement === 'top' ? 'bottom-12 origin-bottom' : 'top-full mt-2 origin-top';
 
     return (
         <motion.div
@@ -261,7 +260,7 @@ function ModelItem({
     isLoading,
     progress,
     loadingText,
-    isUnavailable
+    isUnavailable,
 }: {
     model: ModelDef;
     isSelected: boolean;
@@ -280,9 +279,10 @@ function ModelItem({
                 p-3 rounded-xl transition-all duration-200
                 border
                 overflow-hidden
-                ${isSelected
-                    ? 'bg-blue-50/80 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
-                    : 'bg-transparent border-transparent hover:bg-neutral-100 dark:hover:bg-white/5'
+                ${
+                    isSelected
+                        ? 'bg-blue-50/80 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+                        : 'bg-transparent border-transparent hover:bg-neutral-100 dark:hover:bg-white/5'
                 }
                 ${isUnavailable ? 'opacity-40 cursor-not-allowed' : ''}
             `}
@@ -301,19 +301,24 @@ function ModelItem({
 
             <div className="flex justify-between items-start gap-3 relative z-10">
                 {/* Icon / Avatar placeholder */}
-                <div className={`
+                <div
+                    className={`
                     w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold shadow-sm
-                    ${isSelected
-                        ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                        : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400'
+                    ${
+                        isSelected
+                            ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                            : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400'
                     }
-                `}>
+                `}
+                >
                     {model.provider.substring(0, 1)}
                 </div>
 
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
-                        <span className={`text-sm font-semibold truncate pr-2 ${isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-neutral-900 dark:text-neutral-100'}`}>
+                        <span
+                            className={`text-sm font-semibold truncate pr-2 ${isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-neutral-900 dark:text-neutral-100'}`}
+                        >
                             {model.label}
                         </span>
                         {isSelected && <Check className="w-4 h-4 text-blue-500" />}
@@ -347,8 +352,10 @@ function ModelItem({
                                 Unavailable
                             </Badge>
                         )}
-                        {model.capabilities.map(cap => (
-                            <Badge key={cap} variant="secondary" className="opacity-80">{cap}</Badge>
+                        {model.capabilities.map((cap) => (
+                            <Badge key={cap} variant="secondary" className="opacity-80">
+                                {cap}
+                            </Badge>
                         ))}
                     </div>
                 </div>
@@ -357,21 +364,31 @@ function ModelItem({
     );
 }
 
-function Badge({ children, variant = 'default', className = '' }: { children: React.ReactNode, variant?: 'default' | 'outline' | 'secondary' | 'destructive', className?: string }) {
+function Badge({
+    children,
+    variant = 'default',
+    className = '',
+}: {
+    children: React.ReactNode;
+    variant?: 'default' | 'outline' | 'secondary' | 'destructive';
+    className?: string;
+}) {
     const variants = {
         default: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 border-transparent',
         outline: 'bg-transparent border-neutral-200 dark:border-neutral-700 text-neutral-500',
         secondary: 'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-300 border-transparent',
-        destructive: 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-transparent'
+        destructive: 'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-transparent',
     };
 
     return (
-        <span className={`
+        <span
+            className={`
             px-1.5 py-0.5 rounded-md text-[9px] font-medium border
             uppercase tracking-wide
             ${variants[variant]}
             ${className}
-        `}>
+        `}
+        >
             {children}
         </span>
     );

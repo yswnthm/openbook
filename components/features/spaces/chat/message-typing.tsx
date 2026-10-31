@@ -2,9 +2,9 @@
 
 import React from 'react';
 
-
-
-export const TypingMessage: React.FC<{ content: string; onComplete?: () => void; speed?: number }> = ({ onComplete }) => {
+export const TypingMessage: React.FC<{ content: string; onComplete?: () => void; speed?: number }> = ({
+    onComplete,
+}) => {
     const hasCompletedRef = React.useRef(false);
 
     React.useEffect(() => {

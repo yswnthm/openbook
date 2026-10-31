@@ -284,7 +284,12 @@ export default function Editor({ initialBlocks, onBlocksChange, title, onTitleCh
                             }
                         />
                     ) : (
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }} className="pt-20">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.2 }}
+                            className="pt-20"
+                        >
                             <EditorContent
                                 blocks={blocks}
                                 onKeyDown={handleKeyDown}

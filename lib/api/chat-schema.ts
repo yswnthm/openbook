@@ -12,7 +12,8 @@ export const ChatMessageSchema = z.object({
 });
 
 export const ChatRequestSchema = z.object({
-    messages: z.array(ChatMessageSchema)
+    messages: z
+        .array(ChatMessageSchema)
         .min(1, { message: 'Messages array cannot be empty.' })
         .max(100, { message: 'Maximum 100 messages allowed.' })
         .refine(
@@ -20,7 +21,7 @@ export const ChatRequestSchema = z.object({
                 const totalChars = msgs.reduce((sum, msg) => sum + (msg.content?.length || 0), 0);
                 return totalChars <= 40000;
             },
-            { message: 'Total request characters must not exceed 40,000.' }
+            { message: 'Total request characters must not exceed 40,000.' },
         ),
     model: z.enum(SUPPORTED_MODEL_IDS, {
         errorMap: () => ({ message: 'Unsupported model ID.' }),
@@ -29,11 +30,15 @@ export const ChatRequestSchema = z.object({
         errorMap: () => ({ message: 'Unsupported search group.' }),
     }),
     timezone: z.string().optional(),
-    systemPrompt: z.string().max(2000, { message: 'Custom system prompt must not exceed 2,000 characters.' }).optional(),
+    systemPrompt: z
+        .string()
+        .max(2000, { message: 'Custom system prompt must not exceed 2,000 characters.' })
+        .optional(),
 });
 
 export const CompactRequestSchema = z.object({
-    messages: z.array(ChatMessageSchema)
+    messages: z
+        .array(ChatMessageSchema)
         .min(1, { message: 'No messages provided.' })
         .max(100, { message: 'Too many messages. Maximum 100 messages allowed.' }),
 });

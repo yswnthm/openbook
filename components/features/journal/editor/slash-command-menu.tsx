@@ -17,7 +17,6 @@ import {
     Minus,
     Code,
     Table,
-
     Link,
     CalendarDays,
     ExternalLink,
@@ -165,11 +164,11 @@ export default function SlashCommandMenu({ position, onSelect, onClose }: SlashC
     // Filter commands based on search term and shortcut
     const filteredCommands = searchTerm
         ? commands.filter(
-            (command) =>
-                command.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                command.shortcut?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                command.description?.toLowerCase().includes(searchTerm.toLowerCase()),
-        )
+              (command) =>
+                  command.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  command.shortcut?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  command.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+          )
         : commands;
 
     // Group commands by category
@@ -262,8 +261,9 @@ export default function SlashCommandMenu({ position, onSelect, onClose }: SlashC
                             key={command.type}
                             role="menuitem"
                             ref={isSelected ? selectedRef : null}
-                            className={`flex items-center px-2 py-1.5 cursor-pointer rounded-md menu-item ${isSelected ? 'bg-neutral-100 dark:bg-neutral-800' : ''
-                                }`}
+                            className={`flex items-center px-2 py-1.5 cursor-pointer rounded-md menu-item ${
+                                isSelected ? 'bg-neutral-100 dark:bg-neutral-800' : ''
+                            }`}
                             onClick={() => onSelect(command.type)}
                             onMouseEnter={() => setSelectedIndex(itemIndex)}
                         >
@@ -272,7 +272,6 @@ export default function SlashCommandMenu({ position, onSelect, onClose }: SlashC
                             </div>
                             <div className="ml-2 flex-1">
                                 <div className="text-sm">{command.label}</div>
-
                             </div>
                             {command.shortcut && (
                                 <div className="text-xs text-neutral-400 dark:text-neutral-500 px-2 font-mono">
@@ -308,8 +307,6 @@ export default function SlashCommandMenu({ position, onSelect, onClose }: SlashC
             exit={{ opacity: 0, y: -4, scale: 0.97 }}
             transition={{ duration: 0.08, ease: 'easeOut' }}
         >
-
-
             <div className="max-h-64 overflow-y-auto p-1">
                 {Object.keys(groupedCommands).length > 0 ? (
                     Object.keys(groupedCommands).map((category) =>
@@ -321,8 +318,6 @@ export default function SlashCommandMenu({ position, onSelect, onClose }: SlashC
                     </div>
                 )}
             </div>
-
-
         </motion.div>
     );
 }

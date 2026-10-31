@@ -4,7 +4,6 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 
-
 interface NameLoadingProps {
     isLoading?: boolean;
     defaultText?: string;
@@ -15,7 +14,11 @@ interface NameLoadingProps {
  * Component to display loading states for conversation names
  * Shows a placeholder with loading animation when names are being generated
  */
-export function NameLoading({ isLoading = true, defaultText: _defaultText = 'Untitled Conversation', className }: NameLoadingProps) {
+export function NameLoading({
+    isLoading = true,
+    defaultText: _defaultText = 'Untitled Conversation',
+    className,
+}: NameLoadingProps) {
     // Loading text states
     const loadingTexts = ['Generating title...', 'Analyzing conversation...', 'Creating title...'];
 

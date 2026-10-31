@@ -16,7 +16,6 @@ import { useSidebar } from '@/contexts/SidebarContext';
 
 import Messages from '@/components/features/spaces/chat/messages';
 
-
 import { useSpaces, type ChatMessage } from '@/contexts/SpacesContext'; // Adjusted path, assuming ChatMessage is exported from index of SpacesContext
 import { ChatInput } from '@/components/features/spaces/input/input-content-box';
 import { useSettings } from '@/contexts/SettingsContext';
@@ -25,7 +24,6 @@ import { StudyModeBadge } from '@/components/features/study/study-mode-badge';
 import { StudyFramework } from '@/lib/types';
 import { getFrameworkDisplayName } from '@/lib/study-prompts';
 import { useWebLLM } from '@/hooks/use-web-llm';
-
 
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { WidgetSection } from './_components/WidgetSection';
@@ -89,8 +87,6 @@ function throttle<T extends (...args: any[]) => void>(fn: T, wait: number) {
     return throttled as T & { cancel: () => void };
 }
 
-
-
 const HomeContent = () => {
     const { isOpen: isSidebarOpen } = useSidebar();
     const { registerStep, isCompleted, startTutorial, steps } = useOnboarding();
@@ -102,37 +98,41 @@ const HomeContent = () => {
         registerStep({
             id: 'chat-input',
             title: 'Welcome to OpenBook',
-            description: 'This is your smart chat input. You can type natural language questions or use / commands to unlock powerful research tools.',
+            description:
+                'This is your smart chat input. You can type natural language questions or use / commands to unlock powerful research tools.',
             targetId: 'chat-input-container',
-            order: 2
+            order: 2,
         });
         registerStep({
             id: 'model-switching',
             title: 'Model Switching',
-            description: 'Type /model or use the dropdown to switch between different AI models like GPT-4, Claude, or local LLMs.',
+            description:
+                'Type /model or use the dropdown to switch between different AI models like GPT-4, Claude, or local LLMs.',
             targetId: 'chat-input-container',
-            order: 3
+            order: 3,
         });
         registerStep({
             id: 'study-frameworks',
             title: 'Study Frameworks',
-            description: 'Type / to access study modes like Socratic Tutor, Feynman Technique, or Active Recall to enhance your learning.',
+            description:
+                'Type / to access study modes like Socratic Tutor, Feynman Technique, or Active Recall to enhance your learning.',
             targetId: 'chat-input-container',
-            order: 4
+            order: 4,
         });
         registerStep({
             id: 'compacting',
             title: 'Compacting',
-            description: 'Long conversation? Type /compact to summarize the chat and start a fresh context while keeping the history.',
+            description:
+                'Long conversation? Type /compact to summarize the chat and start a fresh context while keeping the history.',
             targetId: 'chat-input-container',
-            order: 5
+            order: 5,
         });
         registerStep({
             id: 'daily-tools',
             title: 'Daily Learning Tools',
             description: 'Track your learning streak and get daily surprise prompts to keep your curiosity alive.',
             targetId: 'onboarding-widgets-container',
-            order: 6
+            order: 6,
         });
     }, [registerStep]);
 
@@ -195,7 +195,6 @@ const HomeContent = () => {
         typeof window !== 'undefined' ? window.innerWidth : 1024,
     );
 
-
     // Get stored user ID
     const userId = useMemo(() => getUserId(), []);
 
@@ -207,10 +206,6 @@ const HomeContent = () => {
     const currentStudyMode = useMemo(() => {
         return currentSpaceId ? getStudyModeForSpace(currentSpaceId) : null;
     }, [currentSpaceId, getStudyModeForSpace]);
-
-
-
-
 
     // Handle conversation compacting (summarize, create new space, reset context)
     const handleCompactSpace = useCallback(
@@ -327,7 +322,6 @@ const HomeContent = () => {
                         model: selectedModel,
                     };
                     spaceFunctionsRef.current.addMessage(assistantChatMessage);
-
                 }
             },
             onError: (error) => {
@@ -339,18 +333,38 @@ const HomeContent = () => {
         };
     }, [selectedModel, selectedGroup, userId, currentStudyMode, systemPrompt]);
 
-    const { input, messages, setInput, append, setMessages, reload, stop, status: chatStatus, error } =
-        useChat(chatOptions);
+    const {
+        input,
+        messages,
+        setInput,
+        append,
+        setMessages,
+        reload,
+        stop,
+        status: chatStatus,
+        error,
+    } = useChat(chatOptions);
 
     // WebLLM Integration
-    const { state: webLLMState, loadModel: loadWebLLMModel, generate: generateWebLLM, currentModel: currentWebLLMModel } = useWebLLM();
+    const {
+        state: webLLMState,
+        loadModel: loadWebLLMModel,
+        generate: generateWebLLM,
+        currentModel: currentWebLLMModel,
+    } = useWebLLM();
 
     // Determine if using local model
     const isLocalModel = selectedModel.startsWith('local-');
 
     // Combined status
     const status = isLocalModel
-        ? (webLLMState.isLoading ? 'loading' : (webLLMState.isModelLoaded ? 'ready' : (chatStatus === 'streaming' ? 'streaming' : 'ready'))) // Simplify status mapping
+        ? webLLMState.isLoading
+            ? 'loading'
+            : webLLMState.isModelLoaded
+              ? 'ready'
+              : chatStatus === 'streaming'
+                ? 'streaming'
+                : 'ready' // Simplify status mapping
         : chatStatus;
 
     // Load local model when selected
@@ -371,7 +385,10 @@ const HomeContent = () => {
 
     // Wrap append to persist user messages to current space
     const appendWithPersist = useCallback(
-        async (messageProps: { role: 'user' | 'assistant' | 'system'; content: string }, options: any = {}): Promise<any> => {
+        async (
+            messageProps: { role: 'user' | 'assistant' | 'system'; content: string },
+            options: any = {},
+        ): Promise<any> => {
             if (messageProps.role === 'user') {
                 const userChatMessage: ChatMessage = {
                     id: crypto.randomUUID(),
@@ -394,7 +411,9 @@ const HomeContent = () => {
                     // But let's assume we want to trigger generation.
 
                     if (!webLLMState.isModelLoaded) {
-                        toast.error(`Model is still loading: ${webLLMState.text} (${Math.round(webLLMState.progress)}%)`);
+                        toast.error(
+                            `Model is still loading: ${webLLMState.text} (${Math.round(webLLMState.progress)}%)`,
+                        );
                         return null;
                     }
 
@@ -405,9 +424,9 @@ const HomeContent = () => {
 
                         // We need to construct the full context for the model
                         // Get current history from currentSpace or messages
-                        const history = [...messages, userChatMessage].map(m => ({
+                        const history = [...messages, userChatMessage].map((m) => ({
                             role: m.role,
-                            content: m.content
+                            content: m.content,
                         }));
 
                         // Start generation
@@ -416,10 +435,10 @@ const HomeContent = () => {
                         // Or we can add a placeholder?
                         // Let's mimic useChat: stream content.
 
-                        // Since we don't have setStatus exposed from useChat easily to 'streaming', 
+                        // Since we don't have setStatus exposed from useChat easily to 'streaming',
                         // we might rely on our own 'status' derived state if we could control it.
                         // But useChat controls its own status.
-                        // We override 'status' variable in scope above! 
+                        // We override 'status' variable in scope above!
                         // But we need to update 'messages' state to show the streaming response.
 
                         await generateWebLLM(
@@ -432,17 +451,20 @@ const HomeContent = () => {
                                 // Updating space on every token is too expensive (localStorage).
                                 // So we update 'messages' state directly for UI.
 
-                                setMessages(prev => {
+                                setMessages((prev) => {
                                     const last = prev[prev.length - 1];
                                     if (last && last.role === 'assistant' && last.id === assistantMsgId) {
                                         return [...prev.slice(0, -1), { ...last, content: text }];
                                     } else {
-                                        return [...prev, {
-                                            id: assistantMsgId,
-                                            role: 'assistant',
-                                            content: text,
-                                            timestamp: assistantMsgTimestamp
-                                        }];
+                                        return [
+                                            ...prev,
+                                            {
+                                                id: assistantMsgId,
+                                                role: 'assistant',
+                                                content: text,
+                                                timestamp: assistantMsgTimestamp,
+                                            },
+                                        ];
                                     }
                                 });
                             },
@@ -457,16 +479,14 @@ const HomeContent = () => {
                                 };
                                 spaceFunctionsRef.current.addMessage(assistantChatMessage);
                                 // transform status back to ready (implicitly handled by derived status)
-                            }
+                            },
                         );
 
                         return null; // Return null as we handled it
-
                     } catch (err: any) {
-                        console.error("Local generation failed", err);
-                        toast.error("Local generation failed: " + err.message);
+                        console.error('Local generation failed', err);
+                        toast.error('Local generation failed: ' + err.message);
                     }
-
                 } else {
                     const result = await append(userChatMessage, options);
                     return result;
@@ -478,7 +498,17 @@ const HomeContent = () => {
                 return result;
             }
         },
-        [append, isLocalModel, webLLMState.isModelLoaded, webLLMState.text, webLLMState.progress, messages, generateWebLLM, setMessages, selectedModel],
+        [
+            append,
+            isLocalModel,
+            webLLMState.isModelLoaded,
+            webLLMState.text,
+            webLLMState.progress,
+            messages,
+            generateWebLLM,
+            setMessages,
+            selectedModel,
+        ],
     ); // Remove addMessage dependency since we're using the ref
 
     const isFrameworkSwitchingRef = useRef(false);
@@ -527,8 +557,6 @@ const HomeContent = () => {
         setStudyMode(null, currentSpaceId);
         toast.info('Study mode disabled');
     }, [currentSpaceId, setStudyMode]);
-
-
 
     // Sync chat internal messages when switching spaces (only on space change, not on every message addition)
     useEffect(() => {
@@ -597,8 +625,6 @@ const HomeContent = () => {
         [setMessages],
     );
 
-
-
     // Determine which messages to display based on context reset flag
     const displayMessages = useMemo(() => {
         if (currentSpace?.metadata?.contextReset) {
@@ -606,9 +632,7 @@ const HomeContent = () => {
             console.log(
                 `[DISPLAY] Using space messages for context-reset space: ${currentSpace.messages.length} messages`,
             );
-            return [...currentSpace.messages]
-                .filter(m => !m.hidden)
-                .sort((a, b) => a.timestamp - b.timestamp);
+            return [...currentSpace.messages].filter((m) => !m.hidden).sort((a, b) => a.timestamp - b.timestamp);
         } else {
             // For normal spaces, use useChat messages
             // We also need to filter useChat messages that correspond to hidden messages
@@ -686,8 +710,7 @@ const HomeContent = () => {
         const debouncedScrollHandler = debounce(() => {
             if (!isAutoScrollingRef.current && status === 'streaming') {
                 const mobileAdjust = windowWidth < 640 ? 80 : 120;
-                const isAtBottom =
-                    window.innerHeight + window.scrollY >= document.body.offsetHeight - mobileAdjust;
+                const isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - mobileAdjust;
                 setHasManuallyScrolled(!isAtBottom);
             }
         }, 150);
@@ -716,11 +739,7 @@ const HomeContent = () => {
 
     return (
         <div className="flex flex-col !font-sans items-center min-h-screen bg-background text-foreground transition-all duration-500">
-            <div
-                className={cn(
-                    'w-full transition-all duration-300 flex flex-col items-center',
-                )}
-            >
+            <div className={cn('w-full transition-all duration-300 flex flex-col items-center')}>
                 <TopBar
                     className="p-3 sm:p-4 bg-transparent"
                     actions={
@@ -741,7 +760,6 @@ const HomeContent = () => {
                                 <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-3 text-neutral-800 dark:text-neutral-100 font-syne!">
                                     What do you want to learn about?
                                 </h1>
-
                             </div>
                         )}
                         {displayMessages.length === 0 && !hasSubmitted && (
@@ -810,7 +828,6 @@ const HomeContent = () => {
                                     setEditingMessageIndex={setEditingMessageIndex}
                                     setMessages={updateMessages}
                                     append={appendWithPersist}
-
                                     reload={reload}
                                     status={status}
                                     error={error}

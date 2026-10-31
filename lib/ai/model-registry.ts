@@ -349,7 +349,7 @@ export function getModelDefinition(modelId: ModelId): ModelDefinition {
 export function getMissingProviderKeys(modelId: ModelId, env: Record<string, string | undefined>): string[] {
     const def = MODEL_REGISTRY[modelId];
     if (!def) return [];
-    return def.requiredEnv.filter(key => !env[key]);
+    return def.requiredEnv.filter((key) => !env[key]);
 }
 
 export function getMissingApiKey(modelId: string): string | null {

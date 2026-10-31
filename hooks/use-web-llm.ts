@@ -36,96 +36,99 @@ export const useWebLLM = () => {
         }));
     };
 
-    const loadModel = useCallback(async (modelId: string) => {
-        const mlcModelId = WEB_LLM_MODELS[modelId];
-        if (!mlcModelId) {
-            console.warn(`Model ${modelId} not configured for WebLLM`);
-            return;
-        }
+    const loadModel = useCallback(
+        async (modelId: string) => {
+            const mlcModelId = WEB_LLM_MODELS[modelId];
+            if (!mlcModelId) {
+                console.warn(`Model ${modelId} not configured for WebLLM`);
+                return;
+            }
 
-        if (engineRef.current && currentModel === modelId) {
-            // Already loaded
-            return;
-        }
+            if (engineRef.current && currentModel === modelId) {
+                // Already loaded
+                return;
+            }
 
-        try {
-            setState({
-                isLoading: true,
-                progress: 0,
-                text: 'Initializing...',
-                error: null,
-                isModelLoaded: false
-            });
-            setCurrentModel(modelId);
-
-            // Create engine if needed, or reload model
-            if (!engineRef.current) {
-                // We use CreateMLCEngine which creates and loads
-                // But we might want to just create the engine first?
-                // Actually CreateMLCEngine is a helper.
-                // Let's use CreateMLCEngine which returns the engine instance.
-                // It loads the model specified.
-                const engine = await CreateMLCEngine(mlcModelId, {
-                    initProgressCallback,
+            try {
+                setState({
+                    isLoading: true,
+                    progress: 0,
+                    text: 'Initializing...',
+                    error: null,
+                    isModelLoaded: false,
                 });
-                engineRef.current = engine;
-            } else {
-                engineRef.current.setInitProgressCallback(initProgressCallback);
-                await engineRef.current.reload(mlcModelId);
-            }
+                setCurrentModel(modelId);
 
-            setState((prev) => ({
-                ...prev,
-                isLoading: false,
-                isModelLoaded: true,
-                text: 'Ready'
-            }));
-
-        } catch (err: any) {
-            console.error('WebLLM Load Error:', err);
-            setState((prev) => ({
-                ...prev,
-                isLoading: false,
-                error: err.message || 'Failed to load model',
-                text: 'Error loading model'
-            }));
-            setCurrentModel(null);
-        }
-    }, [currentModel]);
-
-
-    const generate = useCallback(async (
-        messages: { role: string; content: string }[],
-        onUpdate: (currentText: string, delta: string) => void,
-        onFinish: (finalText: string) => void
-    ) => {
-        if (!engineRef.current) {
-            throw new Error("Engine not initialized");
-        }
-
-        let fullText = "";
-
-        try {
-            const completion = await engineRef.current.chat.completions.create({
-                messages: messages as any,
-                stream: true,
-            });
-
-            for await (const chunk of completion) {
-                const delta = chunk.choices[0]?.delta?.content || "";
-                if (delta) {
-                    fullText += delta;
-                    onUpdate(fullText, delta);
+                // Create engine if needed, or reload model
+                if (!engineRef.current) {
+                    // We use CreateMLCEngine which creates and loads
+                    // But we might want to just create the engine first?
+                    // Actually CreateMLCEngine is a helper.
+                    // Let's use CreateMLCEngine which returns the engine instance.
+                    // It loads the model specified.
+                    const engine = await CreateMLCEngine(mlcModelId, {
+                        initProgressCallback,
+                    });
+                    engineRef.current = engine;
+                } else {
+                    engineRef.current.setInitProgressCallback(initProgressCallback);
+                    await engineRef.current.reload(mlcModelId);
                 }
+
+                setState((prev) => ({
+                    ...prev,
+                    isLoading: false,
+                    isModelLoaded: true,
+                    text: 'Ready',
+                }));
+            } catch (err: any) {
+                console.error('WebLLM Load Error:', err);
+                setState((prev) => ({
+                    ...prev,
+                    isLoading: false,
+                    error: err.message || 'Failed to load model',
+                    text: 'Error loading model',
+                }));
+                setCurrentModel(null);
+            }
+        },
+        [currentModel],
+    );
+
+    const generate = useCallback(
+        async (
+            messages: { role: string; content: string }[],
+            onUpdate: (currentText: string, delta: string) => void,
+            onFinish: (finalText: string) => void,
+        ) => {
+            if (!engineRef.current) {
+                throw new Error('Engine not initialized');
             }
 
-            onFinish(fullText);
+            let fullText = '';
 
-        } catch (e) {
-            console.error("Generation error", e);
-            throw e;
-        }
-    }, []);
+            try {
+                const completion = await engineRef.current.chat.completions.create({
+                    messages: messages as any,
+                    stream: true,
+                });
+
+                for await (const chunk of completion) {
+                    const delta = chunk.choices[0]?.delta?.content || '';
+                    if (delta) {
+                        fullText += delta;
+                        onUpdate(fullText, delta);
+                    }
+                }
+
+                onFinish(fullText);
+            } catch (e) {
+                console.error('Generation error', e);
+                throw e;
+            }
+        },
+        [],
+    );
 
     // Also support non-streaming for simple cases if needed, but streaming is better for chat.
 
@@ -133,6 +136,6 @@ export const useWebLLM = () => {
         state,
         loadModel,
         generate,
-        currentModel
+        currentModel,
     };
 };

@@ -2,17 +2,13 @@
 
 import { useParams } from 'next/navigation';
 
-
 import Editor from '@/components/features/journal/editor/editor';
 import { useJournal } from '@/hooks/useJournal';
-
-
 
 export default function JournalEntryPage() {
     const params = useParams();
     const idParam = params.id;
     const { getEntry, updateEntry, initialized } = useJournal();
-
 
     if (!initialized) {
         return null;
@@ -29,9 +25,7 @@ export default function JournalEntryPage() {
 
     return (
         <div className="flex font-sans min-h-screen bg-background text-foreground transition-all duration-500">
-            <main
-                className="flex-1 min-h-screen transition-all duration-300"
-            >
+            <main className="flex-1 min-h-screen transition-all duration-300">
                 <Editor
                     initialBlocks={entry.blocks}
                     title={entry.title}

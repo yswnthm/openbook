@@ -32,4 +32,4 @@ export function getRandomPrompt(): string {
         return "Tell me something interesting you've learned recently.";
     }
     return PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
-} 
+}

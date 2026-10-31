@@ -94,8 +94,6 @@ export const LimitReachedModal = ({ isOpen, onClose, message, limitType }: Limit
         }
     };
 
-
-
     // Define IDs for accessibility
     const modalTitleId = 'limit-reached-modal-title';
     const modalDescriptionId = 'limit-reached-modal-description';

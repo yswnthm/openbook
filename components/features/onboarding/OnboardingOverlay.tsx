@@ -67,9 +67,9 @@ export function OnboardingOverlay() {
                                             x: targetRect.left,
                                             y: targetRect.top,
                                             width: targetRect.width,
-                                            height: targetRect.height
+                                            height: targetRect.height,
                                         }}
-                                        transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                                        transition={{ type: 'spring', stiffness: 100, damping: 20 }}
                                         fill="black"
                                         rx="8"
                                     />
@@ -86,7 +86,7 @@ export function OnboardingOverlay() {
                             className="backdrop-blur-[2px]"
                         />
                     </svg>
-                    
+
                     {/* Clickable backdrop area (if we want to allow clicking outside to close) */}
                     {/* For now, we rely on the tooltip buttons to navigate, but could add a skip here */}
                 </motion.div>

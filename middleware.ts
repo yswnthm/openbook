@@ -70,9 +70,7 @@ export default async function middleware(request: NextRequest) {
 
     // Determine rate limit key
     const userId = getUserId(request);
-    const key = userId 
-        ? `user:${userId}:${limitGroup}` 
-        : `ip:${ip}:${limitGroup}`;
+    const key = userId ? `user:${userId}:${limitGroup}` : `ip:${ip}:${limitGroup}`;
 
     // Call the rate limiter
     const rateLimitResult = await rateLimiter.isLimitExceeded(key, limit, window);

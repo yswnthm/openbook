@@ -18,7 +18,7 @@ export function TopBar({ children, actions, className, hideSidebarTrigger: _hide
                 'fixed top-0 left-0 right-0 z-40 flex h-16 items-center px-4 transition-all duration-300',
                 // Default transparency, but can support background via className if needed
                 'bg-transparent',
-                className
+                className,
             )}
         >
             {/* Left / Center Section */}

@@ -1,18 +1,18 @@
-"use client"
+'use client';
 
-import Header from "@/components/landing/header"
-import { SectionSeparator } from "@/components/ui/section-separator"
-import { Providers } from './(config)/providers'
-import CombinedFooter from "@/components/landing/CombinedFooter"
-import { HeroSection } from "@/components/landing/hero-section"
-import { FeaturesSection } from "@/components/landing/features-section"
-import { InterfacePreviewSection } from "@/components/landing/interface-preview-section"
+import Header from '@/components/landing/header';
+import { SectionSeparator } from '@/components/ui/section-separator';
+import { Providers } from './(config)/providers';
+import CombinedFooter from '@/components/landing/CombinedFooter';
+import { HeroSection } from '@/components/landing/hero-section';
+import { FeaturesSection } from '@/components/landing/features-section';
+import { InterfacePreviewSection } from '@/components/landing/interface-preview-section';
 
-import { TestimonialsSection } from "@/components/landing/testimonials-section"
-import { CTASection } from "@/components/landing/cta-section"
-import AnimateInView from "@/components/landing/animate-in-view"
+import { TestimonialsSection } from '@/components/landing/testimonials-section';
+import { CTASection } from '@/components/landing/cta-section';
+import AnimateInView from '@/components/landing/animate-in-view';
 
-import { LandingBackground } from "@/components/landing/landing-background"
+import { LandingBackground } from '@/components/landing/landing-background';
 
 export default function LandingPage() {
     return (
@@ -53,5 +53,5 @@ export default function LandingPage() {
                 <CombinedFooter />
             </div>
         </Providers>
-    )
+    );
 }

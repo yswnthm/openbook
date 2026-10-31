@@ -2,11 +2,7 @@
 
 import * as React from 'react';
 import type { ReactNode } from 'react';
-import {
-    generateConversationName,
-    shouldUpdateConversationName,
-    isDefaultAutoName,
-} from '@/lib/conversation-utils';
+import { generateConversationName, shouldUpdateConversationName, isDefaultAutoName } from '@/lib/conversation-utils';
 import { useUser } from './UserContext';
 import { useLimitModal } from './LimitModalContext';
 import { useNotebooks } from './NotebookContext';
@@ -338,7 +334,7 @@ export const SpacesProvider = ({ children }: { children: ReactNode }) => {
             }
             // Fallback logic — pick a default space with updated list, not stale state
             const defaultSpace = filteredSpaces.find(
-                (s) => s.notebook_id === defaultNotebook?.id && s.name === 'Untitled'
+                (s) => s.notebook_id === defaultNotebook?.id && s.name === 'Untitled',
             );
             const fallback = defaultSpace || filteredSpaces[0];
             if (fallback) {
@@ -383,15 +379,15 @@ export const SpacesProvider = ({ children }: { children: ReactNode }) => {
             prev.map((s) =>
                 s.id === id
                     ? {
-                        ...s,
-                        name,
-                        updatedAt: Date.now(),
-                        metadata: {
-                            ...(s.metadata || {}),
-                            manuallyRenamed: isManualRename, // Mark if this was a manual rename
-                            isGeneratingName: false, // Not generating if manually renamed
-                        },
-                    }
+                          ...s,
+                          name,
+                          updatedAt: Date.now(),
+                          metadata: {
+                              ...(s.metadata || {}),
+                              manuallyRenamed: isManualRename, // Mark if this was a manual rename
+                              isGeneratingName: false, // Not generating if manually renamed
+                          },
+                      }
                     : s,
             ),
         );
@@ -407,13 +403,13 @@ export const SpacesProvider = ({ children }: { children: ReactNode }) => {
             prev.map((s) =>
                 s.id === id
                     ? {
-                        ...s,
-                        metadata: {
-                            ...(s.metadata || {}),
-                            manuallyRenamed: false,
-                            isGeneratingName: true,
-                        },
-                    }
+                          ...s,
+                          metadata: {
+                              ...(s.metadata || {}),
+                              manuallyRenamed: false,
+                              isGeneratingName: true,
+                          },
+                      }
                     : s,
             ),
         );
@@ -424,15 +420,15 @@ export const SpacesProvider = ({ children }: { children: ReactNode }) => {
                 prev.map((s) =>
                     s.id === id
                         ? {
-                            ...s,
-                            name: newName,
-                            metadata: {
-                                ...(s.metadata || {}),
-                                manuallyRenamed: false,
-                                isGeneratingName: false,
-                                lastAutoNameUpdate: Date.now(),
-                            },
-                        }
+                              ...s,
+                              name: newName,
+                              metadata: {
+                                  ...(s.metadata || {}),
+                                  manuallyRenamed: false,
+                                  isGeneratingName: false,
+                                  lastAutoNameUpdate: Date.now(),
+                              },
+                          }
                         : s,
                 ),
             );
@@ -444,12 +440,12 @@ export const SpacesProvider = ({ children }: { children: ReactNode }) => {
             prev.map((s) =>
                 s.id === id
                     ? {
-                        ...s,
-                        metadata: {
-                            ...(s.metadata || { manuallyRenamed: false }),
-                            pinned: !s.metadata?.pinned,
-                        },
-                    }
+                          ...s,
+                          metadata: {
+                              ...(s.metadata || { manuallyRenamed: false }),
+                              pinned: !s.metadata?.pinned,
+                          },
+                      }
                     : s,
             ),
         );
@@ -484,10 +480,10 @@ export const SpacesProvider = ({ children }: { children: ReactNode }) => {
                     prev.map((s) =>
                         s.id === existingDefault.id
                             ? {
-                                ...s,
-                                messages: [...s.messages, newMessageToAdd],
-                                updatedAt: spaceUpdateTimestamp,
-                            }
+                                  ...s,
+                                  messages: [...s.messages, newMessageToAdd],
+                                  updatedAt: spaceUpdateTimestamp,
+                              }
                             : s,
                     ),
                 );
@@ -572,14 +568,14 @@ export const SpacesProvider = ({ children }: { children: ReactNode }) => {
             prev.map((s) =>
                 s.id === id
                     ? {
-                        ...s,
-                        updatedAt: Date.now(),
-                        metadata: {
-                            ...(s.metadata || {}),
-                            manuallyRenamed: s.metadata?.manuallyRenamed ?? false,
-                            contextReset: true,
-                        },
-                    }
+                          ...s,
+                          updatedAt: Date.now(),
+                          metadata: {
+                              ...(s.metadata || {}),
+                              manuallyRenamed: s.metadata?.manuallyRenamed ?? false,
+                              contextReset: true,
+                          },
+                      }
                     : s,
             ),
         );

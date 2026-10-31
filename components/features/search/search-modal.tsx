@@ -119,9 +119,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                                                     >
                                                         <div className="flex items-center">
                                                             <span className="w-3 h-3 rounded-sm bg-neutral-200 dark:bg-neutral-700 mr-2 flex-shrink-0"></span>
-                                                            <span className="font-medium truncate">
-                                                                {space.name}
-                                                            </span>
+                                                            <span className="font-medium truncate">{space.name}</span>
                                                         </div>
                                                         {space.preview && (
                                                             <div className="ml-5 mt-1 text-xs text-neutral-500 dark:text-neutral-500 line-clamp-1">
@@ -154,4 +152,4 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             </div>
         </Modal>
     );
-} 
+}

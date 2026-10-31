@@ -304,7 +304,6 @@ const Messages: React.FC<MessagesProps> = ({
                                             const newMessages = messages.slice(0, -1);
                                             setMessages(newMessages);
 
-
                                             // Resubmit the last user message
                                             reload();
                                         }}
@@ -446,7 +445,6 @@ const Messages: React.FC<MessagesProps> = ({
             newMessages.pop();
         }
         setMessages(newMessages);
-
 
         // Reset thinking timer
         thinkingStartTime.current = null;

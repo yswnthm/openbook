@@ -69,35 +69,34 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
         });
     }, []);
 
-    const value = useMemo(() => ({
-        isVisible,
-        activeStep,
-        isCompleted,
-        steps,
-        startTutorial,
-        nextStep,
-        prevStep,
-        skipTutorial,
-        completeTutorial,
-        registerStep
-    }), [
-        isVisible,
-        activeStep,
-        isCompleted,
-        steps,
-        startTutorial,
-        nextStep,
-        prevStep,
-        skipTutorial,
-        completeTutorial,
-        registerStep
-    ]);
-
-    return (
-        <OnboardingContext.Provider value={value}>
-            {children}
-        </OnboardingContext.Provider>
+    const value = useMemo(
+        () => ({
+            isVisible,
+            activeStep,
+            isCompleted,
+            steps,
+            startTutorial,
+            nextStep,
+            prevStep,
+            skipTutorial,
+            completeTutorial,
+            registerStep,
+        }),
+        [
+            isVisible,
+            activeStep,
+            isCompleted,
+            steps,
+            startTutorial,
+            nextStep,
+            prevStep,
+            skipTutorial,
+            completeTutorial,
+            registerStep,
+        ],
     );
+
+    return <OnboardingContext.Provider value={value}>{children}</OnboardingContext.Provider>;
 }
 
 export function useOnboarding() {

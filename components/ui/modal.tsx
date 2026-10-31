@@ -61,7 +61,7 @@ export function Modal({
             <div
                 className={cn(
                     'fixed inset-0 bg-black/10 backdrop-blur-[2px] z-50 flex items-center justify-center p-4',
-                    overlayClassName
+                    overlayClassName,
                 )}
                 onClick={closeOnOverlayClick ? onClose : undefined}
                 style={{ animation: 'overlayShow 0.2s cubic-bezier(0.16, 1, 0.3, 1)' }}
@@ -70,7 +70,7 @@ export function Modal({
                     className={cn(
                         'bg-white dark:bg-neutral-900 rounded-md shadow-sm w-full transform transition-all ease-out duration-300 border border-neutral-200 dark:border-neutral-800',
                         sizeClasses[size],
-                        className
+                        className,
                     )}
                     style={{ animation: 'fadeIn 0.2s ease-out' }}
                     onClick={(e) => e.stopPropagation()}
@@ -90,4 +90,4 @@ export function Modal({
             </div>
         </>
     );
-} 
+}

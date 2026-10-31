@@ -12,27 +12,25 @@ interface StudyFrameworkPickerProps {
     placement?: 'top' | 'bottom';
 }
 
-export function StudyFrameworkPicker({ onSelect, onClose, className = '', placement = 'top' }: StudyFrameworkPickerProps) {
+export function StudyFrameworkPicker({
+    onSelect,
+    onClose,
+    className = '',
+    placement = 'top',
+}: StudyFrameworkPickerProps) {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const frameworks = React.useMemo(
-        () => [
-            StudyFramework.FeynmanTechnique,
-            StudyFramework.SocraticTutor,
-            StudyFramework.ActiveRecall,
-        ],
+        () => [StudyFramework.FeynmanTechnique, StudyFramework.SocraticTutor, StudyFramework.ActiveRecall],
         [],
     );
 
     // Helper to calculate the next index based on direction
     const calculateNewIndex = useCallback(
-        (
-            currentIndex: number,
-            direction: "prev" | "next",
-        ): number => {
-            if (direction === "prev") {
+        (currentIndex: number, direction: 'prev' | 'next'): number => {
+            if (direction === 'prev') {
                 return currentIndex > 0 ? currentIndex - 1 : frameworks.length - 1;
             }
             // direction === "next"
@@ -90,9 +88,7 @@ export function StudyFrameworkPicker({ onSelect, onClose, className = '', placem
     }, []);
 
     // Determine position based on placement prop
-    const positionClasses = placement === 'top'
-        ? 'bottom-full mb-2 origin-bottom'
-        : 'top-full mt-2 origin-top';
+    const positionClasses = placement === 'top' ? 'bottom-full mb-2 origin-bottom' : 'top-full mt-2 origin-top';
 
     return (
         <motion.div
@@ -117,13 +113,11 @@ export function StudyFrameworkPicker({ onSelect, onClose, className = '', placem
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{
                 duration: 0.2,
-                ease: [0.4, 0.0, 0.2, 1]
+                ease: [0.4, 0.0, 0.2, 1],
             }}
         >
             <div className="p-2">
-                <div className="text-xs font-medium mb-2 text-neutral-800 dark:text-neutral-100">
-                    Study Framework
-                </div>
+                <div className="text-xs font-medium mb-2 text-neutral-800 dark:text-neutral-100">Study Framework</div>
 
                 <div className="grid grid-cols-2 gap-1.5 mb-2">
                     {frameworks.map((framework, index) => {
@@ -140,9 +134,10 @@ export function StudyFrameworkPicker({ onSelect, onClose, className = '', placem
                                 className={`
                                     p-2 rounded cursor-pointer transition-all duration-150 
                                     border backdrop-blur-sm
-                                    ${isSelected || isHovered
-                                        ? 'bg-white/50 dark:bg-neutral-800/50 border-neutral-300/40 dark:border-neutral-600/40 shadow-md'
-                                        : 'bg-white/20 dark:bg-neutral-800/20 border-neutral-200/20 dark:border-neutral-700/20 hover:bg-white/40 dark:hover:bg-neutral-800/40'
+                                    ${
+                                        isSelected || isHovered
+                                            ? 'bg-white/50 dark:bg-neutral-800/50 border-neutral-300/40 dark:border-neutral-600/40 shadow-md'
+                                            : 'bg-white/20 dark:bg-neutral-800/20 border-neutral-200/20 dark:border-neutral-700/20 hover:bg-white/40 dark:hover:bg-neutral-800/40'
                                     }
                                 `}
                                 onClick={() => onSelect(framework)}
@@ -172,11 +167,15 @@ export function StudyFrameworkPicker({ onSelect, onClose, className = '', placem
                     <div className="text-[9px] text-neutral-500 dark:text-neutral-400">
                         <div className="flex justify-between items-center">
                             <span className="flex items-center gap-1">
-                                <span className="bg-neutral-100/40 dark:bg-neutral-700/40 px-0.5 py-0.5 rounded font-mono text-[8px]">1-3</span>
+                                <span className="bg-neutral-100/40 dark:bg-neutral-700/40 px-0.5 py-0.5 rounded font-mono text-[8px]">
+                                    1-3
+                                </span>
                                 <span>select</span>
                             </span>
                             <span className="flex items-center gap-1">
-                                <span className="bg-neutral-100/40 dark:bg-neutral-700/40 px-0.5 py-0.5 rounded font-mono text-[8px]">esc</span>
+                                <span className="bg-neutral-100/40 dark:bg-neutral-700/40 px-0.5 py-0.5 rounded font-mono text-[8px]">
+                                    esc
+                                </span>
                                 <span>close</span>
                             </span>
                         </div>
@@ -185,4 +184,4 @@ export function StudyFrameworkPicker({ onSelect, onClose, className = '', placem
             </div>
         </motion.div>
     );
-} 
+}

@@ -53,13 +53,20 @@ const MarkdownRenderer = React.memo(({ content }: { content: string }) => {
     const renderer = {
         code(code: string, _language?: string) {
             return (
-                <pre key={generateKey()} className="bg-neutral-200 dark:bg-neutral-800 p-2 rounded-md overflow-x-auto my-3">
+                <pre
+                    key={generateKey()}
+                    className="bg-neutral-200 dark:bg-neutral-800 p-2 rounded-md overflow-x-auto my-3"
+                >
                     <code className="text-neutral-800 dark:text-neutral-300 text-xs">{code}</code>
                 </pre>
             );
         },
         codespan(code: string) {
-            return <code key={generateKey()} className="bg-neutral-200 dark:bg-neutral-800 px-1 py-0.5 rounded text-xs">{code}</code>;
+            return (
+                <code key={generateKey()} className="bg-neutral-200 dark:bg-neutral-800 px-1 py-0.5 rounded text-xs">
+                    {code}
+                </code>
+            );
         },
         // Render inline and block LaTeX math expressions
         text(text: string) {
@@ -94,7 +101,11 @@ const MarkdownRenderer = React.memo(({ content }: { content: string }) => {
                     </p>
                 );
             }
-            return <p key={generateKey()} className="mb-3 last:mb-0">{text}</p>;
+            return (
+                <p key={generateKey()} className="mb-3 last:mb-0">
+                    {text}
+                </p>
+            );
         },
         heading(text: ReactNode, level: number) {
             const Tag = `h${level}` as keyof JSX.IntrinsicElements;
@@ -108,7 +119,11 @@ const MarkdownRenderer = React.memo(({ content }: { content: string }) => {
             };
 
             const className = classes[`h${level}` as keyof typeof classes] || '';
-            return <Tag key={generateKey()} className={className}>{text}</Tag>;
+            return (
+                <Tag key={generateKey()} className={className}>
+                    {text}
+                </Tag>
+            );
         },
         link(href: string, text: ReactNode) {
             return (
@@ -125,14 +140,25 @@ const MarkdownRenderer = React.memo(({ content }: { content: string }) => {
         },
         list(body: ReactNode, ordered: boolean) {
             const Type = ordered ? 'ol' : 'ul';
-            return <Type key={generateKey()} className={`${ordered ? 'list-decimal' : 'list-disc'} pl-5 mb-3 last:mb-1`}>{body}</Type>;
+            return (
+                <Type key={generateKey()} className={`${ordered ? 'list-decimal' : 'list-disc'} pl-5 mb-3 last:mb-1`}>
+                    {body}
+                </Type>
+            );
         },
         listItem(text: ReactNode) {
-            return <li key={generateKey()} className="mb-1">{text}</li>;
+            return (
+                <li key={generateKey()} className="mb-1">
+                    {text}
+                </li>
+            );
         },
         blockquote(text: ReactNode) {
             return (
-                <blockquote key={generateKey()} className="border-l-2 border-neutral-300 dark:border-neutral-700 pl-3 py-1 my-3 italic">
+                <blockquote
+                    key={generateKey()}
+                    className="border-l-2 border-neutral-300 dark:border-neutral-700 pl-3 py-1 my-3 italic"
+                >
                     {text}
                 </blockquote>
             );
@@ -148,14 +174,25 @@ const MarkdownRenderer = React.memo(({ content }: { content: string }) => {
             );
         },
         tableRow(content: ReactNode) {
-            return <tr key={generateKey()} className="border-b border-neutral-200 dark:border-neutral-800">{content}</tr>;
+            return (
+                <tr key={generateKey()} className="border-b border-neutral-200 dark:border-neutral-800">
+                    {content}
+                </tr>
+            );
         },
         tableCell(children: ReactNode[], flags: TableFlags) {
             const align = flags.align ? `text-${flags.align}` : '';
             return flags.header ? (
-                <th key={generateKey()} className={`px-2 py-1 font-semibold bg-neutral-100 dark:bg-neutral-800 ${align}`}>{children}</th>
+                <th
+                    key={generateKey()}
+                    className={`px-2 py-1 font-semibold bg-neutral-100 dark:bg-neutral-800 ${align}`}
+                >
+                    {children}
+                </th>
             ) : (
-                <td key={generateKey()} className={`px-2 py-1 ${align}`}>{children}</td>
+                <td key={generateKey()} className={`px-2 py-1 ${align}`}>
+                    {children}
+                </td>
             );
         },
         // Treat any raw HTML as literal text to prevent XSS
@@ -325,7 +362,7 @@ export const ReasoningPartView: React.FC<ReasoningPartViewProps> = React.memo(
                                                         className={cn(
                                                             'px-3 py-3 text-xs leading-relaxed',
                                                             detailIndex !== part.details.length - 1 &&
-                                                            'border-b border-neutral-100 dark:border-neutral-800/80',
+                                                                'border-b border-neutral-100 dark:border-neutral-800/80',
                                                         )}
                                                     >
                                                         <div className="text-neutral-800 dark:text-neutral-300 prose prose-sm dark:prose-invert max-w-none">

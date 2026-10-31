@@ -23,7 +23,7 @@ export function TooltipCard() {
                 if (target && tooltipRef.current) {
                     const rect = target.getBoundingClientRect();
                     const tooltipRect = tooltipRef.current.getBoundingClientRect();
-                    
+
                     // Basic positioning: below the target, aligned left
                     let top = rect.bottom + 12;
                     let left = rect.left;
@@ -37,14 +37,14 @@ export function TooltipCard() {
                     left = Math.max(left, 12);
 
                     if (top + tooltipRect.height > window.innerHeight) {
-                         // Flip to top if not enough space below
-                         top = rect.top - tooltipRect.height - 12;
+                        // Flip to top if not enough space below
+                        top = rect.top - tooltipRect.height - 12;
                     }
 
                     setPosition({ top, left });
                 } else {
                     // Fallback to center if target not found but ID provided
-                     setPosition(null);
+                    setPosition(null);
                 }
             } else {
                 // Center if no target ID
@@ -54,7 +54,7 @@ export function TooltipCard() {
 
         // Need a slight delay to allow rendering before measuring tooltip
         const timeout = setTimeout(updatePosition, 0);
-        
+
         window.addEventListener('resize', updatePosition);
         window.addEventListener('scroll', updatePosition, true);
 
@@ -97,8 +97,8 @@ export function TooltipCard() {
                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
                 className={cn(
-                    "fixed z-[51] w-[320px] rounded-xl border bg-card p-4 shadow-lg text-card-foreground",
-                    isCentered && "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                    'fixed z-[51] w-[320px] rounded-xl border bg-card p-4 shadow-lg text-card-foreground',
+                    isCentered && 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
                 )}
                 style={!isCentered && position ? { top: position.top, left: position.left } : {}}
             >
@@ -116,11 +116,8 @@ export function TooltipCard() {
                                 Back
                             </Button>
                         )}
-                        <Button 
-                            size="sm" 
-                            onClick={isLastStep ? completeTutorial : nextStep}
-                        >
-                            {isLastStep ? "Finish" : "Next"}
+                        <Button size="sm" onClick={isLastStep ? completeTutorial : nextStep}>
+                            {isLastStep ? 'Finish' : 'Next'}
                         </Button>
                     </div>
                 </div>

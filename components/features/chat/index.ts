@@ -1,1 +1,1 @@
-export { ChatCompactConfirmation } from './chat-compact-confirmation'; 
+export { ChatCompactConfirmation } from './chat-compact-confirmation';

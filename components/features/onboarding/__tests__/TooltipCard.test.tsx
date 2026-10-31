@@ -1,8 +1,8 @@
-import { expect, test, describe } from "bun:test";
-import { render } from "@testing-library/react";
-import { TooltipCard } from "../TooltipCard";
-import { OnboardingProvider, useOnboarding } from "@/contexts/OnboardingContext";
-import React from "react";
+import { expect, test, describe } from 'bun:test';
+import { render } from '@testing-library/react';
+import { TooltipCard } from '../TooltipCard';
+import { OnboardingProvider, useOnboarding } from '@/contexts/OnboardingContext';
+import React from 'react';
 
 const TestWrapper = ({ children }: { children: React.ReactNode }) => {
     return React.createElement(OnboardingProvider, null, children);
@@ -14,13 +14,13 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => {
 
 const TestScenario = () => {
     const { registerStep, startTutorial } = useOnboarding();
-    
+
     React.useEffect(() => {
         registerStep({
             id: 'step1',
             title: 'Welcome',
             description: 'This is the first step.',
-            targetId: 'target1'
+            targetId: 'target1',
         });
         startTutorial();
     }, [registerStep, startTutorial]);
@@ -28,17 +28,13 @@ const TestScenario = () => {
     return React.createElement(TooltipCard);
 };
 
-describe("TooltipCard", () => {
-    test("should render step content", async () => {
-        const { findByText } = render(
-            React.createElement(TestWrapper, null,
-                React.createElement(TestScenario)
-            )
-        );
+describe('TooltipCard', () => {
+    test('should render step content', async () => {
+        const { findByText } = render(React.createElement(TestWrapper, null, React.createElement(TestScenario)));
 
-        const title = await findByText("Welcome");
-        const desc = await findByText("This is the first step.");
-        
+        const title = await findByText('Welcome');
+        const desc = await findByText('This is the first step.');
+
         expect(title).not.toBeNull();
         expect(desc).not.toBeNull();
     });

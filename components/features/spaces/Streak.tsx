@@ -32,14 +32,11 @@ export const Streak: React.FC = () => {
 
     useEffect(() => {
         const milestones = [7, 30, 100];
-        const currentMilestone = milestones.find(milestone => milestone === streak);
+        const currentMilestone = milestones.find((milestone) => milestone === streak);
 
         if (typeof window === 'undefined') return;
 
-        const lastCelebratedMilestone = parseInt(
-            localStorage.getItem(STREAK_LAST_CELEBRATED_MILESTONE_KEY) || '0',
-            10
-        );
+        const lastCelebratedMilestone = parseInt(localStorage.getItem(STREAK_LAST_CELEBRATED_MILESTONE_KEY) || '0', 10);
 
         if (currentMilestone && lastCelebratedMilestone !== currentMilestone) {
             localStorage.setItem(STREAK_LAST_CELEBRATED_MILESTONE_KEY, currentMilestone.toString());
@@ -50,7 +47,7 @@ export const Streak: React.FC = () => {
             const triggerSideCannonConfetti = async () => {
                 const confetti = (await import('canvas-confetti')).default;
                 // Colors from streak (orange/flame) and surprise me (purple) badges
-                const colors = ["#f97316", "#a855f7"]; // orange-500 and purple-500
+                const colors = ['#f97316', '#a855f7']; // orange-500 and purple-500
                 const end = Date.now() + 5 * 1000;
 
                 function frame() {
@@ -106,4 +103,3 @@ export const Streak: React.FC = () => {
         </Button>
     );
 };
-

@@ -1,16 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-    BookOpen,
-    ChevronLeft,
-    ChevronRight,
-    Search,
-    PenLine,
-    MessageSquare,
-    Trash2,
-    Plus,
-} from 'lucide-react';
+import { BookOpen, ChevronLeft, ChevronRight, Search, PenLine, MessageSquare, Trash2, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { useSpaces } from '@/contexts/SpacesContext';
 import { useNotebooks } from '@/contexts/NotebookContext';
@@ -40,23 +31,25 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             registerStep({
                 id: 'sidebar-search',
                 title: 'Knowledge Base Search',
-                description: 'Quickly find any previous conversation, journal entry, or saved note across your entire library.',
+                description:
+                    'Quickly find any previous conversation, journal entry, or saved note across your entire library.',
                 targetId: 'sidebar-search-trigger',
-                order: 1
+                order: 1,
             });
             registerStep({
                 id: 'personalization',
                 title: 'Personalization & Identity',
                 description: 'Configure your custom system prompt, switch themes, and manage your AI preferences here.',
                 targetId: 'sidebar-settings-trigger',
-                order: 7
+                order: 7,
             });
             registerStep({
                 id: 'data-control',
                 title: 'Privacy & Data Control',
-                description: 'Your data is stored locally. Use this to permanently clear all local information and reset the application.',
+                description:
+                    'Your data is stored locally. Use this to permanently clear all local information and reset the application.',
                 targetId: 'sidebar-clear-storage-trigger',
-                order: 8
+                order: 8,
             });
         }
     }, [isOpen, registerStep]);
@@ -74,20 +67,19 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     const router = useRouter();
     const pathname = usePathname();
 
-
     // Extract IDs directly from pathname - more reliable than using context
     const currentPageType = pathname.startsWith('/journal/')
         ? 'journal'
         : pathname.startsWith('/space/')
-            ? 'space'
-            : '';
+          ? 'space'
+          : '';
 
     const currentPageId =
         currentPageType === 'journal'
             ? pathname.split('/journal/')[1]?.split(/[/?#]/)[0] || ''
             : currentPageType === 'space'
-                ? pathname.split('/space/')[1]?.split(/[/?#]/)[0] || ''
-                : '';
+              ? pathname.split('/space/')[1]?.split(/[/?#]/)[0] || ''
+              : '';
 
     // Only expand sections on initial page load, not when manually collapsed
     useEffect(() => {
@@ -163,7 +155,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         const newSpaceId = createSpace(defaultTitle, targetNotebookId);
 
         if (newSpaceId) {
-            // We don't have a space name state at this level to set easily like journal title, 
+            // We don't have a space name state at this level to set easily like journal title,
             // but the space will be created with default title "Untitled"
             router.push(`/space/${newSpaceId}`);
         } else {
@@ -178,7 +170,6 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
 
     return (
         <>
-
             {/* Toggle button that always stays visible */}
             <button
                 className={cn(
@@ -234,8 +225,8 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                                     onClick={() => setShowCreateMenu(!showCreateMenu)}
                                     aria-label="Create new..."
                                     className={cn(
-                                        "h-7 w-7 flex items-center justify-center rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors",
-                                        showCreateMenu && "bg-neutral-100 dark:bg-neutral-800"
+                                        'h-7 w-7 flex items-center justify-center rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors',
+                                        showCreateMenu && 'bg-neutral-100 dark:bg-neutral-800',
                                     )}
                                 >
                                     <Plus className="h-4 w-4 text-emerald-500" />
@@ -243,10 +234,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
 
                                 {showCreateMenu && (
                                     <>
-                                        <div
-                                            className="fixed inset-0 z-40"
-                                            onClick={() => setShowCreateMenu(false)}
-                                        />
+                                        <div className="fixed inset-0 z-40" onClick={() => setShowCreateMenu(false)} />
                                         <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-neutral-900 rounded-md shadow-lg border border-neutral-200 dark:border-neutral-800 py-1 z-50 animate-in fade-in zoom-in-95 duration-100">
                                             <button
                                                 onClick={() => {
@@ -376,10 +364,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             </aside>
 
             {/* Search Modal */}
-            <SearchModal
-                isOpen={showSearchModal}
-                onClose={() => setShowSearchModal(false)}
-            />
+            <SearchModal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
 
             {/* Add the clear storage confirmation dialog */}
             {showClearStorageConfirm && (

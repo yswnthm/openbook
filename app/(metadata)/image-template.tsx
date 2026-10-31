@@ -19,9 +19,10 @@ export function renderMainOgImage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundImage: 'linear-gradient(135deg, #191919 0%, #2e2e2e 100%), url(/screenshots/main-interface.png)',
+                backgroundImage:
+                    'linear-gradient(135deg, #191919 0%, #2e2e2e 100%), url(/screenshots/main-interface.png)',
                 backgroundSize: 'cover',
             }}
         ></div>
     );
-} 
+}

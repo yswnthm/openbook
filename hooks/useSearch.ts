@@ -123,4 +123,4 @@ export function useSearch() {
         setShowSearchResults,
         clearSearch,
     };
-} 
+}

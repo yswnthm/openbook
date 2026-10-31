@@ -5,11 +5,7 @@ import Sidebar from '@/components/layout/sidebar';
 
 const SIDEBAR_WIDTH = 256;
 
-export default function SidebarLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+export default function SidebarLayout({ children }: { children: React.ReactNode }) {
     const { isOpen, setIsOpen } = useSidebar();
 
     return (

@@ -159,8 +159,9 @@ export default function EditorContent({
                 {/* Add a menu indicator at the beginning of each block */}
                 {/* Add a menu indicator at the beginning of each block */}
                 <div
-                    className={`absolute -left-10 top-1/2 transform -translate-y-1/2 transition-opacity duration-200 flex items-center justify-end ${activeMenu === block.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                        }`}
+                    className={`absolute -left-10 top-1/2 transform -translate-y-1/2 transition-opacity duration-200 flex items-center justify-end ${
+                        activeMenu === block.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                    }`}
                 >
                     <button
                         onClick={(e) => {
@@ -232,7 +233,6 @@ export default function EditorContent({
                                             </span>
                                             <ChevronRight className="h-4 w-4 text-neutral-400" />
                                         </button>
-
                                     </div>
                                 </div>
                                 {/* Submenu for Turn into */}
@@ -347,7 +347,8 @@ export default function EditorContent({
                 {block.content.trim() === '' && block.isFocused && !activeMenu && block.type === BlockType.Text && (
                     <div className="absolute inset-0 flex items-center pointer-events-none select-none">
                         <span className="text-neutral-300 dark:text-neutral-600 font-light text-sm">
-                            Type <span className="font-mono text-neutral-400 dark:text-neutral-500">/</span> for commands
+                            Type <span className="font-mono text-neutral-400 dark:text-neutral-500">/</span> for
+                            commands
                         </span>
                     </div>
                 )}
@@ -425,12 +426,12 @@ export default function EditorContent({
                                 const updatedBlocks = blocks.map((b) =>
                                     b.id === block.id
                                         ? {
-                                            ...b,
-                                            metadata: {
-                                                ...b.metadata,
-                                                checked: !isChecked,
-                                            },
-                                        }
+                                              ...b,
+                                              metadata: {
+                                                  ...b.metadata,
+                                                  checked: !isChecked,
+                                              },
+                                          }
                                         : b,
                                 );
                                 // We need to update the blocks state in the parent component
@@ -517,9 +518,5 @@ export default function EditorContent({
         }
     };
 
-    return (
-        <div className="max-w-2xl mx-auto relative">
-            {blocks.map((block, index) => renderBlock(block, index))}
-        </div>
-    );
+    return <div className="max-w-2xl mx-auto relative">{blocks.map((block, index) => renderBlock(block, index))}</div>;
 }

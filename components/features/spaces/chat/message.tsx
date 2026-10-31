@@ -33,7 +33,6 @@ interface MessageProps {
     setMessages: (messages: any[]) => void;
     append: (message: any, options?: any) => Promise<string | null | undefined>;
     reload: () => Promise<string | null | undefined>;
-
 }
 
 const Message: React.FC<MessageProps> = ({
@@ -52,7 +51,6 @@ const Message: React.FC<MessageProps> = ({
     setMessages,
     append,
     reload: _reload,
-
 }) => {
     // Move handlers inside the component
     const handleMessageEdit = useCallback(
@@ -84,7 +82,6 @@ const Message: React.FC<MessageProps> = ({
                 setInput('');
 
                 // Reset suggested questions
-
 
                 // Extract attachments from the original message
                 const attachments = originalMessage?.experimental_attachments || [];
@@ -119,8 +116,6 @@ const Message: React.FC<MessageProps> = ({
             setEditingMessageIndex,
         ],
     );
-
-
 
     if (message.role === 'user') {
         return (
@@ -357,10 +352,11 @@ const AttachmentsBadge = ({ attachments }: { attachments: any[] }) => {
                                         <button
                                             key={idx}
                                             onClick={() => setSelectedIndex(idx)}
-                                            className={`relative h-12 w-12 rounded-md overflow-hidden shrink-0 transition-all ${selectedIndex === idx
-                                                ? 'ring-2 ring-primary ring-offset-2 ring-offset-background'
-                                                : 'opacity-70 hover:opacity-100'
-                                                }`}
+                                            className={`relative h-12 w-12 rounded-md overflow-hidden shrink-0 transition-all ${
+                                                selectedIndex === idx
+                                                    ? 'ring-2 ring-primary ring-offset-2 ring-offset-background'
+                                                    : 'opacity-70 hover:opacity-100'
+                                            }`}
                                         >
                                             <Image
                                                 src={attachment.url}
@@ -433,10 +429,7 @@ const arePropsEqual = (prev: MessageProps, next: MessageProps) => {
     // Editing state: only re-render if this row becomes/was the one being edited
     const prevEditingThis = prev.isEditingMessage && prev.editingMessageIndex === prev.index;
     const nextEditingThis = next.isEditingMessage && next.editingMessageIndex === next.index;
-    if (
-        prev.isEditingMessage !== next.isEditingMessage ||
-        prev.editingMessageIndex !== next.editingMessageIndex
-    ) {
+    if (prev.isEditingMessage !== next.isEditingMessage || prev.editingMessageIndex !== next.editingMessageIndex) {
         if (prevEditingThis || nextEditingThis) return false;
     }
 
@@ -445,10 +438,7 @@ const arePropsEqual = (prev: MessageProps, next: MessageProps) => {
 
     // Last user message index affects only that row (edit controls visibility)
     if (prev.lastUserMessageIndex !== next.lastUserMessageIndex) {
-        if (
-            prev.index === prev.lastUserMessageIndex ||
-            next.index === next.lastUserMessageIndex
-        ) {
+        if (prev.index === prev.lastUserMessageIndex || next.index === next.lastUserMessageIndex) {
             return false;
         }
     }
@@ -463,8 +453,6 @@ const arePropsEqual = (prev: MessageProps, next: MessageProps) => {
         const isLastAssistantRow = next.message.role === 'assistant' && next.index === lastAssistantIndex;
         if (isLastUserRow || isEditingRow || isLastAssistantRow) return false;
     }
-
-
 
     // Ignore changes to functions and other props not directly used for rendering this row
     return true; // props considered equal -> skip re-render

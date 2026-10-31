@@ -1,28 +1,28 @@
-"use client"
+'use client';
 
-import { cn } from "@/lib/utils"
-import { Mic, Plus, Users, Check } from "lucide-react"
-import { motion } from "framer-motion"
-import Image from "next/image"
+import { cn } from '@/lib/utils';
+import { Mic, Plus, Users, Check } from 'lucide-react';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 // --- Component: BentoCard ---
 // Matching the structure from features-section.tsx
 interface BentoCardProps {
-    title: string
-    description: string
-    className?: string
-    children?: React.ReactNode
-    delay?: number
-    gradient?: string
+    title: string;
+    description: string;
+    className?: string;
+    children?: React.ReactNode;
+    delay?: number;
+    gradient?: string;
 }
 
 function BentoCard({
     title,
     description,
-    className = "",
+    className = '',
     children,
     delay = 0,
-    gradient = "from-primary/5 via-transparent to-transparent"
+    gradient = 'from-primary/5 via-transparent to-transparent',
 }: BentoCardProps) {
     return (
         <motion.div
@@ -31,22 +31,25 @@ function BentoCard({
             transition={{ duration: 0.5, delay }}
             viewport={{ once: true }}
             className={cn(
-                "group relative overflow-hidden rounded-3xl bg-card/50 border border-border/40 backdrop-blur-sm hover:bg-card/80 transition-all duration-500 flex flex-col",
-                className
+                'group relative overflow-hidden rounded-3xl bg-card/50 border border-border/40 backdrop-blur-sm hover:bg-card/80 transition-all duration-500 flex flex-col',
+                className,
             )}
         >
             <div className="p-6 md:p-8 flex flex-col h-full z-10">
                 <h3 className="text-xl md:text-2xl font-bold mb-3">{title}</h3>
                 <p className="text-muted-foreground leading-relaxed mb-6 max-w-[90%]">{description}</p>
-                <div className="mt-auto w-full flex-grow flex items-center justify-center relative">
-                    {children}
-                </div>
+                <div className="mt-auto w-full flex-grow flex items-center justify-center relative">{children}</div>
             </div>
 
             {/* Subtle Gradient Background Effect */}
-            <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none", gradient)} />
+            <div
+                className={cn(
+                    'absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none',
+                    gradient,
+                )}
+            />
         </motion.div>
-    )
+    );
 }
 
 // --- Visual Components ---
@@ -58,27 +61,32 @@ function CreateTasksVisual() {
             <div className="absolute top-8 left-0 right-0 h-10 bg-primary/5 blur-xl rounded-full" />
 
             {[
-                { text: "Automated testing", checked: true, active: false },
-                { text: "Initial Usability Assessment", checked: true, active: true },
-                { text: "Updating the docs", checked: true, active: false }
+                { text: 'Automated testing', checked: true, active: false },
+                { text: 'Initial Usability Assessment', checked: true, active: true },
+                { text: 'Updating the docs', checked: true, active: false },
             ].map((item, i) => (
-                <div key={i} className={cn(
-                    "flex items-center gap-3 px-4 py-2.5 rounded-xl border transition-all",
-                    item.active
-                        ? "bg-card border-primary/20 shadow-sm translate-x-1"
-                        : "bg-muted/30 border-transparent opacity-60"
-                )}>
-                    <div className={cn(
-                        "w-4 h-4 rounded-[4px] border flex items-center justify-center",
-                        item.checked ? "bg-primary border-primary" : "border-muted-foreground/30"
-                    )}>
+                <div
+                    key={i}
+                    className={cn(
+                        'flex items-center gap-3 px-4 py-2.5 rounded-xl border transition-all',
+                        item.active
+                            ? 'bg-card border-primary/20 shadow-sm translate-x-1'
+                            : 'bg-muted/30 border-transparent opacity-60',
+                    )}
+                >
+                    <div
+                        className={cn(
+                            'w-4 h-4 rounded-[4px] border flex items-center justify-center',
+                            item.checked ? 'bg-primary border-primary' : 'border-muted-foreground/30',
+                        )}
+                    >
                         {item.checked && <Check className="w-2.5 h-2.5 text-primary-foreground" />}
                     </div>
                     <span className="text-sm font-medium text-foreground">{item.text}</span>
                 </div>
             ))}
         </div>
-    )
+    );
 }
 
 function PlannerVisual() {
@@ -95,7 +103,7 @@ function PlannerVisual() {
                 <p className="text-xs text-muted-foreground mb-1">Discuss detailed project plans outlining tasks</p>
                 <p className="text-[10px] text-muted-foreground/70 mb-2">1:00 - 01:30 pm</p>
                 <div className="flex -space-x-1.5">
-                    {[1, 2, 3].map(i => (
+                    {[1, 2, 3].map((i) => (
                         <div key={i} className="w-5 h-5 rounded-full bg-muted border border-card" />
                     ))}
                 </div>
@@ -108,7 +116,7 @@ function PlannerVisual() {
                 <div className="h-[1px] w-full bg-foreground" />
             </div>
         </div>
-    )
+    );
 }
 
 function DateVisual() {
@@ -120,8 +128,12 @@ function DateVisual() {
             {/* Glowing ring */}
             <div className="absolute inset-2 rounded-full border border-border bg-card overflow-hidden shadow-2xl dark:shadow-none dark:bg-muted/10">
                 {/* Mesh/Grid Texture */}
-                <div className="absolute inset-0 opacity-10 dark:opacity-20"
-                    style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '10px 10px' }}
+                <div
+                    className="absolute inset-0 opacity-10 dark:opacity-20"
+                    style={{
+                        backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)',
+                        backgroundSize: '10px 10px',
+                    }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-br from-background/50 via-transparent to-transparent" />
 
@@ -137,8 +149,7 @@ function DateVisual() {
                 </button>
             </div>
         </div>
-
-    )
+    );
 }
 
 function TeamVisual() {
@@ -162,7 +173,7 @@ function TeamVisual() {
                 <div className="w-1 h-4 bg-muted-foreground/50 animate-pulse" />
             </div>
         </div>
-    )
+    );
 }
 
 function TakeNotesVisual() {
@@ -171,7 +182,9 @@ function TakeNotesVisual() {
             <div className="bg-muted/20 border border-border/50 rounded-xl p-4 space-y-3">
                 <div className="text-xs text-muted-foreground font-medium px-1">Basic blocks</div>
                 <div className="flex items-center gap-3 p-2 rounded-lg bg-card border border-border hover:bg-muted/50 transition-colors cursor-pointer group shadow-sm">
-                    <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-xs font-bold text-primary group-hover:scale-110 transition-transform">Aa</div>
+                    <div className="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-xs font-bold text-primary group-hover:scale-110 transition-transform">
+                        Aa
+                    </div>
                     <div>
                         <div className="text-xs font-medium text-foreground">Text</div>
                         <div className="text-[10px] text-muted-foreground">Embed a sub-page inside</div>
@@ -188,7 +201,7 @@ function TakeNotesVisual() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 function SyncVisual() {
@@ -204,13 +217,19 @@ function SyncVisual() {
 
             {/* Floating Avatars */}
             {[
-                { style: "top-10 left-20", char: "AN" },
-                { style: "bottom-12 left-10", img: "https://github.com/shadcn.png" },
-                { style: "top-8 right-24", char: "BM" },
-                { style: "bottom-10 right-16", img: "https://i.pravatar.cc/150?u=a042581f4e29026704d" },
-                { style: "top-1/2 right-4 -translate-y-1/2 scale-75 opacity-50", char: "JD" },
+                { style: 'top-10 left-20', char: 'AN' },
+                { style: 'bottom-12 left-10', img: 'https://github.com/shadcn.png' },
+                { style: 'top-8 right-24', char: 'BM' },
+                { style: 'bottom-10 right-16', img: 'https://i.pravatar.cc/150?u=a042581f4e29026704d' },
+                { style: 'top-1/2 right-4 -translate-y-1/2 scale-75 opacity-50', char: 'JD' },
             ].map((avatar, i) => (
-                <div key={i} className={cn("absolute w-10 h-10 rounded-full border border-border bg-card flex items-center justify-center overflow-hidden shadow-md", avatar.style)}>
+                <div
+                    key={i}
+                    className={cn(
+                        'absolute w-10 h-10 rounded-full border border-border bg-card flex items-center justify-center overflow-hidden shadow-md',
+                        avatar.style,
+                    )}
+                >
                     {avatar.img ? (
                         <Image src={avatar.img} alt="" width={40} height={40} className="w-full h-full object-cover" />
                     ) : (
@@ -219,7 +238,7 @@ function SyncVisual() {
                 </div>
             ))}
         </div>
-    )
+    );
 }
 
 function ManageProjectsVisual() {
@@ -238,7 +257,9 @@ function ManageProjectsVisual() {
                         <Users className="w-3 h-3 text-muted-foreground" />
                         <span className="text-[10px] text-muted-foreground">6 members</span>
                         <div className="flex -space-x-1 ml-auto">
-                            <div className="w-4 h-4 rounded-full bg-muted text-[6px] flex items-center justify-center text-muted-foreground border border-card">+2</div>
+                            <div className="w-4 h-4 rounded-full bg-muted text-[6px] flex items-center justify-center text-muted-foreground border border-card">
+                                +2
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -249,9 +270,8 @@ function ManageProjectsVisual() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
-
 
 export function ProductivitySection() {
     return (
@@ -261,7 +281,6 @@ export function ProductivitySection() {
             <div className="absolute right-0 top-1/2 w-[500px] h-[500px] bg-blue-500/10 dark:bg-blue-500/20 blur-[120px] rounded-full pointer-events-none mix-blend-multiply dark:mix-blend-screen" />
 
             <div className="container mx-auto px-4 md:px-6 relative z-10">
-
                 {/* Grid Layout */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-[1400px] mx-auto auto-rows-[minmax(300px,auto)]">
                     {/* Row 1 */}
@@ -341,9 +360,8 @@ export function ProductivitySection() {
                     >
                         <ManageProjectsVisual />
                     </BentoCard>
-
                 </div>
             </div>
         </section>
-    )
+    );
 }

@@ -457,7 +457,11 @@ const MarkdownRendererComponent: React.FC<MarkdownRendererProps> = ({ content })
                     </p>
                 );
             }
-            return <p key={generateKey()} className="my-5 leading-relaxed text-neutral-700 dark:text-neutral-300">{children}</p>;
+            return (
+                <p key={generateKey()} className="my-5 leading-relaxed text-neutral-700 dark:text-neutral-300">
+                    {children}
+                </p>
+            );
         },
         code(children, language) {
             return (
@@ -476,7 +480,11 @@ const MarkdownRendererComponent: React.FC<MarkdownRendererProps> = ({ content })
             return isValidUrl(href) ? (
                 renderHoverCard(href, text)
             ) : (
-                <a key={generateKey()} href={href} className="text-primary dark:text-primary-light hover:underline font-medium">
+                <a
+                    key={generateKey()}
+                    href={href}
+                    className="text-primary dark:text-primary-light hover:underline font-medium"
+                >
                     {text}
                 </a>
             );
@@ -494,7 +502,10 @@ const MarkdownRendererComponent: React.FC<MarkdownRendererProps> = ({ content })
                 }[level] || '';
 
             return (
-                <HeadingTag key={generateKey()} className={`${sizeClasses} text-neutral-900 dark:text-neutral-50 tracking-tight`}>
+                <HeadingTag
+                    key={generateKey()}
+                    className={`${sizeClasses} text-neutral-900 dark:text-neutral-50 tracking-tight`}
+                >
                     {children}
                 </HeadingTag>
             );
@@ -511,11 +522,18 @@ const MarkdownRendererComponent: React.FC<MarkdownRendererProps> = ({ content })
             );
         },
         listItem(children) {
-            return <li key={generateKey()} className="pl-1 leading-relaxed">{children}</li>;
+            return (
+                <li key={generateKey()} className="pl-1 leading-relaxed">
+                    {children}
+                </li>
+            );
         },
         blockquote(children) {
             return (
-                <blockquote key={generateKey()} className="my-6 border-l-4 border-primary/30 dark:border-primary/20 pl-4 py-1 text-neutral-700 dark:text-neutral-300 italic bg-neutral-50 dark:bg-neutral-900/50 rounded-r-md">
+                <blockquote
+                    key={generateKey()}
+                    className="my-6 border-l-4 border-primary/30 dark:border-primary/20 pl-4 py-1 text-neutral-700 dark:text-neutral-300 italic bg-neutral-50 dark:bg-neutral-900/50 rounded-r-md"
+                >
                     {children}
                 </blockquote>
             );
@@ -532,7 +550,11 @@ const MarkdownRendererComponent: React.FC<MarkdownRendererProps> = ({ content })
             );
         },
         tableRow(children) {
-            return <tr key={generateKey()} className="border-b border-neutral-200 dark:border-neutral-800 last:border-0">{children}</tr>;
+            return (
+                <tr key={generateKey()} className="border-b border-neutral-200 dark:border-neutral-800 last:border-0">
+                    {children}
+                </tr>
+            );
         },
         tableCell(children, flags) {
             const align = flags.align ? `text-${flags.align}` : 'text-left';
@@ -564,11 +586,18 @@ const MarkdownRendererComponent: React.FC<MarkdownRendererProps> = ({ content })
             );
         },
         tableHeader(children) {
-            return <thead key={generateKey()} className="bg-neutral-100 dark:bg-neutral-800/90">{children}</thead>;
+            return (
+                <thead key={generateKey()} className="bg-neutral-100 dark:bg-neutral-800/90">
+                    {children}
+                </thead>
+            );
         },
         tableBody(children) {
             return (
-                <tbody key={generateKey()} className="divide-y divide-neutral-200 dark:divide-neutral-800 bg-white dark:bg-neutral-900">
+                <tbody
+                    key={generateKey()}
+                    className="divide-y divide-neutral-200 dark:divide-neutral-800 bg-white dark:bg-neutral-900"
+                >
                     {children}
                 </tbody>
             );

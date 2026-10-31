@@ -13,16 +13,15 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [systemPrompt, setSystemPrompt] = useLocalStorage<string>('settings-system-prompt', '');
 
-    const value = React.useMemo(() => ({
-        systemPrompt,
-        setSystemPrompt
-    }), [systemPrompt, setSystemPrompt]);
-
-    return (
-        <SettingsContext.Provider value={value}>
-            {children}
-        </SettingsContext.Provider>
+    const value = React.useMemo(
+        () => ({
+            systemPrompt,
+            setSystemPrompt,
+        }),
+        [systemPrompt, setSystemPrompt],
     );
+
+    return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
 }
 
 export function useSettings() {

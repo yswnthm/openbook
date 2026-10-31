@@ -10,7 +10,7 @@ describe('Chat Validation Schema', () => {
             model: 'google-default',
             group: 'chat',
             timezone: 'America/New_York',
-            systemPrompt: 'custom prompt'
+            systemPrompt: 'custom prompt',
         };
         const result = ChatRequestSchema.safeParse(payload);
         expect(result.success).toBe(true);
@@ -20,7 +20,7 @@ describe('Chat Validation Schema', () => {
         const payload = {
             messages: [],
             model: 'google-default',
-            group: 'chat'
+            group: 'chat',
         };
         const result = ChatRequestSchema.safeParse(payload);
         expect(result.success).toBe(false);
@@ -30,7 +30,7 @@ describe('Chat Validation Schema', () => {
         const payload = {
             messages: [{ role: 'user', content: 'hello' }],
             model: 'unsupported-model-id',
-            group: 'chat'
+            group: 'chat',
         };
         const result = ChatRequestSchema.safeParse(payload);
         expect(result.success).toBe(false);
@@ -40,7 +40,7 @@ describe('Chat Validation Schema', () => {
         const payload = {
             messages: [{ role: 'user', content: 'a'.repeat(8001) }],
             model: 'google-default',
-            group: 'chat'
+            group: 'chat',
         };
         const result = ChatRequestSchema.safeParse(payload);
         expect(result.success).toBe(false);
@@ -57,7 +57,7 @@ describe('Chat Validation Schema', () => {
                 { role: 'assistant', content: 'f'.repeat(7000) },
             ], // 42000 chars
             model: 'google-default',
-            group: 'chat'
+            group: 'chat',
         };
         const result = ChatRequestSchema.safeParse(payload);
         expect(result.success).toBe(false);
@@ -68,7 +68,7 @@ describe('Chat Validation Schema', () => {
             messages: [{ role: 'user', content: 'hello' }],
             model: 'google-default',
             group: 'chat',
-            systemPrompt: 's'.repeat(2001)
+            systemPrompt: 's'.repeat(2001),
         };
         const result = ChatRequestSchema.safeParse(payload);
         expect(result.success).toBe(false);
@@ -79,7 +79,7 @@ describe('Chat API Route POST Handler', () => {
     test('returns 400 for invalid JSON body', async () => {
         const req = new NextRequest('http://localhost/api/chat', {
             method: 'POST',
-            body: 'not-a-json'
+            body: 'not-a-json',
         });
         const res = await POST(req);
         expect(res.status).toBe(400);
@@ -91,8 +91,8 @@ describe('Chat API Route POST Handler', () => {
         const req = new NextRequest('http://localhost/api/chat', {
             method: 'POST',
             body: JSON.stringify({
-                messages: [] // invalid
-            })
+                messages: [], // invalid
+            }),
         });
         const res = await POST(req);
         expect(res.status).toBe(400);
@@ -104,15 +104,15 @@ describe('Chat API Route POST Handler', () => {
         // Temporarily clear the API key to test failure
         const originalKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
         delete process.env.GOOGLE_GENERATIVE_AI_API_KEY;
-        
+
         try {
             const req = new NextRequest('http://localhost/api/chat', {
                 method: 'POST',
                 body: JSON.stringify({
                     messages: [{ role: 'user', content: 'hello' }],
                     model: 'google-default',
-                    group: 'chat'
-                })
+                    group: 'chat',
+                }),
             });
             const res = await POST(req);
             expect(res.status).toBe(400);

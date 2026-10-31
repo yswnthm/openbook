@@ -1,8 +1,8 @@
-"use client"
+'use client';
 
-import { CombinedFooter, Header, LandingBackground } from "@/components/landing"
-import { TeamHero } from "@/components/team/team-hero"
-import { Providers } from "@/app/(config)/providers"
+import { CombinedFooter, Header, LandingBackground } from '@/components/landing';
+import { TeamHero } from '@/components/team/team-hero';
+import { Providers } from '@/app/(config)/providers';
 
 export default function TeamPage() {
     return (
@@ -18,5 +18,5 @@ export default function TeamPage() {
                 <CombinedFooter />
             </div>
         </Providers>
-    )
+    );
 }

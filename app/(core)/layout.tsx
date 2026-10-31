@@ -28,9 +28,7 @@ export default function CoreLayout({
                                 <Toaster position="top-center" />
                                 <SidebarProvider>
                                     <OnboardingProvider>
-                                        <SidebarLayout>
-                                            {children}
-                                        </SidebarLayout>
+                                        <SidebarLayout>{children}</SidebarLayout>
                                         <OnboardingOverlay />
                                         <TooltipCard />
                                     </OnboardingProvider>

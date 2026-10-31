@@ -264,12 +264,7 @@ export function ChatInput({
                     placement={pickerPlacement}
                 />
             )}
-            {activeMenu === 'compact' && (
-                <ChatCompactConfirmation
-                    onConfirm={handleCompactChat}
-                    onCancel={closeMenu}
-                />
-            )}
+            {activeMenu === 'compact' && <ChatCompactConfirmation onConfirm={handleCompactChat} onCancel={closeMenu} />}
 
             {/* Command suggestions */}
             {showSuggestions && !activeMenu && (
@@ -277,15 +272,17 @@ export function ChatInput({
                     <div className="p-2">
                         {COMMANDS
                             // Use case-insensitive comparison to match user input regardless of casing
-                            .filter(cmd => cmd.id.startsWith(value.toLowerCase()))
-                            .map(cmd => (
+                            .filter((cmd) => cmd.id.startsWith(value.toLowerCase()))
+                            .map((cmd) => (
                                 <div
                                     key={cmd.id}
                                     className="flex justify-between px-2 py-1 text-xs cursor-pointer hover:bg-neutral-100/40 dark:hover:bg-neutral-800/40 rounded"
                                     onClick={() => selectSuggestion(cmd.id)}
                                 >
                                     <span className="font-medium">{cmd.id}</span>
-                                    <span className="text-neutral-500 dark:text-neutral-400 text-[10px]">{cmd.label}</span>
+                                    <span className="text-neutral-500 dark:text-neutral-400 text-[10px]">
+                                        {cmd.label}
+                                    </span>
                                 </div>
                             ))}
                     </div>
@@ -308,13 +305,7 @@ export function ChatInput({
                 />
 
                 {/* Hidden file input */}
-                <input
-                    ref={fileInputRef}
-                    type="file"
-                    className="hidden"
-                    multiple
-                    accept="image/*,.pdf,.txt,.md,.csv"
-                />
+                <input ref={fileInputRef} type="file" className="hidden" multiple accept="image/*,.pdf,.txt,.md,.csv" />
 
                 {/* Send/Stop button */}
                 <Button
@@ -324,9 +315,7 @@ export function ChatInput({
                     size="sm"
                     className={cn(
                         'h-6 w-6 p-0 rounded-full',
-                        isProcessing
-                            ? 'text-red-500 hover:text-red-600'
-                            : 'text-neutral-500 hover:text-neutral-700'
+                        isProcessing ? 'text-red-500 hover:text-red-600' : 'text-neutral-500 hover:text-neutral-700',
                     )}
                 >
                     {status === 'loading' ? (
@@ -336,7 +325,14 @@ export function ChatInput({
                     ) : isProcessing ? (
                         <span className="text-xs">■</span>
                     ) : (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                        >
                             <path d="m5 12 14-9v18L5 12z" />
                         </svg>
                     )}
@@ -347,7 +343,10 @@ export function ChatInput({
             {attachments.length > 0 && (
                 <div className="flex gap-1 mt-1">
                     {attachments.map((attachment, i) => (
-                        <div key={i} className="flex items-center gap-1 px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded text-xs">
+                        <div
+                            key={i}
+                            className="flex items-center gap-1 px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded text-xs"
+                        >
                             <span className="truncate max-w-[100px]">{attachment.name}</span>
                             <button
                                 onClick={() => removeAttachment(i)}
@@ -359,8 +358,6 @@ export function ChatInput({
                     ))}
                 </div>
             )}
-
-
         </div>
     );
 }

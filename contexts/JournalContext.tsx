@@ -119,7 +119,8 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
                 const defaultTitle = generateUniqueUntitledTitle(prev, notebook_id);
 
                 // Use input title only if it's non-empty and not an auto-generated placeholder
-                const finalTitle = !trimmedInputTitle || trimmedInputTitle === 'Untitled' ? defaultTitle : trimmedInputTitle;
+                const finalTitle =
+                    !trimmedInputTitle || trimmedInputTitle === 'Untitled' ? defaultTitle : trimmedInputTitle;
 
                 const newEntry: JournalEntry = {
                     id,
@@ -207,34 +208,33 @@ export const JournalProvider = ({ children }: { children: ReactNode }) => {
                         ...entry,
                         match: matchingBlock
                             ? {
-                                text: matchingBlock.content,
-                                context: 'content' as const,
-                            }
+                                  text: matchingBlock.content,
+                                  context: 'content' as const,
+                              }
                             : {
-                                text: entry.title,
-                                context: 'title' as const,
-                            },
+                                  text: entry.title,
+                                  context: 'title' as const,
+                              },
                     };
                 });
         },
         [entries],
     );
 
-    const contextValue = React.useMemo(() => ({
-        entries,
-        createEntry,
-        updateEntry,
-        deleteEntry,
-        getEntry,
-        searchEntries,
-        initialized
-    }), [entries, createEntry, updateEntry, deleteEntry, getEntry, searchEntries, initialized]);
-
-    return (
-        <JournalContext.Provider value={contextValue}>
-            {children}
-        </JournalContext.Provider>
+    const contextValue = React.useMemo(
+        () => ({
+            entries,
+            createEntry,
+            updateEntry,
+            deleteEntry,
+            getEntry,
+            searchEntries,
+            initialized,
+        }),
+        [entries, createEntry, updateEntry, deleteEntry, getEntry, searchEntries, initialized],
     );
+
+    return <JournalContext.Provider value={contextValue}>{children}</JournalContext.Provider>;
 };
 
 export const useJournalContext = () => {

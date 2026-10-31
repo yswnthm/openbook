@@ -1,8 +1,8 @@
 {
-  "track_id": "remove_blog_20251224",
-  "type": "chore",
-  "status": "new",
-  "created_at": "2025-12-24T12:00:00Z",
-  "updated_at": "2025-12-24T12:00:00Z",
-  "description": "Remove every trace of the blog feature, including components, pages, routes, logic, and exclusive dependencies."
+    "track_id": "remove_blog_20251224",
+    "type": "chore",
+    "status": "new",
+    "created_at": "2025-12-24T12:00:00Z",
+    "updated_at": "2025-12-24T12:00:00Z",
+    "description": "Remove every trace of the blog feature, including components, pages, routes, logic, and exclusive dependencies."
 }

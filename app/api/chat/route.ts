@@ -7,14 +7,7 @@
  */
 
 import { getGroupConfig } from '@/app/(config)/actions';
-import {
-    convertToCoreMessages,
-    streamText,
-    tool,
-    createDataStreamResponse,
-    generateObject,
-    NoSuchToolError,
-} from 'ai';
+import { convertToCoreMessages, streamText, tool, createDataStreamResponse, generateObject, NoSuchToolError } from 'ai';
 import { z } from 'zod';
 import { debugLog } from '@/lib/logger';
 import { NextRequest, NextResponse } from 'next/server';
@@ -33,7 +26,7 @@ export async function POST(req: NextRequest) {
     if (!body) {
         return NextResponse.json(
             { error: 'invalid_request', message: 'Request body must be a valid JSON object.' },
-            { status: 400 }
+            { status: 400 },
         );
     }
 
@@ -41,7 +34,7 @@ export async function POST(req: NextRequest) {
     if (!parsed.success) {
         return NextResponse.json(
             { error: 'invalid_request', message: parsed.error.errors[0].message },
-            { status: 400 }
+            { status: 400 },
         );
     }
 
@@ -51,8 +44,11 @@ export async function POST(req: NextRequest) {
     const missingKey = getMissingApiKey(model);
     if (missingKey) {
         return NextResponse.json(
-            { error: 'provider_unavailable', message: `Model provider is unavailable because the API key ${missingKey} is not configured on the server.` },
-            { status: 400 }
+            {
+                error: 'provider_unavailable',
+                message: `Model provider is unavailable because the API key ${missingKey} is not configured on the server.`,
+            },
+            { status: 400 },
         );
     }
 
@@ -65,7 +61,7 @@ export async function POST(req: NextRequest) {
         debugLog('Error fetching group config:', error);
         return NextResponse.json(
             { error: 'server_error', message: 'Failed to load group configuration' },
-            { status: 500 }
+            { status: 500 },
         );
     }
 
@@ -116,7 +112,8 @@ export async function POST(req: NextRequest) {
                     }),
                     // Simulated python code execution helper
                     simulated_code_interpreter: tool({
-                        description: 'Simulate Python code execution for calculations, data analysis, and computations (no real sandboxed execution).',
+                        description:
+                            'Simulate Python code execution for calculations, data analysis, and computations (no real sandboxed execution).',
                         parameters: z.object({
                             code: z.string().describe('The Python code to simulate'),
                         }),
@@ -124,14 +121,17 @@ export async function POST(req: NextRequest) {
                             return {
                                 success: true,
                                 message: `Code execution simulation: ${code.slice(0, 100)}${code.length > 100 ? '...' : ''}`,
-                                note: 'Code interpreter simulation - actual execution requires proper sandboxing infrastructure'
+                                note: 'Code interpreter simulation - actual execution requires proper sandboxing infrastructure',
                             };
                         },
                     }),
                     datetime: tool({
                         description: 'Get current date and time information with timezone support.',
                         parameters: z.object({
-                            timezone: z.string().optional().describe('Timezone identifier (e.g., "America/New_York", "UTC")'),
+                            timezone: z
+                                .string()
+                                .optional()
+                                .describe('Timezone identifier (e.g., "America/New_York", "UTC")'),
                             format: z.string().optional().describe('Date format preference'),
                         }),
                         execute: async ({ timezone: tz, format: _format }: { timezone?: string; format?: string }) => {
@@ -217,7 +217,7 @@ export async function POST(req: NextRequest) {
                         schema: toolDefinition.parameters,
                         prompt: [
                             `The model tried to call the tool "${toolCall.toolName}"` +
-                            ` with the following arguments:`,
+                                ` with the following arguments:`,
                             JSON.stringify(toolCall.args),
                             `The tool accepts the following schema:`,
                             JSON.stringify(parameterSchema(toolCall)),

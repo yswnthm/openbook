@@ -1,10 +1,10 @@
-import { expect, test, describe } from "bun:test";
-import { renderHook } from "@testing-library/react";
-import { OnboardingProvider, useOnboarding } from "./OnboardingContext";
-import React from "react";
+import { expect, test, describe } from 'bun:test';
+import { renderHook } from '@testing-library/react';
+import { OnboardingProvider, useOnboarding } from './OnboardingContext';
+import React from 'react';
 
-describe("OnboardingContext", () => {
-    test("should throw error if used outside of provider", () => {
+describe('OnboardingContext', () => {
+    test('should throw error if used outside of provider', () => {
         // Suppress console.error for expected errors
         const originalError = console.error;
         console.error = () => {};
@@ -15,10 +15,9 @@ describe("OnboardingContext", () => {
         }
     });
 
-    test("should provide initial state", () => {
-        const wrapper = ({ children }: { children: React.ReactNode }) => (
-            React.createElement(OnboardingProvider, null, children)
-        );
+    test('should provide initial state', () => {
+        const wrapper = ({ children }: { children: React.ReactNode }) =>
+            React.createElement(OnboardingProvider, null, children);
         const { result } = renderHook(() => useOnboarding(), { wrapper });
 
         expect(result.current.isVisible).toBe(false);
@@ -26,17 +25,16 @@ describe("OnboardingContext", () => {
         expect(result.current.isCompleted).toBe(false);
     });
 
-    test("should allow registering steps", () => {
-        const wrapper = ({ children }: { children: React.ReactNode }) => (
-            React.createElement(OnboardingProvider, null, children)
-        );
+    test('should allow registering steps', () => {
+        const wrapper = ({ children }: { children: React.ReactNode }) =>
+            React.createElement(OnboardingProvider, null, children);
         const { result } = renderHook(() => useOnboarding(), { wrapper });
 
         const step = {
-            id: "step1",
-            title: "Step 1",
-            description: "Description 1",
-            targetId: "target1"
+            id: 'step1',
+            title: 'Step 1',
+            description: 'Description 1',
+            targetId: 'target1',
         };
 
         React.act(() => {
@@ -47,26 +45,25 @@ describe("OnboardingContext", () => {
         expect(result.current.steps[0]).toEqual(step);
     });
 
-    test("should sort steps by order", () => {
-        const wrapper = ({ children }: { children: React.ReactNode }) => (
-            React.createElement(OnboardingProvider, null, children)
-        );
+    test('should sort steps by order', () => {
+        const wrapper = ({ children }: { children: React.ReactNode }) =>
+            React.createElement(OnboardingProvider, null, children);
         const { result } = renderHook(() => useOnboarding(), { wrapper });
 
         const step2 = {
-            id: "step2",
-            title: "Step 2",
-            description: "Description 2",
-            targetId: "target2",
-            order: 2
+            id: 'step2',
+            title: 'Step 2',
+            description: 'Description 2',
+            targetId: 'target2',
+            order: 2,
         };
 
         const step1 = {
-            id: "step1",
-            title: "Step 1",
-            description: "Description 1",
-            targetId: "target1",
-            order: 1
+            id: 'step1',
+            title: 'Step 1',
+            description: 'Description 1',
+            targetId: 'target1',
+            order: 1,
         };
 
         React.act(() => {
@@ -75,7 +72,7 @@ describe("OnboardingContext", () => {
         });
 
         expect(result.current.steps).toHaveLength(2);
-        expect(result.current.steps[0].id).toBe("step1");
-        expect(result.current.steps[1].id).toBe("step2");
+        expect(result.current.steps[0].id).toBe('step1');
+        expect(result.current.steps[1].id).toBe('step2');
     });
 });
